@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    tools:context=".onBordingScreenActivity.OnBordingScreenActivity">
+
+
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/viewPager2"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/worm_dots_indicator" />
+
+    <com.tbuonomo.viewpagerdotsindicator.WormDotsIndicator
+        android:id="@+id/worm_dots_indicator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/linearLayout"
+        android:layout_centerHorizontal="true"
+        app:dotsColor="@color/appColor"
+        android:layout_margin="@dimen/_10sdp"
+        app:dotsStrokeColor="@color/greay"
+        app:dotsCornerRadius="4dp"
+        app:dotsSize="10dp"
+        app:dotsSpacing="4dp"
+        app:dotsStrokeWidth="6dp" />
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="horizontal">
+
+        <TextView
+            android:visibility="gone"
+            android:id="@+id/previousBtn"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_42sdp"
+            android:layout_gravity="center_vertical"
+            android:layout_margin="@dimen/_5sdp"
+            android:layout_weight="1"
+            android:background="@drawable/blue_background"
+            android:gravity="center"
+            android:text="Previous "
+            android:textColor="@color/appColor"
+            android:textSize="@dimen/_12ssp"
+            android:textStyle="bold" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/nextBtn"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_50sdp"
+            android:layout_alignParentBottom="true"
+            android:layout_gravity="center"
+            android:layout_margin="@dimen/_5sdp"
+            android:layout_weight="1"
+            android:backgroundTint="@color/appColor"
+            android:text="NEXT"
+            android:textColor="@color/white"
+            app:cornerRadius="@dimen/_10sdp" />
+
+    </LinearLayout>
+
+</RelativeLayout>
