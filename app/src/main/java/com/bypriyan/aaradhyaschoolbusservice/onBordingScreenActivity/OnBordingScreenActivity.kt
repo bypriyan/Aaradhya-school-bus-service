@@ -80,6 +80,7 @@ class OnBordingScreenActivity : AppCompatActivity() {
         }
 
 
+
         binding.previousBtn.setOnClickListener {
             val previousIndex = binding.viewPager2.currentItem - 1
             if (previousIndex >= 0) {

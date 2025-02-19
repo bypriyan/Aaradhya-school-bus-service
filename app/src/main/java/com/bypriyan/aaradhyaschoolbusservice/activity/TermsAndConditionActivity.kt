@@ -1,21 +1,22 @@
 package com.bypriyan.aaradhyaschoolbusservice.activity
 
+import android.content.Intent
 import android.os.Bundle
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
-import com.bypriyan.aaradhyaschoolbusservice.R
+import com.bypriyan.aaradhyaschoolbusservice.databinding.ActivityTermsAndConditionBinding
 
 class TermsAndConditionActivity : AppCompatActivity() {
+    private lateinit var binding: ActivityTermsAndConditionBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        setContentView(R.layout.activity_terms_and_condition)
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
+
+        // Correct View Binding Initialization
+        binding = ActivityTermsAndConditionBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        binding.btnConfirm.setOnClickListener(){
+            startActivity(Intent(this, LoginActivity::class.java))
         }
     }
 }

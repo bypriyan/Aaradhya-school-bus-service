@@ -1,10 +1,292 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:padding="@dimen/_10sdp"
+    android:background="@color/white"
     tools:context=".activity.SignUpActivity">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+
+    <TextView
+        android:id="@+id/tt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/black"
+
+        android:textStyle="bold"/>
+
+    <LinearLayout
+        android:layout_below="@+id/tt"
+        android:id="@+id/l1"
+        android:padding="@dimen/_5sdp"
+        android:background="@drawable/cc"
+    android:layout_width="match_parent"
+        android:orientation="horizontal"
+    android:layout_height="wrap_content">
+    <!-- Top Left Corner Image -->
+
+        <ImageView
+            android:id="@+id/imgProfile"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:padding="@dimen/_12sdp"
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/dd"
+            android:contentDescription="Profile Image"
+            android:src="@drawable/baseline_person_24" />
+
+        <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Choose image or click  photo"
+        android:textStyle="bold"
+        android:textColor="@color/white"
+        android:textSize="@dimen/_15sdp"
+        android:layout_marginTop="@dimen/_18sdp"
+        android:layout_marginLeft="@dimen/_6sdp"/>
+
+
+
+</LinearLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_above="@+id/btnSubmit"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:layout_below="@+id/l1"
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:id="@+id/linearLayout"
+            android:layout_width="match_parent"
+            android:orientation="vertical"
+            android:background="@color/white"
+            android:layout_height="match_parent">
+    <!-- Full Name -->
+    <EditText
+        android:id="@+id/etFullName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Full Name"
+        android:inputType="text"
+        android:drawableStart="@drawable/baseline_person_24"
+        android:textColorHint="@color/black"
+        android:textColor="@color/black"
+        android:layout_below="@id/imgProfile"
+        android:background="@drawable/custom_background"
+        android:padding="12dp"
+        android:textSize="16sp" />
+
+    <!-- Standard -->
+    <EditText
+        android:id="@+id/etStandard"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Standard"
+        android:textColor="@color/black"
+        android:textColorHint="@color/black"
+
+        android:drawableStart="@drawable/baseline_class_24"
+        android:layout_below="@id/etFullName"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/custom_background"
+        android:padding="12dp"
+        android:textSize="16sp" />
+
+    <!-- Division -->
+    <EditText
+        android:id="@+id/etDivision"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Division"
+        android:textColor="@color/black"
+        android:textColorHint="@color/black"
+
+        android:drawableStart="@drawable/baseline_class_24"
+        android:layout_below="@id/etStandard"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/custom_background"
+        android:padding="12dp"
+        android:textSize="16sp" />
+
+    <!-- Class -->
+    <EditText
+        android:id="@+id/etClass"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Class"
+        android:textColor="@color/black"
+        android:textColorHint="@color/black"
+        android:drawableStart="@drawable/baseline_class_24"
+        android:layout_below="@id/etDivision"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/custom_background"
+        android:padding="12dp"
+        android:textSize="16sp" />
+
+    <!-- Age -->
+    <EditText
+        android:id="@+id/etAge"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Age"
+        android:textColorHint="@color/black"
+        android:textColor="@color/black"
+        android:drawableStart="@drawable/baseline_date_range_24"
+        android:layout_below="@id/etClass"
+        android:inputType="number"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/custom_background"
+        android:padding="12dp"
+        android:textSize="16sp" />
+
+    <!-- Year -->
+    <EditText
+        android:id="@+id/etYear"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Year"
+        android:textColorHint="@color/black"
+        android:textColor="@color/black"
+        android:drawableStart="@drawable/baseline_date_range_24"
+        android:inputType="number"
+        android:layout_below="@id/etAge"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/custom_background"
+        android:padding="12dp"
+        android:textSize="16sp" />
+
+    <!-- Father Name -->
+    <EditText
+        android:id="@+id/etFatherName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Father's Name"
+        android:textColorHint="@color/black"
+        android:textColor="@color/black"
+        android:drawableStart="@drawable/baseline_person_24"
+        android:layout_below="@id/etYear"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/custom_background"
+        android:padding="12dp"
+        android:textSize="16sp" />
+
+    <!-- Mother Name -->
+    <EditText
+        android:id="@+id/etMotherName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Mother's Name"
+        android:textColorHint="@color/black"
+        android:drawableStart="@drawable/baseline_person_24"
+        android:layout_below="@id/etFatherName"
+        android:layout_marginTop="8dp"
+        android:textColor="@color/black"
+
+        android:background="@drawable/custom_background"
+        android:padding="12dp"
+        android:textSize="16sp" />
+
+    <!-- Email -->
+    <EditText
+        android:id="@+id/etEmail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Email"
+        android:textColor="@color/black"
+        android:textColorHint="@color/black"
+        android:drawableStart="@drawable/baseline_email_24"
+        android:layout_below="@id/etMotherName"
+        android:layout_marginTop="8dp"
+        android:inputType="textEmailAddress"
+        android:background="@drawable/custom_background"
+        android:padding="12dp"
+        android:textSize="16sp" />
+
+    <!-- Password -->
+    <EditText
+        android:id="@+id/etPassword"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Password"
+        android:drawableStart="@drawable/baseline_lock_24"
+        android:textColor="@color/black"
+        android:textColorHint="@color/black"
+
+
+        android:layout_below="@id/etEmail"
+        android:layout_marginTop="8dp"
+        android:inputType="textPassword"
+        android:background="@drawable/custom_background"
+        android:padding="12dp"
+        android:textSize="16sp" />
+
+    <!-- Address -->
+    <EditText
+        android:id="@+id/etAddress"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Address"
+        android:textColor="@color/black"
+        android:textColorHint="@color/black"
+
+        android:drawableStart="@drawable/baseline_home_24"
+        android:layout_below="@id/etPassword"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/custom_background"
+        android:padding="12dp"
+        android:textSize="16sp" />
+
+    <!-- Father's Mobile Number -->
+    <EditText
+        android:id="@+id/etFatherMobile"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Father's Mobile Number"
+        android:layout_below="@id/etAddress"
+        android:layout_marginTop="8dp"
+        android:textColorHint="@color/black"
+        android:inputType="phone"
+        android:textColor="@color/black"
+        android:drawableStart="@drawable/baseline_phone_24"
+        android:background="@drawable/custom_background"
+        android:padding="12dp"
+        android:textSize="16sp" />
+
+    <!-- Mother's Mobile Number -->
+    <EditText
+        android:id="@+id/etMotherMobile"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Mother's Mobile Number"
+        android:layout_below="@id/etFatherMobile"
+        android:layout_marginTop="8dp"
+        android:inputType="phone"
+        android:textColorHint="@color/black"
+
+        android:textColor="@color/black"
+        android:drawableStart="@drawable/baseline_phone_24"
+        android:background="@drawable/custom_background"
+        android:padding="12dp"
+        android:textSize="16sp" />
+
+    <!-- Submit Button -->
+
+</LinearLayout>
+    </ScrollView>
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnSubmit"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_50sdp"
+        android:layout_marginTop="16dp"
+        android:elevation="@dimen/_10sdp"
+        android:textSize="@dimen/_18sdp"
+        android:backgroundTint="@color/appColor"
+        android:text="Submit"
+        android:layout_alignParentBottom="true"
+        android:textColor="@color/white"
+        app:cornerRadius="12dp" />
+</RelativeLayout>
