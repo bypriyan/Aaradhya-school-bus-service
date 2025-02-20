@@ -32,6 +32,14 @@
             android:name=".activity.MainActivity"
             android:exported="true"
             android:theme="@style/Base.Theme.AaradhyaSchoolBusService"/>
+        <activity
+            android:name=".activity.LoginActivity"
+            android:exported="true"
+            android:theme="@style/Base.Theme.AaradhyaSchoolBusService"/>
+        <activity
+            android:name=".activity.DasboardActivity"
+            android:exported="true"
+            android:theme="@style/Base.Theme.AaradhyaSchoolBusService"/>
     </application>
 
 </manifest>

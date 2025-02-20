@@ -10,6 +10,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.viewpager2.widget.ViewPager2
 import com.bypriyan.aaradhyaschoolbusservice.R
+import com.bypriyan.aaradhyaschoolbusservice.activity.DasboardActivity
 import com.bypriyan.aaradhyaschoolbusservice.activity.LoginActivity
 import com.bypriyan.aaradhyaschoolbusservice.databinding.ActivityOnBordingScreenBinding
 import com.bypriyan.bustrackingsystem.utility.Constants
@@ -73,8 +74,10 @@ class OnBordingScreenActivity : AppCompatActivity() {
             if (nextIndex < adapter.itemCount) {
                 binding.viewPager2.currentItem = nextIndex
             } else {
-                startActivity(Intent(this, LoginActivity::class.java))
+                // Save preference BEFORE launching login
                 preferenceManager.putBoolean(Constants.KEY_IS_ONBORDING_SCREEN_SEEN, true)
+
+                startActivity(Intent(this, DasboardActivity::class.java))
                 finish()
             }
         }
@@ -106,13 +109,22 @@ class OnBordingScreenActivity : AppCompatActivity() {
 
         )
     }
-
     override fun onStart() {
         super.onStart()
-        if(preferenceManager.getBoolean(Constants.KEY_IS_ONBORDING_SCREEN_SEEN)){
+        // Ensure PreferenceManager is initialized before using it
+        if (!::preferenceManager.isInitialized) {
+            preferenceManager = PreferenceManager(this)
+        }
+
+        // Check if the onboarding screen was seen
+        val hasSeenOnboarding = preferenceManager.getBoolean(Constants.KEY_IS_ONBORDING_SCREEN_SEEN)
+
+        if (hasSeenOnboarding) {
+            // If onboarding is already completed, go to LoginActivity
             startActivity(Intent(this, LoginActivity::class.java))
             finish()
         }
     }
 
-}
+    }
+
