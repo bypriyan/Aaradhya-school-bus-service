@@ -12,6 +12,7 @@ import androidx.viewpager2.widget.ViewPager2
 import com.bypriyan.aaradhyaschoolbusservice.R
 import com.bypriyan.aaradhyaschoolbusservice.activity.DasboardActivity
 import com.bypriyan.aaradhyaschoolbusservice.activity.LoginActivity
+import com.bypriyan.aaradhyaschoolbusservice.activity.TermsAndConditionActivity
 import com.bypriyan.aaradhyaschoolbusservice.databinding.ActivityOnBordingScreenBinding
 import com.bypriyan.bustrackingsystem.utility.Constants
 import com.bypriyan.bustrackingsystem.utility.PreferenceManager
@@ -77,7 +78,7 @@ class OnBordingScreenActivity : AppCompatActivity() {
                 // Save preference BEFORE launching login
                 preferenceManager.putBoolean(Constants.KEY_IS_ONBORDING_SCREEN_SEEN, true)
 
-                startActivity(Intent(this, DasboardActivity::class.java))
+                startActivity(Intent(this, TermsAndConditionActivity::class.java))
                 finish()
             }
         }

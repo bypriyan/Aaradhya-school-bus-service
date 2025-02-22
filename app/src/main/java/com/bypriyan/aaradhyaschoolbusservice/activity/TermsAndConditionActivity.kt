@@ -17,6 +17,7 @@ class TermsAndConditionActivity : AppCompatActivity() {
 
         binding.btnConfirm.setOnClickListener(){
             startActivity(Intent(this, LoginActivity::class.java))
+            finish()
         }
     }
 }

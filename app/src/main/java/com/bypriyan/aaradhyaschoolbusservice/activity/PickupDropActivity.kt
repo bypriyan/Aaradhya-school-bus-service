@@ -7,18 +7,19 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.bypriyan.aaradhyaschoolbusservice.R
-import com.bypriyan.aaradhyaschoolbusservice.databinding.ActivityLoginBinding
-import com.bypriyan.aaradhyaschoolbusservice.databinding.ActivityOtpBinding
+import com.bypriyan.aaradhyaschoolbusservice.databinding.ActivityPickupDropBinding
 
-class OtpActivity : AppCompatActivity() {
-    lateinit var binding: ActivityOtpBinding
+class PickupDropActivity : AppCompatActivity() {
+    lateinit var  binding : ActivityPickupDropBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-      binding= ActivityOtpBinding.inflate(layoutInflater)
+        enableEdgeToEdge()
+        binding = ActivityPickupDropBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        binding.btnOtpConfirm.setOnClickListener(){
-            startActivity(Intent(this, DasboardActivity::class.java))
+
+
+        binding.btnPayment.setOnClickListener(){
+            startActivity(Intent(this, PaymentOptionActivity::class.java))
         }
     }
 }

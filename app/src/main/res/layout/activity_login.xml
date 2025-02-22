@@ -82,7 +82,7 @@
             <!-- Register Link -->
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/btn_confirm"
+                android:id="@+id/btn_login"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/_50sdp"
                 android:layout_alignParentBottom="true"

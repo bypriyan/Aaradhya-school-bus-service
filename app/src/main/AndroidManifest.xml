@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools" >
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -17,11 +17,23 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Base.Theme.AaradhyaSchoolBusService"
-        tools:targetApi="31">
+        tools:targetApi="31" >
+        <activity
+            android:name=".activity.PaymentHistory"
+            android:exported="false" />
+        <activity
+            android:name=".activity.PaymentDoneActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.PaymentOptionActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.PickupDropActivity"
+            android:exported="false" />
         <activity
             android:name=".onBordingScreenActivity.OnBordingScreenActivity"
             android:exported="true"
-            android:theme="@style/Theme.AaradhyaSchoolBusService">
+            android:theme="@style/Theme.AaradhyaSchoolBusService" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -31,15 +43,31 @@
         <activity
             android:name=".activity.MainActivity"
             android:exported="true"
-            android:theme="@style/Base.Theme.AaradhyaSchoolBusService"/>
+            android:theme="@style/Base.Theme.AaradhyaSchoolBusService" />
         <activity
             android:name=".activity.LoginActivity"
             android:exported="true"
-            android:theme="@style/Base.Theme.AaradhyaSchoolBusService"/>
+            android:theme="@style/Base.Theme.AaradhyaSchoolBusService" />
         <activity
             android:name=".activity.DasboardActivity"
             android:exported="true"
-            android:theme="@style/Base.Theme.AaradhyaSchoolBusService"/>
+            android:theme="@style/Base.Theme.AaradhyaSchoolBusService" >
+        </activity>
+        <activity
+            android:name=".activity.SignUpActivity"
+            android:exported="true"
+            android:theme="@style/Base.Theme.AaradhyaSchoolBusService" >
+        </activity>
+        <activity
+            android:name=".activity.OtpActivity"
+            android:exported="true"
+            android:theme="@style/Base.Theme.AaradhyaSchoolBusService" >
+        </activity>
+        <activity
+            android:name=".activity.TermsAndConditionActivity"
+            android:exported="true"
+            android:theme="@style/Base.Theme.AaradhyaSchoolBusService" >
+        </activity>
     </application>
 
 </manifest>
