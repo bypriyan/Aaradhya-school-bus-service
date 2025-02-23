@@ -24,13 +24,11 @@ class DasboardActivity : AppCompatActivity() {
         binding.btnMYPayments.setOnClickListener(){
             startActivity(Intent(this, PaymentHistory::class.java))
         }
-binding.btnPDLocation.setOnClickListener(){
-    startActivity(Intent(this, PickupDropActivity::class.java))
-}
 
+        binding.btnPDLocation.setOnClickListener(){
+        startActivity(Intent(this, PickupDropActivity::class.java))
 
-
-
+        }
 
         var count = 0
         binding.menuBar.setOnClickListener(){

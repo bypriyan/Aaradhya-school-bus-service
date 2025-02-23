@@ -11,14 +11,16 @@ import com.bypriyan.aaradhyaschoolbusservice.databinding.ActivityLoginBinding
 import com.bypriyan.aaradhyaschoolbusservice.databinding.ActivityOtpBinding
 
 class OtpActivity : AppCompatActivity() {
+
     lateinit var binding: ActivityOtpBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-      binding= ActivityOtpBinding.inflate(layoutInflater)
+        binding= ActivityOtpBinding.inflate(layoutInflater)
         setContentView(binding.root)
         binding.btnOtpConfirm.setOnClickListener(){
             startActivity(Intent(this, DasboardActivity::class.java))
         }
     }
+
 }

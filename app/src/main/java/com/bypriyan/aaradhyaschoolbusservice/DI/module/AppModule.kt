@@ -3,6 +3,7 @@ package com.bypriyan.togocartstore.DI.module
 import android.content.Context
 import android.content.SharedPreferences
 import android.location.Geocoder
+import com.bypriyan.aaradhyaschoolbusservice.api.ApiServiceOTP
 import com.bypriyan.bustrackingsystem.utility.PreferenceManager
 import dagger.Module
 import dagger.Provides
@@ -22,9 +23,15 @@ object AppModule {
     @Singleton
     fun provideRetrofit(): Retrofit {
         return Retrofit.Builder()
-            .baseUrl("https://bypriyan.com/gradify-api/") // Replace with your base URL
+            .baseUrl("https://aaradhyaschoolbusservice.com/api/v1/") // Replace with your base URL
             .addConverterFactory(GsonConverterFactory.create())
             .build()
+    }
+
+    @Provides
+    @Singleton
+    fun provideApiServiceOTP(retrofit: Retrofit): ApiServiceOTP {
+        return retrofit.create(ApiServiceOTP::class.java)
     }
 
     @Provides

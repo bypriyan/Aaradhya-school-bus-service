@@ -4,17 +4,21 @@ package com.bypriyan.bustrackingsystem.utility
 object Constants{
 
     const val KEY_PREFERENCE_NAME = "busApp"
-    const val KEY_API_SUCCESS = "success"
-//    const val KEY_BASE_URL = "https://bypriyan.com/gradify-api/"
-//
+
     const val KEY_IS_ONBORDING_SCREEN_SEEN = "isSeen"
-//
-//    const val KEY_STUDENT_ID = "student_id"
-//
-//    const val KEY_STUDENT_NAME = "student_name"
-//    const val KEY_STUDENT_EMAIL = "student_email"
-//    const val KEY_STUDENT_PHONENUMBER = "student_phoneNumber"
-//    const val KEY_STUDENT_ADMISSION_NUMBER = "student_admissionNumber"
-//    const val KEY_STUDENT_PROFILE_IMAGE = "student_profileImage"
-    const val KEY_IS_LOGGED_IN = "is_logged_in"
+    // API Keys
+    const val KEY_API_SUCCESS = "success"
+
+    // Intent Extra Keys
+    const val KEY_FULL_NAME = "full_name"
+    const val KEY_STANDARD = "standard"
+    const val KEY_CLASS = "class"
+    const val KEY_AGE = "age"
+    const val KEY_YEAR = "year"
+    const val KEY_FATHER_NAME = "father_name"
+    const val KEY_FATHER_PHONE = "father_phone"
+    const val KEY_MOTHER_NAME = "mother_name"
+    const val KEY_MOTHER_PHONE = "mother_phone"
+    const val KEY_EMAIL = "email"
+    const val KEY_PASSWORD = "password"
 }

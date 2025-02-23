@@ -31,7 +31,6 @@ class OnBordingScreenActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
 
         installSplashScreen()
-
         super.onCreate(savedInstanceState)
         binding = ActivityOnBordingScreenBinding.inflate(layoutInflater)
         setContentView(binding.root)
