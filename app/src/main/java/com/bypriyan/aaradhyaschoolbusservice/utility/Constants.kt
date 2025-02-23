@@ -4,10 +4,12 @@ package com.bypriyan.bustrackingsystem.utility
 object Constants{
 
     const val KEY_PREFERENCE_NAME = "busApp"
+    const val KEY_IS_LOGGED_IN = "is_logged_in"
 
     const val KEY_IS_ONBORDING_SCREEN_SEEN = "isSeen"
     // API Keys
     const val KEY_API_SUCCESS = "success"
+    const val KEY_OTP = "otp"
 
     // Intent Extra Keys
     const val KEY_FULL_NAME = "full_name"
@@ -21,4 +23,5 @@ object Constants{
     const val KEY_MOTHER_PHONE = "mother_phone"
     const val KEY_EMAIL = "email"
     const val KEY_PASSWORD = "password"
+    const val KEY_PROFILE_IMAGE_URI = "profile_image_uri"
 }

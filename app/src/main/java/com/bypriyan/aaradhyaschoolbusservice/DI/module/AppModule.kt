@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.location.Geocoder
 import com.bypriyan.aaradhyaschoolbusservice.api.ApiServiceOTP
+import com.bypriyan.aaradhyaschoolbusservice.api.ApiServiceRegisterUser
 import com.bypriyan.bustrackingsystem.utility.PreferenceManager
 import dagger.Module
 import dagger.Provides
@@ -32,6 +33,12 @@ object AppModule {
     @Singleton
     fun provideApiServiceOTP(retrofit: Retrofit): ApiServiceOTP {
         return retrofit.create(ApiServiceOTP::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideApiServiceRegisterUser(retrofit: Retrofit): ApiServiceRegisterUser {
+        return retrofit.create(ApiServiceRegisterUser::class.java)
     }
 
     @Provides
