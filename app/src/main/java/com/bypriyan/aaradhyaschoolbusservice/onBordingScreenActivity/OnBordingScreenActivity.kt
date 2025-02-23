@@ -10,7 +10,6 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.viewpager2.widget.ViewPager2
 import com.bypriyan.aaradhyaschoolbusservice.R
-import com.bypriyan.aaradhyaschoolbusservice.activity.LoginActivity
 import com.bypriyan.aaradhyaschoolbusservice.databinding.ActivityOnBordingScreenBinding
 import com.bypriyan.bustrackingsystem.utility.Constants
 import com.bypriyan.bustrackingsystem.utility.PreferenceManager
@@ -73,11 +72,12 @@ class OnBordingScreenActivity : AppCompatActivity() {
             if (nextIndex < adapter.itemCount) {
                 binding.viewPager2.currentItem = nextIndex
             } else {
-                startActivity(Intent(this, LoginActivity::class.java))
+//                startActivity(Intent(this, LoginActivity::class.java))
                 preferenceManager.putBoolean(Constants.KEY_IS_ONBORDING_SCREEN_SEEN, true)
                 finish()
             }
         }
+
 
 
         binding.previousBtn.setOnClickListener {
@@ -109,7 +109,7 @@ class OnBordingScreenActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
         if(preferenceManager.getBoolean(Constants.KEY_IS_ONBORDING_SCREEN_SEEN)){
-            startActivity(Intent(this, LoginActivity::class.java))
+//            startActivity(Intent(this, LoginActivity::class.java))
             finish()
         }
     }

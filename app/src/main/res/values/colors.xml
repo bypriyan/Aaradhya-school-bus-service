@@ -18,13 +18,13 @@
     <color name="limeGreay">#f0edfe</color>
     <color name="dark_greay">#b8b8b8</color>
     <color name="lite_background">#2e2d42</color>
-    <color name="bg">#424949 </color>
+    <color name="bg">#35444B </color>
     <color name="red">#CB202D </color>
     <color name="orange">#FF8C00 </color>
     <color name="yellow">#FFC107</color>
     <color name="skyBlue">#005cb9</color>>
     <color name="cBlue">#079BF4</color>
     <color name="cGray">#DAD0EF</color>
-    <color name="appColor">#4580F4</color>
+    <color name="appColor">#27C899</color>
     <color name="appSecoundryColor">#b189ff</color>
 </resources>

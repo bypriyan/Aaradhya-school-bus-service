@@ -1,0 +1,530 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg"
+    tools:context=".HomeActivity">
+
+    <RelativeLayout
+        android:id="@+id/rel"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:layout_alignParentTop="true"
+        android:background="@color/bg">
+
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/backBtn"
+            android:layout_width="@dimen/_27sdp"
+            android:layout_height="@dimen/_27sdp"
+            android:layout_centerVertical="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginLeft="@dimen/_15sdp"
+            android:background="@color/transparent"
+            android:padding="@dimen/_5sdp"
+            android:layout_marginRight="@dimen/_15sdp"
+            android:src="@drawable/sign_out_icon"
+            android:tint="@color/white"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/_8sdp"
+            android:text="Welcome"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="@dimen/_15sdp"
+            android:textColor="@color/white"
+            android:textSize="@dimen/_14ssp"
+            android:fontFamily="@font/semibold" />
+
+
+
+
+    </RelativeLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/rel">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="@dimen/_15sdp"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+
+                <com.google.android.material.button.MaterialButton
+                    android:layout_weight="1"
+                    android:id="@+id/liveBtn"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_48sdp"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginTop="@dimen/_10sdp"
+                    android:layout_marginBottom="@dimen/_10sdp"
+                    android:backgroundTint="@color/appColor"
+                    android:text="LIVE"
+                    android:layout_marginRight="@dimen/_6sdp"
+                    android:textAllCaps="false"
+                    android:textColor="@color/white"
+                    app:cornerRadius="@dimen/_10sdp" />
+
+
+                <com.google.android.material.button.MaterialButton
+                    android:layout_weight="1"
+                    android:id="@+id/backBtnn"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_48sdp"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginTop="@dimen/_10sdp"
+                    android:layout_marginBottom="@dimen/_10sdp"
+                    android:backgroundTint="@color/appColor"
+                    android:text="TAP"
+                    android:layout_marginLeft="@dimen/_6sdp"
+                    android:textAllCaps="false"
+                    android:textColor="@color/white"
+                    app:cornerRadius="@dimen/_10sdp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/emailTv"
+                    android:layout_below="@id/welcmText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_15sdp"
+                    android:text="Recent Alert"
+                    android:textSize="@dimen/_13ssp"
+                    android:textStyle="bold"
+                    android:textColor="@color/white"
+                    android:layout_marginLeft="@dimen/_8sdp"
+                    android:layout_marginRight="@dimen/_2sdp"/>
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:layout_width="@dimen/_20sdp"
+                    android:layout_height="@dimen/_20sdp"
+                    android:background="@color/transparent"
+                    android:padding="@dimen/_2sdp"
+                    android:layout_marginTop="@dimen/_14sdp"
+                    android:layout_marginRight="@dimen/_2sdp"
+                    android:src="@drawable/alert_icon"/>
+
+            </LinearLayout>
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardOne"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="@dimen/_10sdp"
+                app:cardBackgroundColor="#8B249E79"
+                android:layout_marginTop="@dimen/_10sdp"
+                app:strokeColor="@color/transparent"
+                android:padding="@dimen/_10sdp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="@dimen/_15sdp">
+
+                    <TextView
+                        android:layout_weight="1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Alert 1"
+                        android:textSize="@dimen/_12ssp"
+                        android:textColor="@color/white"/>
+
+                    <TextView
+                        android:layout_weight="1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Critical"
+                        android:textSize="@dimen/_12ssp"
+                        android:textColor="@color/white"/>
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:layout_weight="1"
+                        android:layout_width="@dimen/_20sdp"
+                        android:layout_height="@dimen/_20sdp"
+                        android:background="@color/transparent"
+                        android:padding="@dimen/_2sdp"
+                        android:layout_marginRight="@dimen/_2sdp"
+                        android:src="@drawable/circle_red"/>
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="@dimen/_10sdp"
+                app:cardBackgroundColor="#8B249E79"
+                android:layout_marginTop="@dimen/_10sdp"
+                app:strokeColor="@color/transparent"
+                android:padding="@dimen/_10sdp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="@dimen/_15sdp">
+
+                    <TextView
+                        android:layout_weight="1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Alert 2"
+                        android:textSize="@dimen/_12ssp"
+                        android:textColor="@color/white"/>
+
+                    <TextView
+                        android:layout_weight="1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Warning"
+                        android:textSize="@dimen/_12ssp"
+                        android:textColor="@color/white"/>
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:layout_weight="1"
+                        android:layout_width="@dimen/_20sdp"
+                        android:layout_height="@dimen/_20sdp"
+                        android:background="@color/transparent"
+                        android:padding="@dimen/_2sdp"
+                        android:layout_marginRight="@dimen/_2sdp"
+                        android:src="@drawable/circle_red"/>
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="@dimen/_10sdp"
+                app:cardBackgroundColor="#8B249E79"
+                android:layout_marginTop="@dimen/_10sdp"
+                app:strokeColor="@color/transparent"
+                android:padding="@dimen/_10sdp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="@dimen/_15sdp">
+
+                    <TextView
+                        android:layout_weight="1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Alert 3"
+                        android:textSize="@dimen/_12ssp"
+                        android:textColor="@color/white"/>
+
+                    <TextView
+                        android:layout_weight="1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Critical"
+                        android:textSize="@dimen/_12ssp"
+                        android:textColor="@color/white"/>
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:layout_weight="1"
+                        android:layout_width="@dimen/_20sdp"
+                        android:layout_height="@dimen/_20sdp"
+                        android:background="@color/transparent"
+                        android:padding="@dimen/_2sdp"
+                        android:layout_marginRight="@dimen/_2sdp"
+                        android:src="@drawable/circle_red"/>
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="@dimen/_10sdp"
+                app:cardBackgroundColor="#8B249E79"
+                android:layout_marginTop="@dimen/_10sdp"
+                app:strokeColor="@color/transparent"
+                android:padding="@dimen/_10sdp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="@dimen/_15sdp">
+
+                    <TextView
+                        android:layout_weight="1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Alert 4"
+                        android:textSize="@dimen/_12ssp"
+                        android:textColor="@color/white"/>
+
+                    <TextView
+                        android:layout_weight="1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Warning"
+                        android:textSize="@dimen/_12ssp"
+                        android:textColor="@color/white"/>
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:layout_weight="1"
+                        android:layout_width="@dimen/_20sdp"
+                        android:layout_height="@dimen/_20sdp"
+                        android:background="@color/transparent"
+                        android:padding="@dimen/_2sdp"
+                        android:layout_marginRight="@dimen/_2sdp"
+                        android:src="@drawable/circle_red"/>
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="@dimen/_10sdp"
+                app:cardBackgroundColor="#8B249E79"
+                android:layout_marginTop="@dimen/_10sdp"
+                app:strokeColor="@color/transparent"
+                android:padding="@dimen/_10sdp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="@dimen/_15sdp">
+
+                    <TextView
+                        android:layout_weight="1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Alert 5"
+                        android:textSize="@dimen/_12ssp"
+                        android:textColor="@color/white"/>
+
+                    <TextView
+                        android:layout_weight="1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Critical"
+                        android:textSize="@dimen/_12ssp"
+                        android:textColor="@color/white"/>
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:layout_weight="1"
+                        android:layout_width="@dimen/_20sdp"
+                        android:layout_height="@dimen/_20sdp"
+                        android:background="@color/transparent"
+                        android:padding="@dimen/_2sdp"
+                        android:layout_marginRight="@dimen/_2sdp"
+                        android:src="@drawable/circle_red"/>
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="@dimen/_10sdp"
+            app:cardBackgroundColor="#8B249E79"
+            android:layout_marginTop="@dimen/_10sdp"
+            app:strokeColor="@color/transparent"
+            android:padding="@dimen/_10sdp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="@dimen/_15sdp">
+
+                <TextView
+                    android:layout_weight="1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Alert 6"
+                    android:textSize="@dimen/_12ssp"
+                    android:textColor="@color/white"/>
+
+                <TextView
+                    android:layout_weight="1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Warning"
+                    android:textSize="@dimen/_12ssp"
+                    android:textColor="@color/white"/>
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:layout_weight="1"
+                    android:layout_width="@dimen/_20sdp"
+                    android:layout_height="@dimen/_20sdp"
+                    android:background="@color/transparent"
+                    android:padding="@dimen/_2sdp"
+                    android:layout_marginRight="@dimen/_2sdp"
+                    android:src="@drawable/circle_red"/>
+
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="@dimen/_10sdp"
+            app:cardBackgroundColor="#8B249E79"
+            android:layout_marginTop="@dimen/_10sdp"
+            app:strokeColor="@color/transparent"
+            android:padding="@dimen/_10sdp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="@dimen/_15sdp">
+
+                <TextView
+                    android:layout_weight="1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Alert 7"
+                    android:textSize="@dimen/_12ssp"
+                    android:textColor="@color/white"/>
+
+                <TextView
+                    android:layout_weight="1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Critical"
+                    android:textSize="@dimen/_12ssp"
+                    android:textColor="@color/white"/>
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:layout_weight="1"
+                    android:layout_width="@dimen/_20sdp"
+                    android:layout_height="@dimen/_20sdp"
+                    android:background="@color/transparent"
+                    android:padding="@dimen/_2sdp"
+                    android:layout_marginRight="@dimen/_2sdp"
+                    android:src="@drawable/circle_red"/>
+
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="@dimen/_10sdp"
+            app:cardBackgroundColor="#8B249E79"
+            android:layout_marginTop="@dimen/_10sdp"
+            app:strokeColor="@color/transparent"
+            android:padding="@dimen/_10sdp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="@dimen/_15sdp">
+
+                <TextView
+                    android:layout_weight="1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Alert 8"
+                    android:textSize="@dimen/_12ssp"
+                    android:textColor="@color/white"/>
+
+                <TextView
+                    android:layout_weight="1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Warning"
+                    android:textSize="@dimen/_12ssp"
+                    android:textColor="@color/white"/>
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:layout_weight="1"
+                    android:layout_width="@dimen/_20sdp"
+                    android:layout_height="@dimen/_20sdp"
+                    android:background="@color/transparent"
+                    android:padding="@dimen/_2sdp"
+                    android:layout_marginRight="@dimen/_2sdp"
+                    android:src="@drawable/circle_red"/>
+
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+            <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="@dimen/_10sdp"
+            app:cardBackgroundColor="#8B249E79"
+            android:layout_marginTop="@dimen/_10sdp"
+            app:strokeColor="@color/transparent"
+            android:padding="@dimen/_10sdp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="@dimen/_15sdp">
+
+                <TextView
+                    android:layout_weight="1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Alert 9"
+                    android:textSize="@dimen/_12ssp"
+                    android:textColor="@color/white"/>
+
+                <TextView
+                    android:layout_weight="1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Critical"
+                    android:textSize="@dimen/_12ssp"
+                    android:textColor="@color/white"/>
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:layout_weight="1"
+                    android:layout_width="@dimen/_20sdp"
+                    android:layout_height="@dimen/_20sdp"
+                    android:background="@color/transparent"
+                    android:padding="@dimen/_2sdp"
+                    android:layout_marginRight="@dimen/_2sdp"
+                    android:src="@drawable/circle_red"/>
+
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+
+
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</RelativeLayout>
