@@ -20,7 +20,6 @@ import androidx.lifecycle.ViewModel
 import com.bypriyan.aaradhyaschoolbusservice.R
 import com.bypriyan.aaradhyaschoolbusservice.databinding.ActivityLoginBinding
 import com.bypriyan.aaradhyaschoolbusservice.databinding.ActivityOtpBinding
-import com.bypriyan.aaradhyaschoolbusservice.model.LoginRequest
 import com.bypriyan.aaradhyaschoolbusservice.viewModel.RegisterUserViewModel
 import com.bypriyan.bustrackingsystem.utility.Constants
 import com.bypriyan.bustrackingsystem.utility.PreferenceManager

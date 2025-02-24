@@ -10,7 +10,8 @@ object Constants{
     // API Keys
     const val KEY_API_SUCCESS = "success"
     const val KEY_OTP = "otp"
-
+    const val KEY_TOKEN = "token"
+    const val KEY_TOKEN_TYPE = "tokenType"
     // Intent Extra Keys
     const val KEY_FULL_NAME = "full_name"
     const val KEY_STANDARD = "standard"
