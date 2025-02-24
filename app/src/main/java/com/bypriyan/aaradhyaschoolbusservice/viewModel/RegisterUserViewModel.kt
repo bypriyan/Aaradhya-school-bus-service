@@ -13,20 +13,29 @@ import retrofit2.Response
 import javax.inject.Inject
 
 @HiltViewModel
-class RegisterUserViewModel @Inject constructor(
-    private val registerRepository: RegisterUserRepository
+class RegisterViewModel @Inject constructor(
+    private val registerUserRepository: RegisterUserRepository
 ) : ViewModel() {
 
-    private val _registerResponse = MutableLiveData<Result<ApiResponceRegisterUser>>()
-    val registerResponse: LiveData<Result<ApiResponceRegisterUser>> get() = _registerResponse
+    private val _isLoading = MutableLiveData<Boolean>()
+    val isLoading: LiveData<Boolean> get() = _isLoading
+
+    private val _registerResponse = MutableLiveData<ApiResponceRegisterUser>()
+    val registerResponse: LiveData<ApiResponceRegisterUser> get() = _registerResponse
+
+    private val _errorMessage = MutableLiveData<String>()
+    val errorMessage: LiveData<String> get() = _errorMessage
 
     fun registerUser(request: RegisterRequest) {
         viewModelScope.launch {
+            _isLoading.value = true
             try {
-                val response = registerRepository.registerUser(request)
-                _registerResponse.value = Result.success(response)
+                val response = registerUserRepository.registerUser(request)
+                _registerResponse.value = response
             } catch (e: Exception) {
-                _registerResponse.value = Result.Failure(e)
+                _errorMessage.value = "Error: ${e.message}"
+            } finally {
+                _isLoading.value = false
             }
         }
     }

@@ -20,11 +20,18 @@ import androidx.lifecycle.ViewModel
 import com.bypriyan.aaradhyaschoolbusservice.R
 import com.bypriyan.aaradhyaschoolbusservice.databinding.ActivityLoginBinding
 import com.bypriyan.aaradhyaschoolbusservice.databinding.ActivityOtpBinding
-import com.bypriyan.aaradhyaschoolbusservice.viewModel.RegisterUserViewModel
+import com.bypriyan.aaradhyaschoolbusservice.model.RegisterRequest
+import com.bypriyan.aaradhyaschoolbusservice.repo.RegisterUserRepository
+import com.bypriyan.aaradhyaschoolbusservice.viewModel.RegisterViewModel
 import com.bypriyan.bustrackingsystem.utility.Constants
 import com.bypriyan.bustrackingsystem.utility.PreferenceManager
 import dagger.hilt.android.AndroidEntryPoint
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.asRequestBody
 import java.io.ByteArrayOutputStream
+import java.io.File
+import java.io.FileOutputStream
 import java.io.InputStream
 import javax.inject.Inject
 
@@ -34,81 +41,71 @@ class OtpActivity : AppCompatActivity() {
     lateinit var binding: ActivityOtpBinding
     @Inject
     lateinit var preferenceManager: PreferenceManager
-    private val registerUserViewModel: RegisterUserViewModel by viewModels()
+    private val registerUserViewModel: RegisterViewModel by viewModels()
 
-        override fun onCreate(savedInstanceState: Bundle?) {
-            super.onCreate(savedInstanceState)
-            binding = ActivityOtpBinding.inflate(layoutInflater)
-            setContentView(binding.root)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        binding = ActivityOtpBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-            // Retrieve data from Intent
-            val fullName = intent.getStringExtra(Constants.KEY_FULL_NAME)
-            val standard = intent.getStringExtra(Constants.KEY_STANDARD)
-            val className = intent.getStringExtra(Constants.KEY_CLASS)
-            val age = intent.getStringExtra(Constants.KEY_AGE)
-            val year = intent.getStringExtra(Constants.KEY_YEAR)
-            val fatherName = intent.getStringExtra(Constants.KEY_FATHER_NAME)
-            val fatherPhone = intent.getStringExtra(Constants.KEY_FATHER_PHONE)
-            val motherName = intent.getStringExtra(Constants.KEY_MOTHER_NAME)
-            val motherPhone = intent.getStringExtra(Constants.KEY_MOTHER_PHONE)
-            val email = intent.getStringExtra(Constants.KEY_EMAIL)
-            val password = intent.getStringExtra(Constants.KEY_PASSWORD)
-            val otp = intent.getStringExtra(Constants.KEY_OTP)
-            val imageUriString = intent.getStringExtra(Constants.KEY_PROFILE_IMAGE_URI)
+        // Retrieve data from Intent
+        val fullName = intent.getStringExtra(Constants.KEY_FULL_NAME)
+        val standard = intent.getStringExtra(Constants.KEY_STANDARD)
+        val className = intent.getStringExtra(Constants.KEY_CLASS)
+        val age = intent.getStringExtra(Constants.KEY_AGE)
+        val year = intent.getStringExtra(Constants.KEY_YEAR)
+        val fatherName = intent.getStringExtra(Constants.KEY_FATHER_NAME)
+        val fatherPhone = intent.getStringExtra(Constants.KEY_FATHER_PHONE)
+        val motherName = intent.getStringExtra(Constants.KEY_MOTHER_NAME)
+        val motherPhone = intent.getStringExtra(Constants.KEY_MOTHER_PHONE)
+        val email = intent.getStringExtra(Constants.KEY_EMAIL)
+        val password = intent.getStringExtra(Constants.KEY_PASSWORD)
+        val otp = intent.getStringExtra(Constants.KEY_OTP)
+        val imageUriString = intent.getStringExtra(Constants.KEY_PROFILE_IMAGE_URI)
 
-            binding.continueBtn.setOnClickListener {
-                if (binding.firstPinView.text.toString().isNotEmpty() &&
-                    binding.firstPinView.text.toString() == otp
-                ) {
-                    // Compress and encode the image
-                    val imageUri = Uri.parse(imageUriString)
-                    val compressedImage = compressImage(imageUri, this)
+        binding.continueBtn.setOnClickListener {
+            Log.d("fetch", "onCreate: ${binding.firstPinView.text.toString()} + $otp")
+            if (binding.firstPinView.text.toString().isNotEmpty() &&
+                binding.firstPinView.text.toString() == otp
+            ) {
+                // Compress and encode the image
+                val imageUri = Uri.parse(imageUriString)
+                val compressedImage = compressImage(imageUri, this)
 
-                    // Create LoginRequest
-                    val loginRequest = LoginRequest(
-                        full_name = fullName!!,
-                        email = email!!,
-                        class_ = className!!,
-                        image = compressedImage,
-                        password = password!!,
-                        age = age!!,
-                        standard = standard!!,
-                        year = year!!,
-                        father_name = fatherName!!,
-                        father_number = fatherPhone!!,
-                        mother_name = motherName!!,
-                        mother_number = motherPhone!!
-                    )
+                // Create RegisterRequest
+                val registerRequest = RegisterRequest(
+                    fullName = fullName!!,
+                    email = email!!,
+                    className = className!!,
+                    password = password!!,
+                    age = age!!,
+                    standard = standard!!,
+                    year = year!!,
+                    fatherName = fatherName!!,
+                    fatherNumber = fatherPhone!!,
+                    motherName = motherName!!,
+                    motherNumber = motherPhone!!,
+                    imageUri = imageUri
+                )
 
-                    // Call ViewModel to register user
-                    registerUserViewModel.registerUser(loginRequest)
+                // Call ViewModel to register user
+                registerUserViewModel.registerUser(registerRequest)
 
-                    // Observe the response
-                    registerUserViewModel.registerResponse.observe(this, Observer { result ->
-                        result?.let {
-                            it.onSuccess { response ->
-                                isLoading(false)
-                                Log.d("otp", "onCreate: $response")
-
-                            }.onFailure { error ->
-                                isLoading(false)
-                                Toast.makeText(this, error.message, Toast.LENGTH_SHORT).show()
-                            }
-                        }
-                    })
-                }else{
-                    Log.d("otp", "onCreate: not match")
-                }
+                // Observe the response
+                registerUserViewModel.registerResponse.observe(this, Observer { response ->
+                    Log.d("fetch", "onCreate: $response")
+                })
+            } else {
+                Toast.makeText(this, "OTP does not match", Toast.LENGTH_SHORT).show()
             }
+        }
+    }
 
-
-        }// end on create
-
-    fun isLoading(isLoading: Boolean){
-        if (isLoading){
+    fun isLoading(isLoading: Boolean) {
+        if (isLoading) {
             binding.progressbar.visibility = View.VISIBLE
             binding.continueBtn.visibility = View.GONE
-        }else{
+        } else {
             binding.progressbar.visibility = View.GONE
             binding.continueBtn.visibility = View.VISIBLE
         }
@@ -143,11 +140,22 @@ class OtpActivity : AppCompatActivity() {
         preferenceManager.putBoolean(Constants.KEY_IS_LOGGED_IN, true)
     }
 
-    fun compressImage(uri: Uri, context: Context): String {
-        val inputStream: InputStream? = context.contentResolver.openInputStream(uri)
-        val bitmap = BitmapFactory.decodeStream(inputStream)
-        val compressedBitmap = compressBitmap(bitmap, 50) // Compress to 50%
-        return encodeImage(compressedBitmap)
+    private fun compressImage(uri: Uri, context: Context): MultipartBody.Part? {
+        return try {
+            val inputStream = context.contentResolver.openInputStream(uri)
+            val bitmap = BitmapFactory.decodeStream(inputStream)
+            val compressedBitmap = compressBitmap(bitmap, 50) // Compress to 50%
+            val file = File.createTempFile("compressed_image", ".jpg", context.cacheDir)
+            val outputStream = FileOutputStream(file)
+            compressedBitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
+            outputStream.flush()
+            outputStream.close()
+            val requestFile = file.asRequestBody("image/*".toMediaTypeOrNull())
+            MultipartBody.Part.createFormData("image", file.name, requestFile)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
+        }
     }
 
     private fun compressBitmap(bitmap: Bitmap, quality: Int): Bitmap {
@@ -156,13 +164,4 @@ class OtpActivity : AppCompatActivity() {
         val byteArray = outputStream.toByteArray()
         return BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size)
     }
-
-    private fun encodeImage(bitmap: Bitmap): String {
-        val byteArrayOutputStream = ByteArrayOutputStream()
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream)
-        val byteArray = byteArrayOutputStream.toByteArray()
-        return Base64.encodeToString(byteArray, Base64.DEFAULT)
-    }
-
-
 }
