@@ -23,7 +23,7 @@ class DasboardActivity : AppCompatActivity() {
         binding = ActivityDasboardBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val draw = findViewById<DrawerLayout>(R.id.drawerLayout)
+
         userId = getIntent().getStringExtra(Constants.KEY_USER_ID).toString()
         token = getIntent().getStringExtra(Constants.KEY_TOKEN).toString()
         token_type = getIntent().getStringExtra(Constants.KEY_TOKEN_TYPE).toString()
@@ -31,23 +31,6 @@ class DasboardActivity : AppCompatActivity() {
         Log.d("dash", "onCreate: $userId, $token, $token_type")
 
 
-        binding.btnMYPayments.setOnClickListener(){
-            startActivity(Intent(this, PaymentHistory::class.java))
-        }
 
-        binding.btnPDLocation.setOnClickListener(){
-        startActivity(Intent(this, PickupDropActivity::class.java))
-
-        }
-
-        var count = 0
-        binding.menuBar.setOnClickListener(){
-            if(count!=0){
-            Toast.makeText(this,"clicked ", Toast.LENGTH_SHORT)
-            draw.closeDrawer(GravityCompat.END)
-            count--
-            }else {draw.openDrawer(GravityCompat.END)
-            count++}
-        }
     }
 }
