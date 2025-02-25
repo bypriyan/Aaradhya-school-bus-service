@@ -18,6 +18,11 @@
         android:supportsRtl="true"
         android:theme="@style/Base.Theme.AaradhyaSchoolBusService"
         tools:targetApi="31" >
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyDoK6uVnsidH3hQqZkaSqclQnCgFg-MxLc" />
+
         <activity
             android:name=".activity.PaymentHistory"
             android:exported="false" />
@@ -29,7 +34,7 @@
             android:exported="false" />
         <activity
             android:name=".activity.PickupDropActivity"
-            android:exported="false" >
+            android:exported="true" >
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
