@@ -31,6 +31,8 @@ class SignUpActivity : AppCompatActivity() {
         binding= ActivitySignUpBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+
+
         //selected image
         pickImageLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
             uri?.let {
@@ -41,7 +43,6 @@ class SignUpActivity : AppCompatActivity() {
 
 
         binding.sendOTPBtn.setOnClickListener {
-            otpViewModel.sendOtp(binding.emailEt.text.toString())
             if(validateInputFields()){
                 isLoading(true)
                 otpViewModel.sendOtp(binding.emailEt.text.toString())
@@ -65,6 +66,43 @@ class SignUpActivity : AppCompatActivity() {
             }
         })
 
+        setInputFieldData()
+
+    }
+
+    private fun setInputFieldData() {
+        // Set full name
+        binding.fullNameEt.setText("John Doe")
+
+        // Set standard
+        binding.standerdEt.setText("10th")
+
+        // Set class
+        binding.classEt.setText("A")
+
+        // Set age
+        binding.ageEt.setText("16")
+
+        // Set year
+        binding.yearEt.setText("2023")
+
+        // Set father's name
+        binding.fatherNameEt.setText("John Doe Sr.")
+
+        // Set father's phone number
+        binding.fPhoneNumEt.setText("1234567890")
+
+        // Set mother's name
+        binding.mothersName.setText("Jane Doe")
+
+        // Set mother's phone number
+        binding.mPhoneEt.setText("0987654321")
+
+        // Set email
+        binding.emailEt.setText("104abcdabcd104@gmail.com")
+
+        // Set password
+        binding.passwordEt.setText("123456")
     }
 
     private fun validateInputFields(): Boolean {

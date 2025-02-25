@@ -31,9 +31,9 @@ class RegisterViewModel @Inject constructor(
             _isLoading.value = true
             try {
                 val response = registerUserRepository.registerUser(request)
-                _registerResponse.value = response
+
             } catch (e: Exception) {
-                _errorMessage.value = "Error: ${e.message}"
+
             } finally {
                 _isLoading.value = false
             }

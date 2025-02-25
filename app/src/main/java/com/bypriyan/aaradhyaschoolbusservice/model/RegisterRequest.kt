@@ -14,5 +14,5 @@ data class RegisterRequest(
     val fatherNumber: String,
     val motherName: String,
     val motherNumber: String,
-    val imageUri: Uri?
+    val imageUri : String?
 )

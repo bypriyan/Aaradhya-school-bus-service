@@ -32,6 +32,8 @@ class LoginActivity : AppCompatActivity() {
             startActivity(Intent(this, SignUpActivity::class.java))
         }
 
+        binding.usernameET.setText("104priyanshu@gmail.com")
+        binding.passwordEt.setText("123456")
         // Handle login button click
         binding.loginBtn.setOnClickListener {
             val email = binding.usernameET.text.toString()
@@ -51,8 +53,12 @@ class LoginActivity : AppCompatActivity() {
                 if (it.status == "success") {
                     // Save token and navigate to the next screen
                     Log.d("login", "onCreate: $it")
-                    saveToken(it.token, it.token_type)
-                    startActivity(Intent(this@LoginActivity, MainActivity::class.java))
+                    saveToken(it.token, it.token_type, it.id)
+                    var intent = Intent(this@LoginActivity, DasboardActivity::class.java)
+                    intent.putExtra(Constants.KEY_TOKEN, it.token)
+                    intent.putExtra(Constants.KEY_TOKEN_TYPE, it.token_type)
+                    intent.putExtra(Constants.KEY_USER_ID, it.id)
+                    startActivity(intent)
                     finish()
                 } else {
                     Log.d("login", "onCreate: ${it.message}")
@@ -85,11 +91,12 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-    private fun saveToken(token: String?, tokenType: String?) {
+    private fun saveToken(token: String?, tokenType: String?, userId: String?) {
         // Save the token to SharedPreferences or another storage mechanism
         token?.let {
             preferenceManager.putString(Constants.KEY_TOKEN, token)
             preferenceManager.putString(Constants.KEY_TOKEN_TYPE, tokenType)
+            preferenceManager.putString(Constants.KEY_USER_ID, userId)
         }
     }
 }

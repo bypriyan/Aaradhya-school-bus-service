@@ -12,6 +12,7 @@ object Constants{
     const val KEY_OTP = "otp"
     const val KEY_TOKEN = "token"
     const val KEY_TOKEN_TYPE = "tokenType"
+    const val KEY_USER_ID = "userId"
     // Intent Extra Keys
     const val KEY_FULL_NAME = "full_name"
     const val KEY_STANDARD = "standard"

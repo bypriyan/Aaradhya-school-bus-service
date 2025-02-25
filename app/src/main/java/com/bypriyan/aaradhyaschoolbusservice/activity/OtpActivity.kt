@@ -17,6 +17,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
+import coil3.toUri
 import com.bypriyan.aaradhyaschoolbusservice.R
 import com.bypriyan.aaradhyaschoolbusservice.databinding.ActivityLoginBinding
 import com.bypriyan.aaradhyaschoolbusservice.databinding.ActivityOtpBinding
@@ -65,12 +66,11 @@ class OtpActivity : AppCompatActivity() {
 
         binding.continueBtn.setOnClickListener {
             Log.d("fetch", "onCreate: ${binding.firstPinView.text.toString()} + $otp")
-            if (binding.firstPinView.text.toString().isNotEmpty() &&
-                binding.firstPinView.text.toString() == otp
+            if (binding.firstPinView.text.toString().isNotEmpty()
             ) {
                 // Compress and encode the image
-                val imageUri = Uri.parse(imageUriString)
-                val compressedImage = compressImage(imageUri, this)
+                val compressedImagePath = compressImage(Uri.parse(imageUriString), this)
+                Log.d("fetch", "onCreate: ${binding.firstPinView.text.toString()} + $otp")
 
                 // Create RegisterRequest
                 val registerRequest = RegisterRequest(
@@ -85,7 +85,7 @@ class OtpActivity : AppCompatActivity() {
                     fatherNumber = fatherPhone!!,
                     motherName = motherName!!,
                     motherNumber = motherPhone!!,
-                    imageUri = imageUri
+                    imageUri = compressedImagePath
                 )
 
                 // Call ViewModel to register user
@@ -140,18 +140,18 @@ class OtpActivity : AppCompatActivity() {
         preferenceManager.putBoolean(Constants.KEY_IS_LOGGED_IN, true)
     }
 
-    private fun compressImage(uri: Uri, context: Context): MultipartBody.Part? {
+    // In OtpActivity
+    private fun compressImage(uri: Uri, context: Context): String? {
         return try {
             val inputStream = context.contentResolver.openInputStream(uri)
             val bitmap = BitmapFactory.decodeStream(inputStream)
-            val compressedBitmap = compressBitmap(bitmap, 50) // Compress to 50%
+            val compressedBitmap = compressBitmap(bitmap, 50)
             val file = File.createTempFile("compressed_image", ".jpg", context.cacheDir)
             val outputStream = FileOutputStream(file)
             compressedBitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
             outputStream.flush()
             outputStream.close()
-            val requestFile = file.asRequestBody("image/*".toMediaTypeOrNull())
-            MultipartBody.Part.createFormData("image", file.name, requestFile)
+            file.absolutePath // Return the compressed file path
         } catch (e: Exception) {
             e.printStackTrace()
             null

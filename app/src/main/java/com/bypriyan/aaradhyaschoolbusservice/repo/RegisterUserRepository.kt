@@ -16,9 +16,8 @@ import javax.inject.Inject
 class RegisterUserRepository @Inject constructor(private val apiService: ApiServiceRegisterUser) {
 
     suspend fun registerUser(request: RegisterRequest): ApiResponceRegisterUser {
-        // Convert Uri to MultipartBody.Part
-        val imagePart = request.imageUri?.let { uri ->
-            val file = File(uri.path!!)
+        val imagePart = request.imageUri?.let { path ->
+            val file = File(path)
             val requestFile = file.asRequestBody("image/*".toMediaTypeOrNull())
             MultipartBody.Part.createFormData("image", file.name, requestFile)
         }
