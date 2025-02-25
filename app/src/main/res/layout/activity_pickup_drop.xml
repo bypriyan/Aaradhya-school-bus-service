@@ -3,217 +3,242 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
-    android:paddingTop="?attr/actionBarSize"
-    android:layout_width="match_parent"
+    android:id="@+id/main" android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
+    android:padding="5dp"
     tools:context=".activity.PickupDropActivity">
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
 
-        <LinearLayout
+    <RelativeLayout
+        android:id="@+id/rr1"
+        android:layout_margin="@dimen/_5sdp"
+        android:padding="@dimen/_3sdp"
+        android:background="@color/appColor"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+
+
+
+        <fragment
+            android:id="@+id/mapFragment"
+            android:name="com.google.android.gms.maps.SupportMapFragment"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:layout_alignParentTop="true"/>
+
+        <ImageView
+            android:id="@+id/ivvPointer"
+            android:layout_width="@dimen/_25sdp"
+            android:layout_height="@dimen/_25sdp"
+            android:layout_margin="@dimen/_10sdp"
+            android:layout_centerInParent="true"
+            android:layout_above="@+id/ivPointer"
+            android:paddingBottom="@dimen/_10sdp"
+            android:src="@drawable/lpin" />
+
+        <ImageView
+            android:id="@+id/ivPointer"
+            android:layout_width="@dimen/_1sdp"
+            android:layout_height="@dimen/_1sdp"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentLeft="true"
+            android:layout_centerInParent="true"
+            android:src="@drawable/logo" />
+
+
+        <TextView
+            android:id="@+id/btnCurrentLocation"
+            android:layout_alignParentRight="true"
+            android:layout_alignBottom="@id/mapFragment"
+            android:layout_margin="@dimen/_10sdp"
+            android:background="@drawable/baseline_my_location_24"
+            android:layout_width="@dimen/_40sdp"
+            android:layout_height="@dimen/_40sdp"/>
+
+    </RelativeLayout>
+
+
+    <ScrollView
+
+        android:id="@+id/scrollView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/rr1">
+
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:orientation="vertical">
+            android:layout_margin="@dimen/_5sdp">
+
+            <TextView
+                android:id="@+id/txtTDL"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_weight="1"
+                android:text="Total Distance Cover"
+
+                android:textColor="@color/black"
+                android:textSize="@dimen/_12sdp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_below="@+id/txtTDL"
+                android:id="@+id/tvDistance"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_weight="1"
+                android:text="00km"
+                android:textColor="@color/black"
+                android:textSize="@dimen/_12sdp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/txtPLocation"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tvDistance"
+                android:layout_alignParentLeft="true"
+                android:layout_marginTop="@dimen/_5sdp"
+                android:text="pickup Location"
+                android:textColor="@color/greay"
+                android:textSize="@dimen/_12sdp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/txtDLocation"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/etPickup"
+                android:layout_alignParentLeft="true"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:text="Drop Location"
+                android:textColor="@color/greay"
+                android:textSize="@dimen/_12sdp"
+                android:textStyle="bold" />
+
+
+            <AutoCompleteTextView
+
+                android:id="@+id/etPickup"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@+id/txtPLocation"
+                android:layout_marginTop="@dimen/_1sdp"
+                android:background="@drawable/custom_background"
+                android:drawableStart="@drawable/baseline_location_pin_24"
+                android:hint="Enter Pickup Location"
+                android:imeOptions="actionDone"
+                android:inputType="text"
+                android:padding="@dimen/_10sdp"
+                android:paddingEnd="@dimen/_40sdp"
+                android:textColor="@color/black" />
 
             <ImageView
-                android:id="@+id/map"
-                android:padding="@dimen/_10sdp"
+                android:id="@+id/btnClearPickup"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/txtPLocation"
+                android:layout_alignParentRight="true"
+                android:contentDescription="Clear Pickup"
+                android:padding="@dimen/_12sdp"
+                android:src="@drawable/ic_cancel"
+                android:visibility="gone" />
+
+            <AutoCompleteTextView
+                android:id="@+id/etDrop"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/txtDLocation"
+                android:layout_marginTop="@dimen/_1sdp"
                 android:background="@drawable/custom_background"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/_210sdp"
-                android:src="@drawable/map" />
+                android:drawableStart="@drawable/baseline_home_24"
+                android:hint="Enter Drop Location"
+                android:imeOptions="actionDone"
+                android:inputType="text"
+                android:padding="@dimen/_10sdp"
+                android:paddingEnd="@dimen/_40sdp"
+                android:textColor="@color/black" />
 
-            <!-- Pickup Location -->
-            <LinearLayout
-                android:layout_marginTop="@dimen/_5sdp"
+            <ImageView
+                android:id="@+id/btnClearDrop"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/txtDLocation"
+                android:layout_alignParentRight="true"
+                android:contentDescription="Clear Pickup"
+                android:padding="@dimen/_12sdp"
+                android:src="@drawable/ic_cancel"
+                android:visibility="gone" />
+            <TextView
+
+                android:id="@+id/onlyDropLocation"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/etDrop"
+                android:layout_alignParentLeft="true"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:text=" only Drop Location From School"
+                android:textColor="@color/greay"
+                android:textSize="@dimen/_12sdp"
+                android:textStyle="bold" />
+            <AutoCompleteTextView
+                android:id="@+id/etOnlyDrop"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/custom_design"
-                android:orientation="horizontal">
+                android:layout_below="@+id/onlyDropLocation"
+                android:layout_marginTop="@dimen/_1sdp"
+                android:background="@drawable/custom_background"
+                android:drawableStart="@drawable/baseline_home_24"
+                android:hint="Enter Drop Location"
+                android:imeOptions="actionDone"
+                android:inputType="text"
+                android:padding="@dimen/_10sdp"
+                android:paddingEnd="@dimen/_40sdp"
+                android:textColor="@color/black" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/white"
-                    android:padding="@dimen/_3sdp"
-                    android:paddingStart="@dimen/_15sdp"
-                    android:drawableStart="@drawable/baseline_location_pin_24"
-                    android:text="Pickup Location: " />
+            <ImageView
+                android:id="@+id/btnClearOnlyDrop"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/onlyDropLocation"
+                android:layout_alignParentRight="true"
+                android:contentDescription="Clear dropOnly"
+                android:padding="@dimen/_12sdp"
+                android:src="@drawable/ic_cancel"
+                android:visibility="gone" />
 
-                <TextView
-                    android:id="@+id/PickupLocationAddress"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Bhilai Nagar"
-                    android:padding="@dimen/_15sdp"
-                    android:textColor="@color/white"
-                    android:textStyle="bold"
-                    android:textSize="@dimen/_13sdp" />
-            </LinearLayout>
-
-            <!-- Drop Location -->
-            <LinearLayout
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_confirm"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/custom_design"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/white"
-                    android:padding="@dimen/_3sdp"
-                    android:paddingStart="@dimen/_15sdp"
-                    android:drawableStart="@drawable/baseline_home_24"
-                    android:text="Drop Location: " />
-
-                <TextView
-                    android:id="@+id/dropLocation"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Nehru Nagar"
-                    android:padding="@dimen/_15sdp"
-                    android:textColor="@color/white"
-                    android:textStyle="bold"
-                    android:textSize="@dimen/_13sdp" />
-            </LinearLayout>
-
-            <!-- Only Pickup Location -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/custom_design"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/white"
-                    android:padding="@dimen/_3sdp"
-                    android:paddingStart="@dimen/_15sdp"
-                    android:drawableStart="@drawable/baseline_location_pin_24"
-                    android:text="Only Pickup Location: " />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Bhilai Nagar"
-                    android:padding="@dimen/_15sdp"
-                    android:textColor="@color/white"
-                    android:textStyle="bold"
-                    android:textSize="@dimen/_13sdp" />
-            </LinearLayout>
-
-            <!-- Only Drop Location -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/custom_design"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:drawableStart="@drawable/baseline_home_24"
-                    android:padding="@dimen/_3sdp"
-                    android:paddingStart="@dimen/_15sdp"
-                    android:text="Only Drop Location: "
-                    android:textColor="@color/white" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Bhilai Nagar"
-                    android:padding="@dimen/_15sdp"
-                    android:textColor="@color/white"
-                    android:textStyle="bold"
-                    android:textSize="@dimen/_13sdp" />
+                android:layout_below="@+id/etOnlyDrop"
+                android:padding="@dimen/_11sdp"
+                android:layout_alignParentBottom="true"
+                android:layout_margin="@dimen/_5sdp"
+                android:backgroundTint="@color/appColor"
+                android:text="Confirm"
+                android:textColor="@color/white"
+                app:cornerRadius="@dimen/_10sdp" />
 
 
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:orientation="horizontal"
-                android:layout_height="wrap_content">
+        </RelativeLayout>
 
 
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="wrap_content"
-                    android:textSize="@dimen/_12sdp"
-                    android:text="Total Distance Cover"
-                    android:textStyle="bold"/>
-                <TextView
-                    android:id="@+id/btnKm"
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="wrap_content"
-                    android:textSize="@dimen/_12sdp"
-                    android:text="12.00km"
-                    android:textStyle="bold"/>
+        <!-- Pickup Location -->
 
-            </LinearLayout>
-
-
-
-            <!-- Buttons Layout -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="@dimen/_50sdp"
-                    android:gravity="center"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:id="@+id/btnConfirmLocation"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:padding="@dimen/_5sdp"
-                        android:gravity="center"
-                        android:textStyle="bold"
-                        android:textSize="@dimen/_15sdp"
-                        android:paddingStart="@dimen/_5sdp"
-                        android:background="@drawable/custom_design"
-                        android:drawableStart="@drawable/baseline_done_24"
-                        android:text="Confirm Location"
-                        android:textColor="@color/white" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="@dimen/_50sdp"
-                    android:gravity="center"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:id="@+id/btnPayment"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:padding="@dimen/_5sdp"
-                        android:gravity="center"
-                        android:textStyle="bold"
-                        android:textSize="@dimen/_15sdp"
-                        android:background="@drawable/custom_design"
-                        android:drawableStart="@drawable/baseline_cloud_done_24"
-                        android:text="Payment Option"
-                        android:textColor="@color/white" />
-                </LinearLayout>
-
-            </LinearLayout>
-
-        </LinearLayout>
 
     </ScrollView>
+
+    <!-- Only Pickup Location -->
+
+
+
+
+    <!-- Buttons Layout -->
+
+
+
 </RelativeLayout>
