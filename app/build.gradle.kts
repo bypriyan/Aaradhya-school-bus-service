@@ -48,6 +48,7 @@ dependencies {
     implementation(libs.material)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
+    implementation(libs.play.services.maps)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -98,6 +99,13 @@ dependencies {
     implementation ("io.github.chaosleung:pinview:1.4.4")
     //circle image view
     implementation ("de.hdodenhof:circleimageview:3.1.0")
+
+    //map integration
+    implementation ("com.google.maps:google-maps-services:2.1.0")
+    implementation ("com.google.android.gms:play-services-maps:19.1.0")
+    implementation ("com.google.android.gms:play-services-location:21.3.0")
+    implementation ("com.google.android.libraries.places:places:3.3.0")
+
 }
 
 kapt {

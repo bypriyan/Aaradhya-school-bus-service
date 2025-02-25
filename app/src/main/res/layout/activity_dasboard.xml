@@ -350,11 +350,6 @@
                     android:background="@drawable/custom_design"
                     android:text="My Payments"/>
 
-                <ImageView
-                    android:layout_marginTop="@dimen/_40sdp"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:src="@drawable/sbbb"/>
 
 
 
@@ -367,13 +362,13 @@
 
     </RelativeLayout>
 
-    <!-- Navigation Drawer -->
-    <com.google.android.material.navigation.NavigationView
-        android:id="@+id/navigationDrawer"
-        android:layout_width="280dp"
-        android:layout_height="match_parent"
-        app:menu="@menu/drawer_items"
-        android:layout_gravity="end"
-        app:headerLayout="@layout/drawer_header"/>
+<!--    &lt;!&ndash; Navigation Drawer &ndash;&gt;-->
+<!--    <com.google.android.material.navigation.NavigationView-->
+<!--        android:id="@+id/navigationDrawer"-->
+<!--        android:layout_width="280dp"-->
+<!--        android:layout_height="match_parent"-->
+<!--        app:menu="@menu/drawer_items"-->
+<!--        android:layout_gravity="end"-->
+<!--        app:headerLayout="@layout/drawer_header"/>-->
 
 </androidx.drawerlayout.widget.DrawerLayout>
