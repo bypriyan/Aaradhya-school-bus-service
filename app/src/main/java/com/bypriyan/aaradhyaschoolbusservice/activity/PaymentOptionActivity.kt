@@ -10,38 +10,105 @@ import com.razorpay.Checkout
 import com.razorpay.PaymentResultListener
 import org.json.JSONObject
 
-
-
 class PaymentOptionActivity : AppCompatActivity(), PaymentResultListener {
+
     lateinit var binding: ActivityPaymentOptionBinding
+    val slabs = listOf(
+        Slab(0.0..1.0, 3800, 3800, 2850, 10450),
+        Slab(1.1..2.0, 4600, 4600, 3450, 12650),
+        Slab(2.1..3.0, 5000, 5000, 3750, 13750),
+        Slab(3.1..5.0, 6360, 6360, 4770, 17400),
+        Slab(5.1..8.0, 8000, 8000, 6000, 22000),
+        Slab(8.1..11.0, 10000, 10000, 7500, 27500),
+        Slab(11.1..15.0, 11600, 11600, 8700, 31900)
+    )
+
+    private var firstInstallmentPrice = 0
+    private var secondInstallmentPrice = 0
+    private var thirdInstallmentPrice = 0
+    private var totalPrice = 0
+    var newTotal = 0
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
         binding = ActivityPaymentOptionBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         val totalDistance = intent.getFloatExtra("TOTAL_DISTANCE", 0f)
         val mode = intent.getStringExtra("MODE") ?: ""
         val distanceText = "Total Distance: %.2f km".format(totalDistance)
-        binding.txtTotalAmount.text = distanceText
+        val prices = calculatePrices(totalDistance.toDouble())
 
-        // Calculate price based on distance slabs
-        val price = when {
-            totalDistance <= 1 -> 3800
-            totalDistance <= 2 -> 4600
-            totalDistance <= 3 -> 5000
-            totalDistance <= 5 -> 6360
-            totalDistance <= 8 -> 8000
-            totalDistance <= 11 -> 10000
-            totalDistance <= 15 -> 11600
-            else -> 0 // Default case if distance exceeds available slabs
+        prices?.let {
+            // Set installment prices
+            firstInstallmentPrice = it[0].split(": ")[1].toInt()
+            secondInstallmentPrice = it[1].split(": ")[1].toInt()
+            thirdInstallmentPrice = it[2].split(": ")[1].toInt()
+            totalPrice = it[3].split(": ")[1].toInt()
+            newTotal = totalPrice
+
+            // Set prices in TextViews
+            binding.firstInstallmentTv.text = "₹" + firstInstallmentPrice.toString()
+            binding.secondInstallmentTv.text = "₹" + secondInstallmentPrice.toString()
+            binding.thirdInstallmentTv.text = "₹" + thirdInstallmentPrice.toString()
+            binding.allTotalPriseTv.text = "₹" + totalPrice.toString()
+
+            // Set initial total cost
+            binding.totalCostTv.text = "₹$totalPrice"
         }
 
-        binding.txtTotalAmountPay.text = price.toString()
-
-        binding.btnConfirmPay.setOnClickListener {
-            startPayment(price)
+        // Set checkbox listeners
+        binding.firstInstallmentCheckBox.setOnCheckedChangeListener { _, isChecked ->
+            updateTotalPrice()
         }
+
+        binding.secoundInstallmentCheckBox.setOnCheckedChangeListener { _, isChecked ->
+            if (!isChecked) {
+                // If 2nd is unchecked, uncheck 3rd as well
+                binding.thirdInstallmentCheckBox.isChecked = false
+            }
+            updateTotalPrice()
+        }
+
+        binding.thirdInstallmentCheckBox.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked && !binding.secoundInstallmentCheckBox.isChecked) {
+                // If 3rd is checked but 2nd is not checked, uncheck 3rd
+                binding.thirdInstallmentCheckBox.isChecked = false
+                Toast.makeText(this, "Please select 2nd installment first", Toast.LENGTH_SHORT).show()
+            }
+            updateTotalPrice()
+        }
+
+        // Ensure the first checkbox is always checked
+        binding.firstInstallmentCheckBox.isEnabled = false
+
+        binding.continueBtn.setOnClickListener{
+            startPayment(newTotal)
+        }
+    }
+
+    private fun updateTotalPrice() {
+         newTotal = 0
+
+        if (binding.firstInstallmentCheckBox.isChecked) {
+            newTotal += firstInstallmentPrice
+        }
+        if (binding.secoundInstallmentCheckBox.isChecked) {
+            newTotal += secondInstallmentPrice
+        }
+        if (binding.thirdInstallmentCheckBox.isChecked) {
+            newTotal += thirdInstallmentPrice
+        }
+
+        // Ensure at least one checkbox is checked
+        if (newTotal == 0) {
+            binding.firstInstallmentCheckBox.isChecked = true
+            newTotal += firstInstallmentPrice
+        }
+
+        // Update total price TextView
+        binding.allTotalPriseTv.text = "₹$newTotal"
+        binding.totalCostTv.text = "₹$newTotal"
     }
 
     private fun startPayment(amount: Int) {
@@ -63,6 +130,18 @@ class PaymentOptionActivity : AppCompatActivity(), PaymentResultListener {
         }
     }
 
+    fun calculatePrices(distance: Double): Array<String>? {
+        val slab = slabs.find { distance in it.range }
+        return slab?.let {
+            arrayOf(
+                "1st Installment: ${it.firstInstallment}",
+                "2nd Installment: ${it.secondInstallment}",
+                "3rd Installment: ${it.thirdInstallment}",
+                "Yearly: ${it.yearly}"
+            )
+        }
+    }
+
     override fun onPaymentSuccess(razorpayPaymentID: String?) {
         Toast.makeText(this, "Payment Successful: $razorpayPaymentID", Toast.LENGTH_SHORT).show()
     }
@@ -71,3 +150,11 @@ class PaymentOptionActivity : AppCompatActivity(), PaymentResultListener {
         Toast.makeText(this, "Payment Failed: $response", Toast.LENGTH_SHORT).show()
     }
 }
+
+data class Slab(
+    val range: ClosedRange<Double>,
+    val firstInstallment: Int,
+    val secondInstallment: Int,
+    val thirdInstallment: Int,
+    val yearly: Int
+)
