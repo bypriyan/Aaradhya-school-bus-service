@@ -1,6 +1,7 @@
 package com.bypriyan.aaradhyaschoolbusservice.activity
 
 import android.Manifest
+import android.content.IntentSender
 import kotlinx.coroutines.launch
 import android.content.pm.PackageManager
 import android.location.Geocoder
@@ -12,12 +13,15 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.transition.Visibility
 import com.bypriyan.aaradhyaschoolbusservice.databinding.ActivityPickupDropBinding
+import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.gms.tasks.Task
 import com.google.maps.DirectionsApi
 import com.google.maps.GeoApiContext
 import com.google.maps.model.DirectionsResult
@@ -53,13 +57,13 @@ class PickupDropActivity : AppCompatActivity(), OnMapReadyCallback {
             "DIFFERENT_LOCATION" -> updateUIForDifferentLocation()
         }
 
-        val mapFragment =
-            supportFragmentManager.findFragmentById(com.bypriyan.aaradhyaschoolbusservice.R.id.mapFragment) as SupportMapFragment
+        val mapFragment = supportFragmentManager.findFragmentById(com.bypriyan.aaradhyaschoolbusservice.R.id.mapFragment) as SupportMapFragment
         mapFragment.getMapAsync(this)
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
 
-        binding.btnCurrentLocation.setOnClickListener { getCurrentLocation() }
+
+        binding.btnCurrentLocation.setOnClickListener {    checkLocationSettings()}
         binding.btnClearPickup.setOnClickListener { clearPickupLocation() }
         binding.btnClearDrop.setOnClickListener { clearDropLocation() }
         binding.btnClearOnlyDrop.setOnClickListener { clearOnlyDropLocation() }
@@ -176,8 +180,6 @@ class PickupDropActivity : AppCompatActivity(), OnMapReadyCallback {
 
     }
 
-
-
     private fun setPickupLocation(latLng: LatLng) {
         val address = getAddressFromLatLng(latLng)
         pickupLocation = latLng
@@ -206,10 +208,6 @@ class PickupDropActivity : AppCompatActivity(), OnMapReadyCallback {
         calculateDistance()
     }
 
-    // Rest of the code remains the same...
-
-
-
     private fun searchLocation(locationName: String, isPickup: Boolean, isOnlyDrop: Boolean = false) {
         val geocoder = Geocoder(this, Locale.getDefault())
         try {
@@ -236,6 +234,56 @@ class PickupDropActivity : AppCompatActivity(), OnMapReadyCallback {
             Toast.makeText(this, "Error fetching location", Toast.LENGTH_SHORT).show()
         }
     }
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == 1) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Permission granted, fetch the current location
+                getCurrentLocation()
+            } else {
+                // Permission denied, show a message to the user
+                Toast.makeText(this, "Location permission denied", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    private fun checkLocationSettings() {
+        val locationRequest = LocationRequest.create().apply {
+            priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+            interval = 10000 // 10 seconds
+            fastestInterval = 5000 // 5 seconds
+        }
+
+        val builder = LocationSettingsRequest.Builder()
+            .addLocationRequest(locationRequest)
+
+        val client: SettingsClient = LocationServices.getSettingsClient(this)
+        val task: Task<LocationSettingsResponse> = client.checkLocationSettings(builder.build())
+
+        task.addOnSuccessListener {
+            // Location settings are enabled, proceed to get the current location
+            getCurrentLocation()
+        }
+
+        task.addOnFailureListener { exception ->
+            if (exception is ResolvableApiException) {
+                // Location settings are not enabled, show a dialog to enable them
+                try {
+                    exception.startResolutionForResult(this, 2)
+                } catch (sendEx: IntentSender.SendIntentException) {
+                    // Ignore the error
+                    Toast.makeText(this, "Failed to enable location settings", Toast.LENGTH_SHORT).show()
+                }
+            } else {
+                Toast.makeText(this, "Location settings not supported", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
 
     private fun getCurrentLocation() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
@@ -245,11 +293,68 @@ class PickupDropActivity : AppCompatActivity(), OnMapReadyCallback {
         }
 
         fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
-            location?.let {
-                val latLng = LatLng(it.latitude, it.longitude)
-                setPickupLocation(latLng)
+            if (location != null) {
+                val latLng = LatLng(location.latitude, location.longitude)
+                when (mode) {
+                    "ONLY_DROP" -> {
+                        onlyDropLocation = latLng
+                        val address = getAddressFromLatLng(latLng)
+                        binding.etOnlyDrop.setText(address)
+                        binding.btnClearOnlyDrop.visibility = View.VISIBLE
+                        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15f))
+                    }
+                    else -> {
+                        setPickupLocation(latLng)
+                    }
+                }
+            } else {
+                // Last location is null, request location updates
+                requestLocationUpdates()
             }
         }
+    }
+
+    private fun requestLocationUpdates() {
+        val locationRequest = LocationRequest.create().apply {
+            priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+            interval = 10000 // 10 seconds
+            fastestInterval = 5000 // 5 seconds
+        }
+
+        if (ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            return
+        }
+
+        fusedLocationClient.requestLocationUpdates(
+            locationRequest,
+            object : LocationCallback() {
+                override fun onLocationResult(locationResult: LocationResult) {
+                    val location = locationResult.lastLocation
+                    if (location != null) {
+                        val latLng = LatLng(location.latitude, location.longitude)
+                        when (mode) {
+                            "ONLY_DROP" -> {
+                                onlyDropLocation = latLng
+                                val address = getAddressFromLatLng(latLng)
+                                binding.etOnlyDrop.setText(address)
+                                binding.btnClearOnlyDrop.visibility = View.VISIBLE
+                                googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15f))
+                            }
+                            else -> {
+                                setPickupLocation(latLng)
+                            }
+                        }
+                        // Stop location updates after getting the location
+                        fusedLocationClient.removeLocationUpdates(this)
+                    }
+                }
+            },
+            null
+        )
     }
 
     private fun getAddressFromLatLng(latLng: LatLng): String {
