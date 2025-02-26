@@ -6,6 +6,7 @@ import android.location.Geocoder
 import com.bypriyan.aaradhyaschoolbusservice.api.ApiServiceLogin
 import com.bypriyan.aaradhyaschoolbusservice.api.ApiServiceOTP
 import com.bypriyan.aaradhyaschoolbusservice.api.ApiServiceRegisterUser
+import com.bypriyan.aaradhyaschoolbusservice.api.ApiServiceUserDetails
 import com.bypriyan.bustrackingsystem.utility.PreferenceManager
 import dagger.Module
 import dagger.Provides
@@ -46,6 +47,12 @@ object AppModule {
     @Singleton
     fun provideApiServiceLogin(retrofit: Retrofit): ApiServiceLogin {
         return retrofit.create(ApiServiceLogin::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideApiServiceUserDetails(retrofit: Retrofit): ApiServiceUserDetails {
+        return retrofit.create(ApiServiceUserDetails::class.java)
     }
 
     @Provides
