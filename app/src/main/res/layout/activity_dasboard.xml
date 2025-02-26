@@ -70,10 +70,10 @@
 
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
+                android:id="@+id/txtPickupDropSameLocation"
                 android:layout_height="wrap_content"
                 app:strokeColor="@color/transparent"
                 app:cardCornerRadius="@dimen/_10sdp"
-                android:id="@+id/picandDropInSame"
                 app:cardBackgroundColor="@color/limeGreay">
 
                 <RelativeLayout
@@ -125,8 +125,9 @@
                 android:layout_height="wrap_content"
                 app:strokeColor="@color/transparent"
                 app:cardCornerRadius="@dimen/_10sdp"
+                android:id="@+id/txtPickupDropDifferentLocation"
+
                 android:layout_marginTop="@dimen/_10sdp"
-                android:id="@+id/picandDropInDiff"
                 app:cardBackgroundColor="@color/limeGreay">
 
                 <RelativeLayout
@@ -177,8 +178,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:strokeColor="@color/transparent"
+                android:id="@+id/txtOnlyDropLocation"
+
                 app:cardCornerRadius="@dimen/_10sdp"
-                android:id="@+id/onlyDrop"
                 android:layout_marginTop="@dimen/_10sdp"
                 app:cardBackgroundColor="@color/limeGreay">
 

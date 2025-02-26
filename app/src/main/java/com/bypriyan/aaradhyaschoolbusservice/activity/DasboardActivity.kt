@@ -30,7 +30,27 @@ class DasboardActivity : AppCompatActivity() {
 
         Log.d("dash", "onCreate: $userId, $token, $token_type")
 
+        binding.txtPickupDropSameLocation.setOnClickListener {
+            // Start PickupDropActivity for same pickup and drop location
+            val intent = Intent(this, PickupDropActivity::class.java)
+            intent.putExtra("MODE", "SAME_LOCATION") // Flag for same location
+            startActivity(intent)
+        }
 
+        binding.txtOnlyDropLocation.setOnClickListener {
+            // Start PickupDropActivity for only drop location
+            val intent = Intent(this, PickupDropActivity::class.java)
+            intent.putExtra("MODE", "ONLY_DROP") // Flag for only drop
+            startActivity(intent)
+        }
 
+        binding.txtPickupDropDifferentLocation.setOnClickListener {
+            // Start PickupDropActivity for different pickup and drop locations
+            val intent = Intent(this, PickupDropActivity::class.java)
+            intent.putExtra("MODE", "DIFFERENT_LOCATION") // Flag for different locations
+            startActivity(intent)
+        }
     }
 }
+
+

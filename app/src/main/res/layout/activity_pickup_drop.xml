@@ -65,7 +65,7 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_margin="@dimen/_5sdp">
 
             <TextView
@@ -92,7 +92,9 @@
                 android:textSize="@dimen/_12sdp"
                 android:textStyle="bold" />
 
+
             <TextView
+                android:visibility="gone"
                 android:id="@+id/txtPLocation"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -105,6 +107,8 @@
                 android:textStyle="bold" />
 
             <TextView
+                android:visibility="gone"
+
                 android:id="@+id/txtDLocation"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -118,6 +122,7 @@
 
 
             <AutoCompleteTextView
+                android:visibility="gone"
 
                 android:id="@+id/etPickup"
                 android:layout_width="match_parent"
@@ -145,6 +150,8 @@
                 android:visibility="gone" />
 
             <AutoCompleteTextView
+                android:visibility="gone"
+
                 android:id="@+id/etDrop"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -170,6 +177,7 @@
                 android:src="@drawable/ic_cancel"
                 android:visibility="gone" />
             <TextView
+                android:visibility="gone"
 
                 android:id="@+id/onlyDropLocation"
                 android:layout_width="wrap_content"
@@ -182,6 +190,8 @@
                 android:textSize="@dimen/_12sdp"
                 android:textStyle="bold" />
             <AutoCompleteTextView
+                android:visibility="gone"
+
                 android:id="@+id/etOnlyDrop"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -207,18 +217,41 @@
                 android:src="@drawable/ic_cancel"
                 android:visibility="gone" />
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btn_confirm"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
                 android:layout_below="@+id/etOnlyDrop"
-                android:padding="@dimen/_11sdp"
-                android:layout_alignParentBottom="true"
-                android:layout_margin="@dimen/_5sdp"
-                android:backgroundTint="@color/appColor"
-                android:text="Confirm"
-                android:textColor="@color/white"
-                app:cornerRadius="@dimen/_10sdp" />
+                >
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_confirm"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/etOnlyDrop"
+                    android:padding="@dimen/_11sdp"
+                    android:layout_alignParentBottom="true"
+                    android:layout_margin="@dimen/_5sdp"
+                    android:backgroundTint="@color/appColor"
+                    android:text="Confirm"
+                    android:textColor="@color/white"
+                    app:cornerRadius="@dimen/_10sdp" />
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_Emi"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/etOnlyDrop"
+                    android:padding="@dimen/_11sdp"
+                    android:layout_alignParentBottom="true"
+                    android:layout_margin="@dimen/_5sdp"
+                    android:backgroundTint="@color/appColor"
+                    android:text="Emi"
+                    android:textColor="@color/white"
+                    app:cornerRadius="@dimen/_10sdp" />
+
+
+            </LinearLayout>
+
 
 
         </RelativeLayout>
@@ -229,12 +262,8 @@
 
     </ScrollView>
 
-    <!-- Only Pickup Location -->
 
 
-
-
-    <!-- Buttons Layout -->
 
 
 

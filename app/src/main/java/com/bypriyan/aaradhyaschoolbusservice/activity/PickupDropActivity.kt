@@ -36,12 +36,22 @@ class PickupDropActivity : AppCompatActivity(), OnMapReadyCallback {
     private var pickupMarker: Marker? = null
     private var pickupLocation: LatLng? = null
     private var dropLocation: LatLng? = null
+    private var mode: String? = null
     private var onlyDropLocation: LatLng? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityPickupDropBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        // Get the mode from the intent
+        mode = intent.getStringExtra("MODE")
+
+        when (mode) {
+            "SAME_LOCATION" -> updateUIForSameLocation()
+            "ONLY_DROP" -> updateUIForOnlyDrop()
+            "DIFFERENT_LOCATION" -> updateUIForDifferentLocation()
+        }
 
         val mapFragment =
             supportFragmentManager.findFragmentById(com.bypriyan.aaradhyaschoolbusservice.R.id.mapFragment) as SupportMapFragment
@@ -53,6 +63,10 @@ class PickupDropActivity : AppCompatActivity(), OnMapReadyCallback {
         binding.btnClearPickup.setOnClickListener { clearPickupLocation() }
         binding.btnClearDrop.setOnClickListener { clearDropLocation() }
         binding.btnClearOnlyDrop.setOnClickListener { clearOnlyDropLocation() }
+
+
+
+
 
         binding.etPickup.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
@@ -78,6 +92,7 @@ class PickupDropActivity : AppCompatActivity(), OnMapReadyCallback {
                     binding.etPickup.isEnabled = false
                     binding.etDrop.isEnabled = false
                     searchLocation(locationName, false, true)
+
                 }
                 true
             } else false
@@ -88,30 +103,37 @@ class PickupDropActivity : AppCompatActivity(), OnMapReadyCallback {
                 // Disable pickup and drop fields when only drop is focused
                 binding.etPickup.isEnabled = false
                 binding.etDrop.isEnabled = false
-            } else {
-                // Re-enable pickup and drop fields when only drop loses focus
-                if (binding.etOnlyDrop.text.isNullOrEmpty()) {
-                    binding.etPickup.isEnabled = true
-                    binding.etDrop.isEnabled = true
-                }
-            }
+            } else{}
         }
 
         binding.btnConfirm.setOnClickListener {
-            val pickupAddress = binding.etPickup.text.toString()
-            val dropAddress = binding.etDrop.text.toString()
-            val onlyDropAddress = binding.etOnlyDrop.text.toString()
-
-            if (pickupAddress.isEmpty() && dropAddress.isEmpty() && onlyDropAddress.isEmpty()) {
-                Toast.makeText(this, "Please select at least one location", Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
-            }
-
-            // Handle confirmation logic
-            if (onlyDropAddress.isNotEmpty()) {
-                Toast.makeText(this, "Only Drop Location Selected", Toast.LENGTH_SHORT).show()
-            } else {
-                Toast.makeText(this, "Pickup and/or Drop Locations Selected", Toast.LENGTH_SHORT).show()
+            when (mode) {
+                "SAME_LOCATION" -> {
+                    val pickupAddress = binding.etPickup.text.toString()
+                    val dropAddress = binding.etDrop.text.toString()
+                    if (pickupAddress.isEmpty() || dropAddress.isEmpty()) {
+                        Toast.makeText(this, "Please enter a location", Toast.LENGTH_SHORT).show()
+                    } else {
+                        Toast.makeText(this, "Same Pickup and Drop Location Selected: $pickupAddress", Toast.LENGTH_SHORT).show()
+                    }
+                }
+                "ONLY_DROP" -> {
+                    val onlyDropAddress = binding.etOnlyDrop.text.toString()
+                    if (onlyDropAddress.isEmpty()) {
+                        Toast.makeText(this, "Please enter a drop location", Toast.LENGTH_SHORT).show()
+                    } else {
+                        Toast.makeText(this, "Only Drop Location Selected: $onlyDropAddress", Toast.LENGTH_SHORT).show()
+                    }
+                }
+                "DIFFERENT_LOCATION" -> {
+                    val pickupAddress = binding.etPickup.text.toString()
+                    val dropAddress = binding.etDrop.text.toString()
+                    if (pickupAddress.isEmpty() && dropAddress.isEmpty()) {
+                        Toast.makeText(this, "Please select at least one location", Toast.LENGTH_SHORT).show()
+                    } else {
+                        Toast.makeText(this, "Pickup: $pickupAddress, Drop: $dropAddress", Toast.LENGTH_SHORT).show()
+                    }
+                }
             }
         }
     }
@@ -140,35 +162,38 @@ class PickupDropActivity : AppCompatActivity(), OnMapReadyCallback {
         }
     }
 
-    private fun getCurrentLocation() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-            != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 1)
-            return
-        }
 
-        fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
-            location?.let {
-                val latLng = LatLng(it.latitude, it.longitude)
-                setPickupLocation(latLng)
-            }
-        }
-    }
 
     private fun setPickupLocation(latLng: LatLng) {
         val address = getAddressFromLatLng(latLng)
         pickupLocation = latLng
+
+        // Remove the existing pickup marker (if any)
         pickupMarker?.remove()
-        pickupMarker = googleMap.addMarker(MarkerOptions().position(latLng).title("Pickup: $address"))
+
+        // Add a new marker with a custom pin icon
+        pickupMarker = googleMap.addMarker(
+            MarkerOptions()
+                .position(latLng)
+                .title("Pickup: $address")
+        )
+
+
+        // Update the pickup address in the UI
         binding.etPickup.setText(address)
         binding.btnClearPickup.visibility = View.VISIBLE
 
-        // Disable only drop field when pickup is set
-        binding.etOnlyDrop.isEnabled = false
 
+
+        // Move the camera to the pickup location
         googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15f))
+
+        // Calculate the distance
         calculateDistance()
     }
+
+    // Rest of the code remains the same...
+
 
     private fun clearPickupLocation() {
         pickupLocation = null
@@ -195,9 +220,7 @@ class PickupDropActivity : AppCompatActivity(), OnMapReadyCallback {
         binding.etOnlyDrop.text.clear()
         binding.btnClearOnlyDrop.visibility = View.GONE
 
-        // Re-enable pickup and drop fields when only drop is cleared
-        binding.etPickup.isEnabled = true
-        binding.etDrop.isEnabled = true
+
     }
 
     private fun searchLocation(locationName: String, isPickup: Boolean, isOnlyDrop: Boolean = false) {
@@ -227,6 +250,21 @@ class PickupDropActivity : AppCompatActivity(), OnMapReadyCallback {
         }
     }
 
+    private fun getCurrentLocation() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+            != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 1)
+            return
+        }
+
+        fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
+            location?.let {
+                val latLng = LatLng(it.latitude, it.longitude)
+                setPickupLocation(latLng)
+            }
+        }
+    }
+
     private fun getAddressFromLatLng(latLng: LatLng): String {
         val geocoder = Geocoder(this, Locale.getDefault())
         return try {
@@ -240,6 +278,65 @@ class PickupDropActivity : AppCompatActivity(), OnMapReadyCallback {
             "Unknown Location"
         } catch (e: Exception) {
             "Unknown Location"
+        }
+    }
+
+    private fun updateUIForOnlyDrop() {
+
+
+        // Show only drop-related views
+        binding.onlyDropLocation.visibility = View.VISIBLE
+        binding.etOnlyDrop.visibility = View.VISIBLE
+        binding.btnClearOnlyDrop.visibility = View.VISIBLE
+
+        // Set focus on the only drop field
+        binding.etOnlyDrop.requestFocus()
+
+        // Disable pickup and drop fields
+        binding.etPickup.isEnabled = false
+        binding.etDrop.isEnabled = false
+    }
+
+    private fun updateUIForDifferentLocation() {
+        // Show all fields (pickup, drop, and only drop)
+        binding.txtPLocation.visibility = View.VISIBLE
+        binding.etPickup.visibility = View.VISIBLE
+        binding.btnClearPickup.visibility = View.VISIBLE
+
+        binding.txtDLocation.visibility = View.VISIBLE
+        binding.etDrop.visibility = View.VISIBLE
+        binding.btnClearDrop.visibility = View.VISIBLE
+        binding.txtDLocation.setText("Different Drop Location")
+
+
+        // Enable all fields
+        binding.etPickup.isEnabled = true
+        binding.etDrop.isEnabled = true
+    }
+
+
+    private fun updateUIForSameLocation() {
+        // Show pickup and drop fields
+        binding.txtPLocation.visibility = View.VISIBLE
+        binding.etPickup.visibility = View.VISIBLE
+        binding.btnClearPickup.visibility = View.VISIBLE
+
+        binding.txtDLocation.visibility = View.VISIBLE
+        binding.etDrop.visibility = View.VISIBLE
+        binding.btnClearDrop.visibility = View.VISIBLE
+        binding.txtDLocation.setText("Same Pickup And Drop")
+
+        // Hide only drop-related views
+        binding.onlyDropLocation.visibility = View.GONE
+        binding.etOnlyDrop.visibility = View.GONE
+        binding.btnClearOnlyDrop.visibility = View.GONE
+
+        // Set the same location for pickup and drop
+        binding.etDrop.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                binding.etPickup.setText(binding.etDrop.text.toString())
+                true
+            } else false
         }
     }
 
