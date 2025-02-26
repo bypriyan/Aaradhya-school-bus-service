@@ -8,11 +8,14 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
+import com.bumptech.glide.Glide
 import com.bypriyan.aaradhyaschoolbusservice.R
 import com.bypriyan.aaradhyaschoolbusservice.databinding.ActivityDasboardBinding
 import com.bypriyan.aaradhyaschoolbusservice.viewModel.UserViewModel
 import com.bypriyan.bustrackingsystem.utility.Constants
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class DasboardActivity : AppCompatActivity() {
 
     lateinit var  binding: ActivityDasboardBinding
@@ -36,6 +39,7 @@ class DasboardActivity : AppCompatActivity() {
         userViewModel.userDetails.observe(this) { userDetails ->
             // Update UI with user details
             binding.name.text = "Hi, ${userDetails.fullName}"
+            loadImageWithGlide(Constants.KEY_IMAGE_PATH+userDetails.image)
         }
 
         binding.txtPickupDropSameLocation.setOnClickListener {
@@ -58,6 +62,12 @@ class DasboardActivity : AppCompatActivity() {
             intent.putExtra("MODE", "DIFFERENT_LOCATION") // Flag for different locations
             startActivity(intent)
         }
+    }
+
+    private fun loadImageWithGlide(imageUrl: String) {
+        Glide.with(this)
+            .load(imageUrl) // Load the image URL
+            .into(binding.profileImage) // Set the image to the ImageView
     }
 }
 
