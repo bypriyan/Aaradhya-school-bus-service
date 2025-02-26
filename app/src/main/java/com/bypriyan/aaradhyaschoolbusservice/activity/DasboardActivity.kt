@@ -35,7 +35,9 @@ class DasboardActivity : AppCompatActivity() {
         token_type = getIntent().getStringExtra(Constants.KEY_TOKEN_TYPE).toString()
 
         Log.d("dash", "onCreate: $userId, $token, $token_type")
+
         userViewModel.getUserDetails(userId, token)
+
         userViewModel.userDetails.observe(this) { userDetails ->
             // Update UI with user details
             binding.name.text = "Hi, ${userDetails.fullName}"
