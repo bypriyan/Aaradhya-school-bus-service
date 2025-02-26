@@ -1,6 +1,8 @@
 package com.bypriyan.aaradhyaschoolbusservice.activity
 
 import android.Manifest
+import android.content.Intent
+import android.content.IntentSender
 import kotlinx.coroutines.launch
 import android.content.pm.PackageManager
 import android.location.Geocoder
@@ -12,12 +14,15 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.transition.Visibility
 import com.bypriyan.aaradhyaschoolbusservice.databinding.ActivityPickupDropBinding
+import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.gms.tasks.Task
 import com.google.maps.DirectionsApi
 import com.google.maps.GeoApiContext
 import com.google.maps.model.DirectionsResult
@@ -55,13 +60,13 @@ class PickupDropActivity : AppCompatActivity(), OnMapReadyCallback {
             "DIFFERENT_LOCATION" -> updateUIForDifferentLocation()
         }
 
-        val mapFragment =
-            supportFragmentManager.findFragmentById(com.bypriyan.aaradhyaschoolbusservice.R.id.mapFragment) as SupportMapFragment
+        val mapFragment = supportFragmentManager.findFragmentById(com.bypriyan.aaradhyaschoolbusservice.R.id.mapFragment) as SupportMapFragment
         mapFragment.getMapAsync(this)
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
 
-        binding.btnCurrentLocation.setOnClickListener { getCurrentLocation() }
+
+        binding.btnCurrentLocation.setOnClickListener {    checkLocationSettings()}
         binding.btnClearPickup.setOnClickListener { clearPickupLocation() }
         binding.btnClearDrop.setOnClickListener { clearDropLocation() }
         binding.btnClearOnlyDrop.setOnClickListener { clearOnlyDropLocation() }
@@ -137,6 +142,12 @@ class PickupDropActivity : AppCompatActivity(), OnMapReadyCallback {
                     }
                 }
             }
+            // Pass total distance and mode to PaymentOptionActivity
+            val intent = Intent(this, PaymentOptionActivity::class.java).apply {
+                putExtra("TOTAL_DISTANCE", totalDistance)
+                putExtra("MODE", mode)
+            }
+            startActivity(intent)
         }
     }
 
@@ -178,8 +189,6 @@ class PickupDropActivity : AppCompatActivity(), OnMapReadyCallback {
 
     }
 
-
-
     private fun setPickupLocation(latLng: LatLng) {
         val address = getAddressFromLatLng(latLng)
         pickupLocation = latLng
@@ -208,13 +217,10 @@ class PickupDropActivity : AppCompatActivity(), OnMapReadyCallback {
         calculateDistance()
     }
 
-    // Rest of the code remains the same...
-
-
-
     private fun searchLocation(locationName: String, isPickup: Boolean, isOnlyDrop: Boolean = false) {
         val geocoder = Geocoder(this, Locale.getDefault())
         try {
+
             val addresses = geocoder.getFromLocationName(locationName, 1)
             if (addresses!!.isNotEmpty()) {
                 val location = LatLng(addresses[0].latitude, addresses[0].longitude)
@@ -238,6 +244,56 @@ class PickupDropActivity : AppCompatActivity(), OnMapReadyCallback {
             Toast.makeText(this, "Error fetching location", Toast.LENGTH_SHORT).show()
         }
     }
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == 1) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Permission granted, fetch the current location
+                getCurrentLocation()
+            } else {
+                // Permission denied, show a message to the user
+                Toast.makeText(this, "Location permission denied", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    private fun checkLocationSettings() {
+        val locationRequest = LocationRequest.create().apply {
+            priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+            interval = 10000 // 10 seconds
+            fastestInterval = 5000 // 5 seconds
+        }
+
+        val builder = LocationSettingsRequest.Builder()
+            .addLocationRequest(locationRequest)
+
+        val client: SettingsClient = LocationServices.getSettingsClient(this)
+        val task: Task<LocationSettingsResponse> = client.checkLocationSettings(builder.build())
+
+        task.addOnSuccessListener {
+            // Location settings are enabled, proceed to get the current location
+            getCurrentLocation()
+        }
+
+        task.addOnFailureListener { exception ->
+            if (exception is ResolvableApiException) {
+                // Location settings are not enabled, show a dialog to enable them
+                try {
+                    exception.startResolutionForResult(this, 2)
+                } catch (sendEx: IntentSender.SendIntentException) {
+                    // Ignore the error
+                    Toast.makeText(this, "Failed to enable location settings", Toast.LENGTH_SHORT).show()
+                }
+            } else {
+                Toast.makeText(this, "Location settings not supported", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
 
     private fun getCurrentLocation() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
@@ -247,11 +303,68 @@ class PickupDropActivity : AppCompatActivity(), OnMapReadyCallback {
         }
 
         fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
-            location?.let {
-                val latLng = LatLng(it.latitude, it.longitude)
-                setPickupLocation(latLng)
+            if (location != null) {
+                val latLng = LatLng(location.latitude, location.longitude)
+                when (mode) {
+                    "ONLY_DROP" -> {
+                        onlyDropLocation = latLng
+                        val address = getAddressFromLatLng(latLng)
+                        binding.etOnlyDrop.setText(address)
+                        binding.btnClearOnlyDrop.visibility = View.VISIBLE
+                        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15f))
+                    }
+                    else -> {
+                        setPickupLocation(latLng)
+                    }
+                }
+            } else {
+                // Last location is null, request location updates
+                requestLocationUpdates()
             }
         }
+    }
+
+    private fun requestLocationUpdates() {
+        val locationRequest = LocationRequest.create().apply {
+            priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+            interval = 10000 // 10 seconds
+            fastestInterval = 5000 // 5 seconds
+        }
+
+        if (ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            return
+        }
+
+        fusedLocationClient.requestLocationUpdates(
+            locationRequest,
+            object : LocationCallback() {
+                override fun onLocationResult(locationResult: LocationResult) {
+                    val location = locationResult.lastLocation
+                    if (location != null) {
+                        val latLng = LatLng(location.latitude, location.longitude)
+                        when (mode) {
+                            "ONLY_DROP" -> {
+                                onlyDropLocation = latLng
+                                val address = getAddressFromLatLng(latLng)
+                                binding.etOnlyDrop.setText(address)
+                                binding.btnClearOnlyDrop.visibility = View.VISIBLE
+                                googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15f))
+                            }
+                            else -> {
+                                setPickupLocation(latLng)
+                            }
+                        }
+                        // Stop location updates after getting the location
+                        fusedLocationClient.removeLocationUpdates(this)
+                    }
+                }
+            },
+            null
+        )
     }
 
     private fun getAddressFromLatLng(latLng: LatLng): String {
@@ -356,85 +469,70 @@ class PickupDropActivity : AppCompatActivity(), OnMapReadyCallback {
 
 
     }
+    private var totalDistance: Float = 0f
 
     private fun calculateDistance() {
-        val guruGhasidasLatLng = LatLng(22.126461551343123, 82.1371706108157) // Guru Ghasidas University
+        val guruGhasidasLatLng = LatLng(22.126461551343123, 82.1371706108157) // GGU Coordinates
 
-        // Create a GeoApiContext with your API key
         val context = GeoApiContext.Builder()
-            .apiKey("AIzaSyDoK6uVnsidH3hQqZkaSqclQnCgFg-MxLc") // Replace with your API key
+            .apiKey("AIzaSyDoK6uVnsidH3hQqZkaSqclQnCgFg-MxLc") // Replace with your API Key
             .build()
 
-        // Use a coroutine to perform the network requests on a background thread
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                // Calculate GGU to Pickup Distance
-                val gguToPickupDistance = if (pickupLocation != null) {
-                    val result: DirectionsResult = DirectionsApi.newRequest(context)
-                        .origin("${guruGhasidasLatLng.latitude},${guruGhasidasLatLng.longitude}") // GGU coordinates
-                        .destination("${pickupLocation!!.latitude},${pickupLocation!!.longitude}") // Pickup coordinates
-                        .mode(TravelMode.DRIVING) // Travel mode (DRIVING, WALKING, etc.)
-                        .await() // Perform the request and wait for the response
+                var gguToPickupDistance = 0f
+                var gguToDropDistance = 0f
+                var gguToOnlyDropDistance = 0f
 
-                    result.routes[0].legs[0].distance.inMeters / 1000f // Convert meters to kilometers
-                } else {
-                    0f // If pickup location is not set, distance is 0
+                if (pickupLocation != null) {
+                    val result = DirectionsApi.newRequest(context)
+                        .origin("${guruGhasidasLatLng.latitude},${guruGhasidasLatLng.longitude}")
+                        .destination("${pickupLocation!!.latitude},${pickupLocation!!.longitude}")
+                        .mode(TravelMode.DRIVING)
+                        .await()
+                    gguToPickupDistance = result.routes[0].legs[0].distance.inMeters / 1000f
                 }
 
-                // Calculate GGU to Drop Distance
-                val gguToDropDistance = if (dropLocation != null) {
-                    val result: DirectionsResult = DirectionsApi.newRequest(context)
-                        .origin("${guruGhasidasLatLng.latitude},${guruGhasidasLatLng.longitude}") // GGU coordinates
-                        .destination("${dropLocation!!.latitude},${dropLocation!!.longitude}") // Drop coordinates
-                        .mode(TravelMode.DRIVING) // Travel mode (DRIVING, WALKING, etc.)
-                        .await() // Perform the request and wait for the response
-
-                    result.routes[0].legs[0].distance.inMeters / 1000f // Convert meters to kilometers
-                } else {
-                    0f // If drop location is not set, distance is 0
+                if (dropLocation != null) {
+                    val result = DirectionsApi.newRequest(context)
+                        .origin("${guruGhasidasLatLng.latitude},${guruGhasidasLatLng.longitude}")
+                        .destination("${dropLocation!!.latitude},${dropLocation!!.longitude}")
+                        .mode(TravelMode.DRIVING)
+                        .await()
+                    gguToDropDistance = result.routes[0].legs[0].distance.inMeters / 1000f
                 }
 
-                // Calculate GGU to Only Drop Distance
-                val gguToOnlyDropDistance = if (onlyDropLocation != null) {
-                    val result: DirectionsResult = DirectionsApi.newRequest(context)
-                        .origin("${guruGhasidasLatLng.latitude},${guruGhasidasLatLng.longitude}") // GGU coordinates
-                        .destination("${onlyDropLocation!!.latitude},${onlyDropLocation!!.longitude}") // Only Drop coordinates
-                        .mode(TravelMode.DRIVING) // Travel mode (DRIVING, WALKING, etc.)
-                        .await() // Perform the request and wait for the response
-
-                    result.routes[0].legs[0].distance.inMeters / 1000f // Convert meters to kilometers
-                } else {
-                    0f // If only drop location is not set, distance is 0
+                if (onlyDropLocation != null) {
+                    val result = DirectionsApi.newRequest(context)
+                        .origin("${guruGhasidasLatLng.latitude},${guruGhasidasLatLng.longitude}")
+                        .destination("${onlyDropLocation!!.latitude},${onlyDropLocation!!.longitude}")
+                        .mode(TravelMode.DRIVING)
+                        .await()
+                    gguToOnlyDropDistance = result.routes[0].legs[0].distance.inMeters / 1000f
                 }
 
-                // Update the UI on the main thread
+                // Calculate total distance based on mode
+                totalDistance = when (mode) {
+                    "SAME_LOCATION" -> gguToPickupDistance + gguToDropDistance
+                    "ONLY_DROP" -> gguToOnlyDropDistance
+                    "DIFFERENT_LOCATION" -> gguToPickupDistance + gguToDropDistance
+                    else -> 0f
+                }
+
                 runOnUiThread {
-                    val distanceText = buildString {
-                        if (pickupLocation != null) {
-                            append("GGU → Pickup: %.2f km\n".format(gguToPickupDistance))
-                        }
-                        if (dropLocation != null) {
-                            append("GGU → Drop: %.2f km\n".format(gguToDropDistance))
-                        }
-                        if (onlyDropLocation != null) {
-                            append("GGU → Only Drop: %.2f km\n".format(gguToOnlyDropDistance))
-                        }
-                    }
-
+                    val distanceText = "Total Distance: %.2f km".format(totalDistance)
                     binding.tvDistance.text = distanceText
                 }
+
             } catch (e: Exception) {
-                // Handle errors (e.g., network issues, invalid API key, etc.)
                 e.printStackTrace()
                 runOnUiThread {
-                    Toast.makeText(
-                        this@PickupDropActivity,
-                        "Failed to calculate distance: ${e.message}",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    Toast.makeText(this@PickupDropActivity, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
                 }
             }
         }
     }
 
+
 }
+//cc1.1

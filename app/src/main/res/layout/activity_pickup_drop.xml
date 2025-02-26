@@ -235,18 +235,6 @@
                     android:text="Confirm"
                     android:textColor="@color/white"
                     app:cornerRadius="@dimen/_10sdp" />
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btn_Emi"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/etOnlyDrop"
-                    android:padding="@dimen/_11sdp"
-                    android:layout_alignParentBottom="true"
-                    android:layout_margin="@dimen/_5sdp"
-                    android:backgroundTint="@color/appColor"
-                    android:text="Emi"
-                    android:textColor="@color/white"
-                    app:cornerRadius="@dimen/_10sdp" />
 
 
             </LinearLayout>
