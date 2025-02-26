@@ -10,6 +10,12 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.viewpager2.widget.ViewPager2
 import com.bypriyan.aaradhyaschoolbusservice.R
+<<<<<<< HEAD
+=======
+import com.bypriyan.aaradhyaschoolbusservice.activity.DasboardActivity
+import com.bypriyan.aaradhyaschoolbusservice.activity.LoginActivity
+import com.bypriyan.aaradhyaschoolbusservice.activity.TermsAndConditionActivity
+>>>>>>> cd
 import com.bypriyan.aaradhyaschoolbusservice.databinding.ActivityOnBordingScreenBinding
 import com.bypriyan.bustrackingsystem.utility.Constants
 import com.bypriyan.bustrackingsystem.utility.PreferenceManager
@@ -28,7 +34,6 @@ class OnBordingScreenActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
 
         installSplashScreen()
-
         super.onCreate(savedInstanceState)
         binding = ActivityOnBordingScreenBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -72,8 +77,14 @@ class OnBordingScreenActivity : AppCompatActivity() {
             if (nextIndex < adapter.itemCount) {
                 binding.viewPager2.currentItem = nextIndex
             } else {
+<<<<<<< HEAD
 //                startActivity(Intent(this, LoginActivity::class.java))
+=======
+                // Save preference BEFORE launching login
+>>>>>>> cd
                 preferenceManager.putBoolean(Constants.KEY_IS_ONBORDING_SCREEN_SEEN, true)
+
+                startActivity(Intent(this, TermsAndConditionActivity::class.java))
                 finish()
             }
         }
@@ -105,13 +116,27 @@ class OnBordingScreenActivity : AppCompatActivity() {
 
         )
     }
-
     override fun onStart() {
         super.onStart()
+<<<<<<< HEAD
         if(preferenceManager.getBoolean(Constants.KEY_IS_ONBORDING_SCREEN_SEEN)){
 //            startActivity(Intent(this, LoginActivity::class.java))
+=======
+        // Ensure PreferenceManager is initialized before using it
+        if (!::preferenceManager.isInitialized) {
+            preferenceManager = PreferenceManager(this)
+        }
+
+        // Check if the onboarding screen was seen
+        val hasSeenOnboarding = preferenceManager.getBoolean(Constants.KEY_IS_ONBORDING_SCREEN_SEEN)
+
+        if (hasSeenOnboarding) {
+            // If onboarding is already completed, go to LoginActivity
+            startActivity(Intent(this, LoginActivity::class.java))
+>>>>>>> cd
             finish()
         }
     }
 
-}
+    }
+

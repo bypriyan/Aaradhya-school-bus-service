@@ -3,6 +3,10 @@ package com.bypriyan.togocartstore.DI.module
 import android.content.Context
 import android.content.SharedPreferences
 import android.location.Geocoder
+import com.bypriyan.aaradhyaschoolbusservice.api.ApiServiceLogin
+import com.bypriyan.aaradhyaschoolbusservice.api.ApiServiceOTP
+import com.bypriyan.aaradhyaschoolbusservice.api.ApiServiceRegisterUser
+import com.bypriyan.aaradhyaschoolbusservice.api.ApiServiceUserDetails
 import com.bypriyan.bustrackingsystem.utility.PreferenceManager
 import dagger.Module
 import dagger.Provides
@@ -22,9 +26,33 @@ object AppModule {
     @Singleton
     fun provideRetrofit(): Retrofit {
         return Retrofit.Builder()
-            .baseUrl("https://bypriyan.com/gradify-api/") // Replace with your base URL
+            .baseUrl("https://aaradhyaschoolbusservice.com/api/v1/") // Replace with your base URL
             .addConverterFactory(GsonConverterFactory.create())
             .build()
+    }
+
+    @Provides
+    @Singleton
+    fun provideApiServiceOTP(retrofit: Retrofit): ApiServiceOTP {
+        return retrofit.create(ApiServiceOTP::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideApiServiceRegisterUser(retrofit: Retrofit): ApiServiceRegisterUser {
+        return retrofit.create(ApiServiceRegisterUser::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideApiServiceLogin(retrofit: Retrofit): ApiServiceLogin {
+        return retrofit.create(ApiServiceLogin::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideApiServiceUserDetails(retrofit: Retrofit): ApiServiceUserDetails {
+        return retrofit.create(ApiServiceUserDetails::class.java)
     }
 
     @Provides

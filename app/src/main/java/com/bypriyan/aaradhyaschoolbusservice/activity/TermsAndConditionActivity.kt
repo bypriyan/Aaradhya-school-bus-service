@@ -16,7 +16,12 @@ class TermsAndConditionActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         binding.btnConfirm.setOnClickListener(){
+<<<<<<< HEAD
 //            startActivity(Intent(this, LoginActivity::class.java))
+=======
+            startActivity(Intent(this, LoginActivity::class.java))
+            finish()
+>>>>>>> cd
         }
     }
 }
