@@ -152,6 +152,19 @@ class PickupDropActivity : AppCompatActivity(), OnMapReadyCallback {
                 val address = getAddressFromLatLng(centerLatLng)
                 binding.etOnlyDrop.setText(address)
                 binding.btnClearOnlyDrop.visibility = View.VISIBLE
+            } else if (binding.etPickup.hasFocus()) {
+                pickupLocation = centerLatLng
+                val address = getAddressFromLatLng(centerLatLng)
+                binding.etPickup.setText(address)
+                binding.btnClearPickup.visibility = View.VISIBLE
+
+                // Add marker for pickup location
+                pickupMarker?.remove()
+                pickupMarker = googleMap.addMarker(
+                    MarkerOptions()
+                        .position(centerLatLng)
+                        .title("Pickup Location")
+                )
             } else {
                 dropLocation = centerLatLng
                 val address = getAddressFromLatLng(centerLatLng)
@@ -160,6 +173,7 @@ class PickupDropActivity : AppCompatActivity(), OnMapReadyCallback {
             }
             calculateDistance()
         }
+
     }
 
 
@@ -195,33 +209,6 @@ class PickupDropActivity : AppCompatActivity(), OnMapReadyCallback {
     // Rest of the code remains the same...
 
 
-    private fun clearPickupLocation() {
-        pickupLocation = null
-        pickupMarker?.remove()
-        pickupMarker = null
-        binding.etPickup.text.clear()
-        binding.btnClearPickup.visibility = View.GONE
-
-        // Re-enable only drop field when pickup is cleared
-        binding.etOnlyDrop.isEnabled = true
-    }
-
-    private fun clearDropLocation() {
-        dropLocation = null
-        binding.etDrop.text.clear()
-        binding.btnClearDrop.visibility = View.GONE
-
-        // Re-enable only drop field when drop is cleared
-        binding.etOnlyDrop.isEnabled = true
-    }
-
-    private fun clearOnlyDropLocation() {
-        onlyDropLocation = null
-        binding.etOnlyDrop.text.clear()
-        binding.btnClearOnlyDrop.visibility = View.GONE
-
-
-    }
 
     private fun searchLocation(locationName: String, isPickup: Boolean, isOnlyDrop: Boolean = false) {
         val geocoder = Geocoder(this, Locale.getDefault())
@@ -340,6 +327,34 @@ class PickupDropActivity : AppCompatActivity(), OnMapReadyCallback {
         }
     }
 
+    private fun clearPickupLocation() {
+        pickupLocation = null
+        pickupMarker?.remove()
+        pickupMarker = null
+        binding.etPickup.text.clear()
+        binding.btnClearPickup.visibility = View.GONE
+
+        // Re-enable only drop field when pickup is cleared
+        binding.etOnlyDrop.isEnabled = true
+    }
+
+    private fun clearDropLocation() {
+        dropLocation = null
+        binding.etDrop.text.clear()
+        binding.btnClearDrop.visibility = View.GONE
+
+        // Re-enable only drop field when drop is cleared
+        binding.etOnlyDrop.isEnabled = true
+    }
+
+    private fun clearOnlyDropLocation() {
+        onlyDropLocation = null
+        binding.etOnlyDrop.text.clear()
+        binding.btnClearOnlyDrop.visibility = View.GONE
+
+
+    }
+
     private fun calculateDistance() {
         val guruGhasidasLatLng = LatLng(22.126461551343123, 82.1371706108157) // Guru Ghasidas University
 
@@ -419,4 +434,5 @@ class PickupDropActivity : AppCompatActivity(), OnMapReadyCallback {
             }
         }
     }
+
 }
