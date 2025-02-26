@@ -26,13 +26,12 @@
 
         <ImageView
             android:id="@+id/ivvPointer"
-            android:layout_width="@dimen/_25sdp"
-            android:layout_height="@dimen/_25sdp"
+            android:layout_width="@dimen/_28sdp"
+            android:layout_height="@dimen/_28sdp"
             android:layout_margin="@dimen/_10sdp"
             android:layout_centerInParent="true"
             android:layout_above="@+id/ivPointer"
-            android:paddingBottom="@dimen/_10sdp"
-            android:src="@drawable/lpin" />
+            android:src="@drawable/pin" />
 
         <ImageView
             android:id="@+id/ivPointer"
