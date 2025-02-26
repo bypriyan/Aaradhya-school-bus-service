@@ -1,6 +1,7 @@
 package com.bypriyan.aaradhyaschoolbusservice.activity
 
 import android.Manifest
+import android.content.Intent
 import android.content.IntentSender
 import kotlinx.coroutines.launch
 import android.content.pm.PackageManager
@@ -50,6 +51,8 @@ class PickupDropActivity : AppCompatActivity(), OnMapReadyCallback {
 
         // Get the mode from the intent
         mode = intent.getStringExtra("MODE")
+
+
 
         when (mode) {
             "SAME_LOCATION" -> updateUIForSameLocation()
@@ -139,6 +142,12 @@ class PickupDropActivity : AppCompatActivity(), OnMapReadyCallback {
                     }
                 }
             }
+            // Pass total distance and mode to PaymentOptionActivity
+            val intent = Intent(this, PaymentOptionActivity::class.java).apply {
+                putExtra("TOTAL_DISTANCE", totalDistance)
+                putExtra("MODE", mode)
+            }
+            startActivity(intent)
         }
     }
 
@@ -211,6 +220,7 @@ class PickupDropActivity : AppCompatActivity(), OnMapReadyCallback {
     private fun searchLocation(locationName: String, isPickup: Boolean, isOnlyDrop: Boolean = false) {
         val geocoder = Geocoder(this, Locale.getDefault())
         try {
+
             val addresses = geocoder.getFromLocationName(locationName, 1)
             if (addresses!!.isNotEmpty()) {
                 val location = LatLng(addresses[0].latitude, addresses[0].longitude)
@@ -459,86 +469,70 @@ class PickupDropActivity : AppCompatActivity(), OnMapReadyCallback {
 
 
     }
+    private var totalDistance: Float = 0f
 
     private fun calculateDistance() {
-        val guruGhasidasLatLng = LatLng(22.126461551343123, 82.1371706108157) // Guru Ghasidas University
+        val guruGhasidasLatLng = LatLng(22.126461551343123, 82.1371706108157) // GGU Coordinates
 
-        // Create a GeoApiContext with your API key
         val context = GeoApiContext.Builder()
-            .apiKey("AIzaSyDoK6uVnsidH3hQqZkaSqclQnCgFg-MxLc") // Replace with your API key
+            .apiKey("AIzaSyDoK6uVnsidH3hQqZkaSqclQnCgFg-MxLc") // Replace with your API Key
             .build()
 
-        // Use a coroutine to perform the network requests on a background thread
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                // Calculate GGU to Pickup Distance
-                val gguToPickupDistance = if (pickupLocation != null) {
-                    val result: DirectionsResult = DirectionsApi.newRequest(context)
-                        .origin("${guruGhasidasLatLng.latitude},${guruGhasidasLatLng.longitude}") // GGU coordinates
-                        .destination("${pickupLocation!!.latitude},${pickupLocation!!.longitude}") // Pickup coordinates
-                        .mode(TravelMode.DRIVING) // Travel mode (DRIVING, WALKING, etc.)
-                        .await() // Perform the request and wait for the response
+                var gguToPickupDistance = 0f
+                var gguToDropDistance = 0f
+                var gguToOnlyDropDistance = 0f
 
-                    result.routes[0].legs[0].distance.inMeters / 1000f // Convert meters to kilometers
-                } else {
-                    0f // If pickup location is not set, distance is 0
+                if (pickupLocation != null) {
+                    val result = DirectionsApi.newRequest(context)
+                        .origin("${guruGhasidasLatLng.latitude},${guruGhasidasLatLng.longitude}")
+                        .destination("${pickupLocation!!.latitude},${pickupLocation!!.longitude}")
+                        .mode(TravelMode.DRIVING)
+                        .await()
+                    gguToPickupDistance = result.routes[0].legs[0].distance.inMeters / 1000f
                 }
 
-                // Calculate GGU to Drop Distance
-                val gguToDropDistance = if (dropLocation != null) {
-                    val result: DirectionsResult = DirectionsApi.newRequest(context)
-                        .origin("${guruGhasidasLatLng.latitude},${guruGhasidasLatLng.longitude}") // GGU coordinates
-                        .destination("${dropLocation!!.latitude},${dropLocation!!.longitude}") // Drop coordinates
-                        .mode(TravelMode.DRIVING) // Travel mode (DRIVING, WALKING, etc.)
-                        .await() // Perform the request and wait for the response
-
-                    result.routes[0].legs[0].distance.inMeters / 1000f // Convert meters to kilometers
-                } else {
-                    0f // If drop location is not set, distance is 0
+                if (dropLocation != null) {
+                    val result = DirectionsApi.newRequest(context)
+                        .origin("${guruGhasidasLatLng.latitude},${guruGhasidasLatLng.longitude}")
+                        .destination("${dropLocation!!.latitude},${dropLocation!!.longitude}")
+                        .mode(TravelMode.DRIVING)
+                        .await()
+                    gguToDropDistance = result.routes[0].legs[0].distance.inMeters / 1000f
                 }
 
-                // Calculate GGU to Only Drop Distance
-                val gguToOnlyDropDistance = if (onlyDropLocation != null) {
-                    val result: DirectionsResult = DirectionsApi.newRequest(context)
-                        .origin("${guruGhasidasLatLng.latitude},${guruGhasidasLatLng.longitude}") // GGU coordinates
-                        .destination("${onlyDropLocation!!.latitude},${onlyDropLocation!!.longitude}") // Only Drop coordinates
-                        .mode(TravelMode.DRIVING) // Travel mode (DRIVING, WALKING, etc.)
-                        .await() // Perform the request and wait for the response
-
-                    result.routes[0].legs[0].distance.inMeters / 1000f // Convert meters to kilometers
-                } else {
-                    0f // If only drop location is not set, distance is 0
+                if (onlyDropLocation != null) {
+                    val result = DirectionsApi.newRequest(context)
+                        .origin("${guruGhasidasLatLng.latitude},${guruGhasidasLatLng.longitude}")
+                        .destination("${onlyDropLocation!!.latitude},${onlyDropLocation!!.longitude}")
+                        .mode(TravelMode.DRIVING)
+                        .await()
+                    gguToOnlyDropDistance = result.routes[0].legs[0].distance.inMeters / 1000f
                 }
 
-                // Update the UI on the main thread
+                // Calculate total distance based on mode
+                totalDistance = when (mode) {
+                    "SAME_LOCATION" -> gguToPickupDistance + gguToDropDistance
+                    "ONLY_DROP" -> gguToOnlyDropDistance
+                    "DIFFERENT_LOCATION" -> gguToPickupDistance + gguToDropDistance
+                    else -> 0f
+                }
+
                 runOnUiThread {
-                    val distanceText = buildString {
-                        if (pickupLocation != null) {
-                            append("GGU → Pickup: %.2f km\n".format(gguToPickupDistance))
-                        }
-                        if (dropLocation != null) {
-                            append("GGU → Drop: %.2f km\n".format(gguToDropDistance))
-                        }
-                        if (onlyDropLocation != null) {
-                            append("GGU → Only Drop: %.2f km\n".format(gguToOnlyDropDistance))
-                        }
-                    }
-
+                    val distanceText = "Total Distance: %.2f km".format(totalDistance)
                     binding.tvDistance.text = distanceText
                 }
+
             } catch (e: Exception) {
-                // Handle errors (e.g., network issues, invalid API key, etc.)
                 e.printStackTrace()
                 runOnUiThread {
-                    Toast.makeText(
-                        this@PickupDropActivity,
-                        "Failed to calculate distance: ${e.message}",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    Toast.makeText(this@PickupDropActivity, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
                 }
             }
         }
     }
+
 
 }
 //cc1.1
