@@ -1,35 +1,26 @@
 package com.bypriyan.aaradhyaschoolbusservice.activity
 
 import android.content.Context
-import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
-import android.util.Base64
 import android.util.Log
 import android.view.View
 import android.widget.Toast
-import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModel
-import coil3.toUri
-import com.bypriyan.aaradhyaschoolbusservice.R
-import com.bypriyan.aaradhyaschoolbusservice.databinding.ActivityLoginBinding
+import androidx.lifecycle.lifecycleScope
 import com.bypriyan.aaradhyaschoolbusservice.databinding.ActivityOtpBinding
 import com.bypriyan.aaradhyaschoolbusservice.model.RegisterRequest
-import com.bypriyan.aaradhyaschoolbusservice.repo.RegisterUserRepository
 import com.bypriyan.aaradhyaschoolbusservice.viewModel.RegisterViewModel
 import com.bypriyan.bustrackingsystem.utility.Constants
 import com.bypriyan.bustrackingsystem.utility.PreferenceManager
 import dagger.hilt.android.AndroidEntryPoint
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
-import okhttp3.MultipartBody
-import okhttp3.RequestBody.Companion.asRequestBody
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
@@ -64,43 +55,50 @@ class OtpActivity : AppCompatActivity() {
         val otp = intent.getStringExtra(Constants.KEY_OTP)
         val imageUriString = intent.getStringExtra(Constants.KEY_PROFILE_IMAGE_URI)
 
+
         binding.continueBtn.setOnClickListener {
             Log.d("fetch", "onCreate: ${binding.firstPinView.text.toString()} + $otp")
-            if (binding.firstPinView.text.toString().isNotEmpty()
-            ) {
-                // Compress and encode the image
-                val compressedImagePath = compressImage(Uri.parse(imageUriString), this)
-                Log.d("fetch", "onCreate: ${binding.firstPinView.text.toString()} + $otp")
+            if (binding.firstPinView.text.toString().isNotEmpty()) {
+                // Launch a coroutine to call the suspend function
+                lifecycleScope.launch {
+                    // Check if imageUriString is not null before parsing
+                    val compressedImageFile = if (!imageUriString.isNullOrBlank()) {
+                        compressImage(this@OtpActivity, Uri.parse(imageUriString))
+                    } else {
+                        null // Handle the case where no image is selected
+                    }
 
-                // Create RegisterRequest
-                val registerRequest = RegisterRequest(
-                    fullName = fullName!!,
-                    email = email!!,
-                    className = className!!,
-                    password = password!!,
-                    age = age!!,
-                    standard = standard!!,
-                    year = year!!,
-                    fatherName = fatherName!!,
-                    fatherNumber = fatherPhone!!,
-                    motherName = motherName!!,
-                    motherNumber = motherPhone!!,
-                    imageUri = compressedImagePath
-                )
+                    // Pass the file path to RegisterRequest
+                    val registerRequest = RegisterRequest(
+                        fullName = fullName!!,
+                        email = email!!,
+                        className = className!!,
+                        password = password!!,
+                        age = age!!,
+                        standard = standard!!,
+                        year = year!!,
+                        fatherName = fatherName!!,
+                        fatherNumber = fatherPhone!!,
+                        motherName = motherName!!,
+                        motherNumber = motherPhone!!,
+                        imageUri = compressedImageFile?.absolutePath // Pass the file path as a String
+                    )
 
-                // Call ViewModel to register user
-                registerUserViewModel.registerUser(registerRequest)
+                    // Call ViewModel to register user
+                    registerUserViewModel.registerUser(registerRequest)
 
-                // Observe the response
-                registerUserViewModel.registerResponse.observe(this, Observer { response ->
-                    Log.d("fetch", "onCreate: $response")
-                })
+                    // Observe the response
+                    registerUserViewModel.registerResponse.observe(
+                        this@OtpActivity,
+                        Observer { response ->
+                            Log.d("fetch", "onCreate: $response")
+                        })
+                }
             } else {
                 Toast.makeText(this, "OTP does not match", Toast.LENGTH_SHORT).show()
             }
         }
     }
-
     fun isLoading(isLoading: Boolean) {
         if (isLoading) {
             binding.progressbar.visibility = View.VISIBLE
@@ -141,20 +139,26 @@ class OtpActivity : AppCompatActivity() {
     }
 
     // In OtpActivity
-    private fun compressImage(uri: Uri, context: Context): String? {
-        return try {
-            val inputStream = context.contentResolver.openInputStream(uri)
-            val bitmap = BitmapFactory.decodeStream(inputStream)
-            val compressedBitmap = compressBitmap(bitmap, 50)
-            val file = File.createTempFile("compressed_image", ".jpg", context.cacheDir)
-            val outputStream = FileOutputStream(file)
-            compressedBitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
-            outputStream.flush()
-            outputStream.close()
-            file.absolutePath // Return the compressed file path
-        } catch (e: Exception) {
-            e.printStackTrace()
-            null
+    private suspend fun compressImage(context: Context, uri: Uri): File? {
+        return withContext(Dispatchers.IO) {
+            try {
+                val inputStream: InputStream? = context.contentResolver.openInputStream(uri)
+                val bitmap = BitmapFactory.decodeStream(inputStream) ?: return@withContext null
+
+                val compressedFile =
+                    File(context.cacheDir, "compressed_${System.currentTimeMillis()}.jpg")
+                val outputStream = FileOutputStream(compressedFile)
+
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 50, outputStream)
+                outputStream.flush()
+                outputStream.close()
+
+                Log.d("Upload", "Image compressed successfully: ${compressedFile.absolutePath}")
+                return@withContext compressedFile
+            } catch (e: Exception) {
+                Log.e("Upload", "Image compression failed: ${e.message}")
+                return@withContext null
+            }
         }
     }
 

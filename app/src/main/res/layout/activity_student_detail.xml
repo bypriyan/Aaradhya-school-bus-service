@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activity.StudentDetailActivity">
+
+    <ImageView
+        android:id="@+id/userImage"
+        android:layout_width="@dimen/_50sdp"
+        android:layout_height="@dimen/_50sdp"
+        android:layout_alignParentLeft="true"
+        android:layout_marginTop="@dimen/_5sdp"
+        android:background="@drawable/custom_background"
+        android:layout_margin="@dimen/_5sdp"
+        android:src="@drawable/logo"/>
+    <LinearLayout
+        android:layout_below="@+id/userImage"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/txtName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/_17sdp"
+            android:text="name "
+            android:layout_alignParentLeft="true"
+
+            android:layout_margin="5dp"/>
+
+        <TextView
+            android:id="@+id/txtStandard"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="name "    android:textSize="@dimen/_17sdp"
+            android:layout_alignParentLeft="true"
+
+            android:layout_margin="5dp"/>
+
+        <TextView
+            android:id="@+id/txtyear"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="name "    android:textSize="@dimen/_17sdp"
+            android:layout_alignParentLeft="true"
+
+            android:layout_margin="5dp"/>
+
+        <TextView
+            android:id="@+id/txtMotherName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="name "    android:textSize="@dimen/_17sdp"
+            android:layout_alignParentLeft="true"
+
+            android:layout_margin="5dp"/>
+
+        <TextView
+            android:id="@+id/txtFatherName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="name "    android:textSize="@dimen/_17sdp"
+            android:layout_alignParentLeft="true"
+
+            android:layout_margin="5dp"/>
+
+        <TextView
+            android:id="@+id/txtId"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="name "    android:textSize="@dimen/_17sdp"
+            android:layout_alignParentLeft="true"
+
+            android:layout_margin="5dp"/>
+
+        <TextView
+            android:id="@+id/txtClass"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="name "    android:textSize="@dimen/_17sdp"
+            android:layout_alignParentLeft="true"
+
+            android:layout_margin="5dp"/>
+
+
+
+    </LinearLayout>
+
+
+
+
+</RelativeLayout>

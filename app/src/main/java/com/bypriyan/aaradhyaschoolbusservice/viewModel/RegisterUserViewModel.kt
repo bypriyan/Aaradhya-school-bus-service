@@ -1,5 +1,6 @@
 package com.bypriyan.aaradhyaschoolbusservice.viewModel
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -31,6 +32,8 @@ class RegisterViewModel @Inject constructor(
             _isLoading.value = true
             try {
                 val response = registerUserRepository.registerUser(request)
+                Log.d("reg", "registerUser: $response")
+                _registerResponse.value = response
 
             } catch (e: Exception) {
 
