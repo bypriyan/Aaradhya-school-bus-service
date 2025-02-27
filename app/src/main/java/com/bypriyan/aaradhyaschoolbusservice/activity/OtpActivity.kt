@@ -27,6 +27,8 @@ import com.bypriyan.aaradhyaschoolbusservice.viewModel.RegisterViewModel
 import com.bypriyan.bustrackingsystem.utility.Constants
 import com.bypriyan.bustrackingsystem.utility.PreferenceManager
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
@@ -66,10 +68,14 @@ class OtpActivity : AppCompatActivity() {
 
         binding.continueBtn.setOnClickListener {
             Log.d("fetch", "onCreate: ${binding.firstPinView.text.toString()} + $otp")
-            if (binding.firstPinView.text.toString().isNotEmpty()
-            ) {
-                // Compress and encode the image
-                val compressedImagePath = compressImage(Uri.parse(imageUriString), this)
+            if (binding.firstPinView.text.toString().isNotEmpty()) {
+                // Check if imageUriString is not null before parsing
+                val compressedImagePath = if (!imageUriString.isNullOrBlank()) {
+                    val compressedFile = compressImage(this, Uri.parse(imageUriString))
+                } else {
+                    null // Handle the case where no image is selected
+                }
+
                 Log.d("fetch", "onCreate: ${binding.firstPinView.text.toString()} + $otp")
 
                 // Create RegisterRequest
@@ -141,20 +147,26 @@ class OtpActivity : AppCompatActivity() {
     }
 
     // In OtpActivity
-    private fun compressImage(uri: Uri, context: Context): String? {
-        return try {
-            val inputStream = context.contentResolver.openInputStream(uri)
-            val bitmap = BitmapFactory.decodeStream(inputStream)
-            val compressedBitmap = compressBitmap(bitmap, 50)
-            val file = File.createTempFile("compressed_image", ".jpg", context.cacheDir)
-            val outputStream = FileOutputStream(file)
-            compressedBitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
-            outputStream.flush()
-            outputStream.close()
-            file.absolutePath // Return the compressed file path
-        } catch (e: Exception) {
-            e.printStackTrace()
-            null
+    private suspend fun compressImage(context: Context, uri: Uri): File? {
+        return withContext(Dispatchers.IO) {
+            try {
+                val inputStream: InputStream? = context.contentResolver.openInputStream(uri)
+                val bitmap = BitmapFactory.decodeStream(inputStream) ?: return@withContext null
+
+                val compressedFile =
+                    File(context.cacheDir, "compressed_${System.currentTimeMillis()}.jpg")
+                val outputStream = FileOutputStream(compressedFile)
+
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 50, outputStream)
+                outputStream.flush()
+                outputStream.close()
+
+                Log.d("Upload", "Image compressed successfully: ${compressedFile.absolutePath}")
+                return@withContext compressedFile
+            } catch (e: Exception) {
+                Log.e("Upload", "Image compression failed: ${e.message}")
+                return@withContext null
+            }
         }
     }
 

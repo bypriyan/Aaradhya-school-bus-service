@@ -419,9 +419,9 @@ class PickupDropActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private fun updateUIForSameLocation() {
         // Show pickup and drop fields
-        binding.txtPLocation.visibility = View.VISIBLE
-        binding.etPickup.visibility = View.VISIBLE
-        binding.btnClearPickup.visibility = View.VISIBLE
+//        binding.txtPLocation.visibility = View.VISIBLE
+//        binding.etPickup.visibility = View.VISIBLE
+//        binding.btnClearPickup.visibility = View.VISIBLE
 
         binding.txtDLocation.visibility = View.VISIBLE
         binding.etDrop.visibility = View.VISIBLE

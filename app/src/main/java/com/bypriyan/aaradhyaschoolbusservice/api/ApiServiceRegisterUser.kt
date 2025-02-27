@@ -23,6 +23,6 @@ interface ApiServiceRegisterUser {
         @Part("father_number") fatherNumber: RequestBody,
         @Part("mother_name") motherName: RequestBody,
         @Part("mother_number") motherNumber: RequestBody,
-        @Part image: MultipartBody.Part?
+        @Part image: MultipartBody.Part? // This is nullable
     ): ApiResponceRegisterUser
 }

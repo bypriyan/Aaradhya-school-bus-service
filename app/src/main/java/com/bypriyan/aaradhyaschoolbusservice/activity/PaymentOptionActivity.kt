@@ -13,6 +13,7 @@ import org.json.JSONObject
 class PaymentOptionActivity : AppCompatActivity(), PaymentResultListener {
 
     lateinit var binding: ActivityPaymentOptionBinding
+
     val slabs = listOf(
         Slab(0.0..1.0, 3800, 3800, 2850, 10450),
         Slab(1.1..2.0, 4600, 4600, 3450, 12650),

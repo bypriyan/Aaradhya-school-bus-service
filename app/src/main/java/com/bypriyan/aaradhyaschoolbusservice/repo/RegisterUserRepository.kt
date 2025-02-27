@@ -48,7 +48,7 @@ class RegisterUserRepository @Inject constructor(private val apiService: ApiServ
             fatherNumber,
             motherName,
             motherNumber,
-            imagePart
+            imagePart // This can be null if no image is selected
         )
     }
 }
