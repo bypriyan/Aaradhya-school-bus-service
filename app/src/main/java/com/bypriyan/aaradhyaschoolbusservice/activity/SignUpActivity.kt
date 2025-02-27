@@ -191,6 +191,7 @@ class SignUpActivity : AppCompatActivity() {
         startActivity(intent)
     }
 
+
     fun isLoading(isLoading: Boolean){
         if (isLoading){
             binding.progressbar.visibility = View.VISIBLE
@@ -218,5 +219,41 @@ class SignUpActivity : AppCompatActivity() {
             e.printStackTrace()
         }
     }
+    private fun startStudentDetailsActivity() {
+        val fullName = binding.fullNameEt.text.toString()
+        val standard = binding.standerdEt.text.toString()
+        val className = binding.classEt.text.toString()
+        val age = binding.ageEt.text.toString()
+        val year = binding.yearEt.text.toString()
+        val fatherName = binding.fatherNameEt.text.toString()
+        val fatherPhone = binding.fPhoneNumEt.text.toString()
+        val motherName = binding.mothersName.text.toString()
+        val motherPhone = binding.mPhoneEt.text.toString()
+        val email = binding.emailEt.text.toString()
+        val profileImageUri = selectedImageUri?.toString()
+
+        // Debugging: Print values in Logcat
+        android.util.Log.d("SignUpActivity", "Full Name: $fullName")
+        android.util.Log.d("SignUpActivity", "Email: $email")
+        android.util.Log.d("SignUpActivity", "Profile Image URI: $profileImageUri")
+
+        val intent = Intent(this, StudentDetailActivity::class.java)
+        intent.putExtra(Constants.KEY_FULL_NAME, fullName)
+        intent.putExtra(Constants.KEY_STANDARD, standard)
+        intent.putExtra(Constants.KEY_CLASS, className)
+        intent.putExtra(Constants.KEY_AGE, age)
+        intent.putExtra(Constants.KEY_YEAR, year)
+        intent.putExtra(Constants.KEY_FATHER_NAME, fatherName)
+        intent.putExtra(Constants.KEY_FATHER_PHONE, fatherPhone)
+        intent.putExtra(Constants.KEY_MOTHER_NAME, motherName)
+        intent.putExtra(Constants.KEY_MOTHER_PHONE, motherPhone)
+        intent.putExtra(Constants.KEY_EMAIL, email)
+        profileImageUri?.let {
+            intent.putExtra(Constants.KEY_PROFILE_IMAGE_URI, it)
+        }
+
+        startActivity(intent)
+    }
+
 
 }

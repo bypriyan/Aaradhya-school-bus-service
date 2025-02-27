@@ -2,6 +2,7 @@ package com.bypriyan.aaradhyaschoolbusservice.activity
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -29,62 +30,54 @@ class PaymentOptionActivity : AppCompatActivity(), PaymentResultListener {
     private var thirdInstallmentPrice = 0
     private var totalPrice = 0
     var newTotal = 0
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityPaymentOptionBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+
+
         val totalDistance = intent.getFloatExtra("TOTAL_DISTANCE", 0f)
-        val mode = intent.getStringExtra("MODE") ?: ""
-        val distanceText = "Total Distance: %.2f km".format(totalDistance)
         val prices = calculatePrices(totalDistance.toDouble())
 
         prices?.let {
-            // Set installment prices
             firstInstallmentPrice = it[0].split(": ")[1].toInt()
             secondInstallmentPrice = it[1].split(": ")[1].toInt()
             thirdInstallmentPrice = it[2].split(": ")[1].toInt()
             totalPrice = it[3].split(": ")[1].toInt()
-            newTotal = totalPrice
 
-            // Set prices in TextViews
-            binding.firstInstallmentTv.text = "₹" + firstInstallmentPrice.toString()
-            binding.secondInstallmentTv.text = "₹" + secondInstallmentPrice.toString()
-            binding.thirdInstallmentTv.text = "₹" + thirdInstallmentPrice.toString()
-            binding.allTotalPriseTv.text = "₹" + totalPrice.toString()
-
-            // Set initial total cost
+            // Show total amount initially
             binding.totalCostTv.text = "₹$totalPrice"
-        }
+            binding.allTotalPriseTv.text = "₹$totalPrice"
 
-        // Set checkbox listeners
+            // Show first installment price
+            binding.firstInstallmentTv.text = "₹$firstInstallmentPrice"
+
+            // Hide second and third installments initially
+            binding.secondInstallment.visibility = View.GONE
+            binding.secoundInstallmentCheckBox.visibility = View.GONE
+            binding.secondInstallmentTv.visibility = View.GONE
+
+            binding.thirdInstallment.visibility = View.GONE
+            binding.thirdInstallmentCheckBox.visibility = View.GONE
+            binding.thirdInstallmentTv.visibility = View.GONE
+        }
+        binding.firstInstallmentCheckBox.isChecked = false
+
+        // Handle first installment selection
         binding.firstInstallmentCheckBox.setOnCheckedChangeListener { _, isChecked ->
-            updateTotalPrice()
-        }
 
-        binding.secoundInstallmentCheckBox.setOnCheckedChangeListener { _, isChecked ->
-            if (!isChecked) {
-                // If 2nd is unchecked, uncheck 3rd as well
-                binding.thirdInstallmentCheckBox.isChecked = false
+            if (isChecked) {
+                binding.totalCostTv.text = "₹$firstInstallmentPrice"
+            } else {
+                binding.totalCostTv.text = "₹$totalPrice"
             }
-            updateTotalPrice()
         }
 
-        binding.thirdInstallmentCheckBox.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked && !binding.secoundInstallmentCheckBox.isChecked) {
-                // If 3rd is checked but 2nd is not checked, uncheck 3rd
-                binding.thirdInstallmentCheckBox.isChecked = false
-                Toast.makeText(this, "Please select 2nd installment first", Toast.LENGTH_SHORT).show()
-            }
-            updateTotalPrice()
-        }
-
-        // Ensure the first checkbox is always checked
-        binding.firstInstallmentCheckBox.isEnabled = false
-
-        binding.continueBtn.setOnClickListener{
-            startPayment(newTotal)
+        // Handle continue button click
+        binding.continueBtn.setOnClickListener {
+            val amountToPay = binding.totalCostTv.text.toString().replace("₹", "").toInt()
+            startPayment(amountToPay) // Pay the displayed amount
         }
     }
 
@@ -145,6 +138,8 @@ class PaymentOptionActivity : AppCompatActivity(), PaymentResultListener {
 
     override fun onPaymentSuccess(razorpayPaymentID: String?) {
         Toast.makeText(this, "Payment Successful: $razorpayPaymentID", Toast.LENGTH_SHORT).show()
+        startActivity(Intent(this, DasboardActivity::class.java))
+        finish()
     }
 
     override fun onPaymentError(code: Int, response: String?) {

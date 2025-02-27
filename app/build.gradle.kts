@@ -107,6 +107,7 @@ dependencies {
     implementation ("com.google.android.libraries.places:places:3.3.0")
     //razerpay
     implementation ("com.razorpay:checkout:1.6.40")
+    implementation ("com.squareup.okhttp3:okhttp:4.9.3")
 
 }
 

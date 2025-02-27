@@ -14,7 +14,6 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.transition.Visibility
 import com.bypriyan.aaradhyaschoolbusservice.databinding.ActivityPickupDropBinding
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.*
@@ -25,11 +24,9 @@ import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.tasks.Task
 import com.google.maps.DirectionsApi
 import com.google.maps.GeoApiContext
-import com.google.maps.model.DirectionsResult
 import com.google.maps.model.TravelMode
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import java.io.IOException
 import java.util.*
 
@@ -60,13 +57,14 @@ class PickupDropActivity : AppCompatActivity(), OnMapReadyCallback {
             "DIFFERENT_LOCATION" -> updateUIForDifferentLocation()
         }
 
-        val mapFragment = supportFragmentManager.findFragmentById(com.bypriyan.aaradhyaschoolbusservice.R.id.mapFragment) as SupportMapFragment
+        val mapFragment =
+            supportFragmentManager.findFragmentById(com.bypriyan.aaradhyaschoolbusservice.R.id.mapFragment) as SupportMapFragment
         mapFragment.getMapAsync(this)
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
 
 
-        binding.btnCurrentLocation.setOnClickListener {    checkLocationSettings()}
+        binding.btnCurrentLocation.setOnClickListener { checkLocationSettings() }
         binding.btnClearPickup.setOnClickListener { clearPickupLocation() }
         binding.btnClearDrop.setOnClickListener { clearDropLocation() }
         binding.btnClearOnlyDrop.setOnClickListener { clearOnlyDropLocation() }
@@ -110,7 +108,8 @@ class PickupDropActivity : AppCompatActivity(), OnMapReadyCallback {
                 // Disable pickup and drop fields when only drop is focused
                 binding.etPickup.isEnabled = false
                 binding.etDrop.isEnabled = false
-            } else{}
+            } else {
+            }
         }
 
         binding.btnConfirm.setOnClickListener {
@@ -121,27 +120,53 @@ class PickupDropActivity : AppCompatActivity(), OnMapReadyCallback {
                     if (pickupAddress.isEmpty() || dropAddress.isEmpty()) {
                         Toast.makeText(this, "Please enter a location", Toast.LENGTH_SHORT).show()
                     } else {
-                        Toast.makeText(this, "Same Pickup and Drop Location Selected: $pickupAddress", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            this,
+                            "Same Pickup and Drop Location Selected: $pickupAddress",
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
                 }
+
                 "ONLY_DROP" -> {
                     val onlyDropAddress = binding.etOnlyDrop.text.toString()
                     if (onlyDropAddress.isEmpty()) {
-                        Toast.makeText(this, "Please enter a drop location", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this, "Please enter a drop location", Toast.LENGTH_SHORT)
+                            .show()
                     } else {
-                        Toast.makeText(this, "Only Drop Location Selected: $onlyDropAddress", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            this,
+                            "Only Drop Location Selected: $onlyDropAddress",
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
                 }
+
                 "DIFFERENT_LOCATION" -> {
                     val pickupAddress = binding.etPickup.text.toString()
                     val dropAddress = binding.etDrop.text.toString()
                     if (pickupAddress.isEmpty() && dropAddress.isEmpty()) {
-                        Toast.makeText(this, "Please select at least one location", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            this,
+                            "Please select at least one location",
+                            Toast.LENGTH_SHORT
+                        ).show()
                     } else {
-                        Toast.makeText(this, "Pickup: $pickupAddress, Drop: $dropAddress", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            this,
+                            "Pickup: $pickupAddress, Drop: $dropAddress",
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
                 }
             }
+            // Check if the distance is more than 15 km
+            if (totalDistance > 15) {
+                Toast.makeText(this, "Your distance should be under 15 km", Toast.LENGTH_SHORT)
+                    .show()
+                return@setOnClickListener
+            }
+
             // Pass total distance and mode to PaymentOptionActivity
             val intent = Intent(this, PaymentOptionActivity::class.java).apply {
                 putExtra("TOTAL_DISTANCE", totalDistance)
@@ -150,7 +175,6 @@ class PickupDropActivity : AppCompatActivity(), OnMapReadyCallback {
             startActivity(intent)
         }
     }
-
     override fun onMapReady(map: GoogleMap) {
         googleMap = map
 
@@ -433,6 +457,7 @@ class PickupDropActivity : AppCompatActivity(), OnMapReadyCallback {
         binding.etOnlyDrop.visibility = View.GONE
         binding.btnClearOnlyDrop.visibility = View.GONE
 
+
         // Set the same location for pickup and drop
         binding.etDrop.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
@@ -472,7 +497,7 @@ class PickupDropActivity : AppCompatActivity(), OnMapReadyCallback {
     private var totalDistance: Float = 0f
 
     private fun calculateDistance() {
-        val guruGhasidasLatLng = LatLng(22.126461551343123, 82.1371706108157) // GGU Coordinates
+        val rklGalaxySchool = LatLng(18.65355422287287, 73.88056008151783) // GGU Coordinates
 
         val context = GeoApiContext.Builder()
             .apiKey("AIzaSyDoK6uVnsidH3hQqZkaSqclQnCgFg-MxLc") // Replace with your API Key
@@ -486,7 +511,7 @@ class PickupDropActivity : AppCompatActivity(), OnMapReadyCallback {
 
                 if (pickupLocation != null) {
                     val result = DirectionsApi.newRequest(context)
-                        .origin("${guruGhasidasLatLng.latitude},${guruGhasidasLatLng.longitude}")
+                        .origin("${rklGalaxySchool.latitude},${rklGalaxySchool.longitude}")
                         .destination("${pickupLocation!!.latitude},${pickupLocation!!.longitude}")
                         .mode(TravelMode.DRIVING)
                         .await()
@@ -495,7 +520,7 @@ class PickupDropActivity : AppCompatActivity(), OnMapReadyCallback {
 
                 if (dropLocation != null) {
                     val result = DirectionsApi.newRequest(context)
-                        .origin("${guruGhasidasLatLng.latitude},${guruGhasidasLatLng.longitude}")
+                        .origin("${rklGalaxySchool.latitude},${rklGalaxySchool.longitude}")
                         .destination("${dropLocation!!.latitude},${dropLocation!!.longitude}")
                         .mode(TravelMode.DRIVING)
                         .await()
@@ -504,7 +529,7 @@ class PickupDropActivity : AppCompatActivity(), OnMapReadyCallback {
 
                 if (onlyDropLocation != null) {
                     val result = DirectionsApi.newRequest(context)
-                        .origin("${guruGhasidasLatLng.latitude},${guruGhasidasLatLng.longitude}")
+                        .origin("${rklGalaxySchool.latitude},${rklGalaxySchool.longitude}")
                         .destination("${onlyDropLocation!!.latitude},${onlyDropLocation!!.longitude}")
                         .mode(TravelMode.DRIVING)
                         .await()

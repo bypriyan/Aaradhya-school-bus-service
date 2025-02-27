@@ -17,9 +17,17 @@ class RegisterUserRepository @Inject constructor(private val apiService: ApiServ
 
     suspend fun registerUser(request: RegisterRequest): ApiResponceRegisterUser {
         val imagePart = request.imageUri?.let { path ->
-            val file = File(path)
-            val requestFile = file.asRequestBody("image/*".toMediaTypeOrNull())
-            MultipartBody.Part.createFormData("image", file.name, requestFile)
+            if (path.isNotBlank()) {
+                val file = File(path)
+                if (file.exists()) { // Ensure the file exists
+                    val requestFile = file.asRequestBody("image/*".toMediaTypeOrNull())
+                    MultipartBody.Part.createFormData("image", file.name, requestFile)
+                } else {
+                    null // Handle the case where the file does not exist
+                }
+            } else {
+                null // Handle the case where the path is blank
+            }
         }
 
         // Convert other fields to RequestBody

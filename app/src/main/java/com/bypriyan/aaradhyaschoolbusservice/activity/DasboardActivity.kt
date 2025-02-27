@@ -36,6 +36,10 @@ class DasboardActivity : AppCompatActivity() {
 
         Log.d("dash", "onCreate: $userId, $token, $token_type")
 
+        binding.profileImage.setOnClickListener(){
+            startActivity(Intent(this, StudentDetailActivity::class.java))
+        }
+
         userViewModel.getUserDetails(userId, token)
 
         userViewModel.userDetails.observe(this) { userDetails ->
