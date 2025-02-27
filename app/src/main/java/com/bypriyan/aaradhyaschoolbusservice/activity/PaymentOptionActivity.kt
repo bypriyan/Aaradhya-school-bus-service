@@ -2,7 +2,6 @@ package com.bypriyan.aaradhyaschoolbusservice.activity
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.View
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -35,8 +34,6 @@ class PaymentOptionActivity : AppCompatActivity(), PaymentResultListener {
         binding = ActivityPaymentOptionBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-
-
         val totalDistance = intent.getFloatExtra("TOTAL_DISTANCE", 0f)
         val prices = calculatePrices(totalDistance.toDouble())
 
@@ -47,58 +44,44 @@ class PaymentOptionActivity : AppCompatActivity(), PaymentResultListener {
             totalPrice = it[3].split(": ")[1].toInt()
 
             // Show total amount initially
-            binding.totalCostTv.text = "₹$totalPrice"
+            binding.totalCostTv.text = "PAY  "+"₹$totalPrice"
             binding.allTotalPriseTv.text = "₹$totalPrice"
 
-            // Show first installment price
+            // Show first installment option for EMI
             binding.firstInstallmentTv.text = "₹$firstInstallmentPrice"
-
-            // Hide second and third installments initially
-            binding.secondInstallment.visibility = View.GONE
-            binding.secoundInstallmentCheckBox.visibility = View.GONE
-            binding.secondInstallmentTv.visibility = View.GONE
-
-            binding.thirdInstallment.visibility = View.GONE
-            binding.thirdInstallmentCheckBox.visibility = View.GONE
-            binding.thirdInstallmentTv.visibility = View.GONE
-        }
-        binding.firstInstallmentCheckBox.isChecked = false
-
-        // Handle first installment selection
-        binding.firstInstallmentCheckBox.setOnCheckedChangeListener { _, isChecked ->
-
-            if (isChecked) {
-                binding.totalCostTv.text = "₹$firstInstallmentPrice"
-            } else {
-                binding.totalCostTv.text = "₹$totalPrice"
-            }
         }
 
-        // Handle continue button click
+        // Full payment button
+        binding.totalCostTv.setOnClickListener {
+            startPayment(totalPrice) // Pay total amount
+        }
+
+        binding.continueBtn.text= "Pay  "+"$firstInstallmentPrice"
+        // EMI first installment button
         binding.continueBtn.setOnClickListener {
-            val amountToPay = binding.totalCostTv.text.toString().replace("₹", "").toInt()
-            startPayment(amountToPay) // Pay the displayed amount
+            startPayment(firstInstallmentPrice) // Pay only first installment
         }
     }
+
 
     private fun updateTotalPrice() {
          newTotal = 0
 
-        if (binding.firstInstallmentCheckBox.isChecked) {
-            newTotal += firstInstallmentPrice
-        }
-        if (binding.secoundInstallmentCheckBox.isChecked) {
-            newTotal += secondInstallmentPrice
-        }
-        if (binding.thirdInstallmentCheckBox.isChecked) {
-            newTotal += thirdInstallmentPrice
-        }
+//        if (binding.firstInstallmentCheckBox.isChecked) {
+//            newTotal += firstInstallmentPrice
+//        }
+//        if (binding.secoundInstallmentCheckBox.isChecked) {
+//            newTotal += secondInstallmentPrice
+//        }
+//        if (binding.thirdInstallmentCheckBox.isChecked) {
+//            newTotal += thirdInstallmentPrice
+//        }
 
         // Ensure at least one checkbox is checked
-        if (newTotal == 0) {
-            binding.firstInstallmentCheckBox.isChecked = true
-            newTotal += firstInstallmentPrice
-        }
+//        if (newTotal == 0) {
+//            binding.firstInstallmentCheckBox.isChecked = true
+//            newTotal += firstInstallmentPrice
+//        }
 
         // Update total price TextView
         binding.allTotalPriseTv.text = "₹$newTotal"
