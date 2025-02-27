@@ -17,9 +17,9 @@ class RegisterUserRepository @Inject constructor(private val apiService: ApiServ
 
     suspend fun registerUser(request: RegisterRequest): ApiResponceRegisterUser {
         val imagePart = request.imageUri?.let { path ->
-            val file = File(path)
-            val requestFile = file.asRequestBody("image/*".toMediaTypeOrNull())
-            MultipartBody.Part.createFormData("image", file.name, requestFile)
+//            val file = File(path)
+//            val requestFile = file.asRequestBody("image/*".toMediaTypeOrNull())
+//            MultipartBody.Part.createFormData("image", file.name, requestFile)
         }
 
         // Convert other fields to RequestBody
@@ -48,7 +48,7 @@ class RegisterUserRepository @Inject constructor(private val apiService: ApiServ
             fatherNumber,
             motherName,
             motherNumber,
-            imagePart // This can be null if no image is selected
+            imagePart as MultipartBody.Part? // This can be null if no image is selected
         )
     }
 }

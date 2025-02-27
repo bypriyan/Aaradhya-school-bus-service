@@ -472,7 +472,7 @@ class PickupDropActivity : AppCompatActivity(), OnMapReadyCallback {
     private var totalDistance: Float = 0f
 
     private fun calculateDistance() {
-        val guruGhasidasLatLng = LatLng(22.126461551343123, 82.1371706108157) // GGU Coordinates
+        val guruGhasidasLatLng = LatLng(18.6535316, 73.8805565) // GGU Coordinates
 
         val context = GeoApiContext.Builder()
             .apiKey("AIzaSyDoK6uVnsidH3hQqZkaSqclQnCgFg-MxLc") // Replace with your API Key

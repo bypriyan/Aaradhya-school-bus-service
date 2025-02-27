@@ -71,7 +71,7 @@ class OtpActivity : AppCompatActivity() {
             if (binding.firstPinView.text.toString().isNotEmpty()) {
                 // Check if imageUriString is not null before parsing
                 val compressedImagePath = if (!imageUriString.isNullOrBlank()) {
-                    val compressedFile = compressImage(this, Uri.parse(imageUriString))
+//                    val compressedFile = compressImage(this, Uri.parse(imageUriString))
                 } else {
                     null // Handle the case where no image is selected
                 }
@@ -91,7 +91,7 @@ class OtpActivity : AppCompatActivity() {
                     fatherNumber = fatherPhone!!,
                     motherName = motherName!!,
                     motherNumber = motherPhone!!,
-                    imageUri = compressedImagePath
+                    imageUri = null
                 )
 
                 // Call ViewModel to register user
