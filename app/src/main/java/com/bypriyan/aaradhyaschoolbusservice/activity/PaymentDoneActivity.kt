@@ -11,14 +11,16 @@ import com.bypriyan.aaradhyaschoolbusservice.databinding.ActivityDasboardBinding
 import com.bypriyan.aaradhyaschoolbusservice.databinding.ActivityPaymentDoneBinding
 
 class PaymentDoneActivity : AppCompatActivity() {
+
     lateinit var binding: ActivityPaymentDoneBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         binding= ActivityPaymentDoneBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-
+        binding.txtTransactionNumber.text = intent.getStringExtra("id")!!
 
         binding.btnDone.setOnClickListener(){
             startActivity(Intent(this, DasboardActivity::class.java))

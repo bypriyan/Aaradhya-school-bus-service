@@ -3,6 +3,7 @@ package com.bypriyan.togocartstore.DI.module
 import android.content.Context
 import android.content.SharedPreferences
 import android.location.Geocoder
+import com.bypriyan.aaradhyaschoolbusservice.api.ApiServiceAddUserPlan
 import com.bypriyan.aaradhyaschoolbusservice.api.ApiServiceLogin
 import com.bypriyan.aaradhyaschoolbusservice.api.ApiServiceOTP
 import com.bypriyan.aaradhyaschoolbusservice.api.ApiServiceRegisterUser
@@ -53,6 +54,12 @@ object AppModule {
     @Singleton
     fun provideApiServiceUserDetails(retrofit: Retrofit): ApiServiceUserDetails {
         return retrofit.create(ApiServiceUserDetails::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideApiServiceAddUserPlan(retrofit: Retrofit): ApiServiceAddUserPlan {
+        return retrofit.create(ApiServiceAddUserPlan::class.java)
     }
 
     @Provides

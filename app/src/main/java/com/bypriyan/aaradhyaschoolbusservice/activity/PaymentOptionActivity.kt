@@ -2,17 +2,41 @@ package com.bypriyan.aaradhyaschoolbusservice.activity
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
-import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
 import com.bypriyan.aaradhyaschoolbusservice.databinding.ActivityPaymentOptionBinding
+import com.bypriyan.aaradhyaschoolbusservice.viewModel.ReservationViewModel
+import com.bypriyan.bustrackingsystem.utility.Constants
+import com.bypriyan.bustrackingsystem.utility.PreferenceManager
 import com.razorpay.Checkout
 import com.razorpay.PaymentResultListener
+import dagger.hilt.android.AndroidEntryPoint
 import org.json.JSONObject
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class PaymentOptionActivity : AppCompatActivity(), PaymentResultListener {
 
     lateinit var binding: ActivityPaymentOptionBinding
+    private val viewModel: ReservationViewModel by viewModels()
+    lateinit var userId: String
+    lateinit var token: String
+    lateinit var token_type: String
+
+    lateinit var pickupLocation: String
+    lateinit var dropLocation: String
+    lateinit var pickupLatitude: String
+    lateinit var pickupLongitude: String
+    lateinit var dropLatitude: String
+    lateinit var dropLongitude: String
+    lateinit var mode: String
+    lateinit var paymentId: String
+
+    @Inject
+    lateinit var preferenceManager: PreferenceManager
 
     val slabs = listOf(
         Slab(0.0..1.0, 3800, 3800, 2850, 10450),
@@ -36,76 +60,59 @@ class PaymentOptionActivity : AppCompatActivity(), PaymentResultListener {
         setContentView(binding.root)
 
         val totalDistance = intent.getFloatExtra("TOTAL_DISTANCE", 0f)
-        val mode = intent.getStringExtra("MODE") ?: ""
-        val distanceText = "Total Distance: %.2f km".format(totalDistance)
         val prices = calculatePrices(totalDistance.toDouble())
 
+        mode = intent.getStringExtra("MODE") ?: ""
+        val distanceText = "Total Distance: %.2f km".format(totalDistance)
+        userId = preferenceManager.getString(Constants.KEY_USER_ID)!!
+        token = preferenceManager.getString(Constants.KEY_TOKEN)!!
+
+         pickupLocation = intent.getStringExtra("PICKUP_LOCATION")!!
+         dropLocation = intent.getStringExtra("DROP_LOCATION")!!
+         pickupLatitude = intent.getDoubleExtra("PICKUP_LATITUDE", 0.0).toString()!!
+         pickupLongitude = intent.getDoubleExtra("PICKUP_LONGITUDE", 0.0).toString()!!
+         dropLatitude = intent.getDoubleExtra("DROP_LATITUDE", 0.0).toString()!!
+         dropLongitude = intent.getDoubleExtra("DROP_LONGITUDE", 0.0).toString()!!
+
+        // Create reservation map with all values as Strings
+        viewModel.reservationResponse.observe(this, Observer { response ->
+            // Handle the response
+            Log.d("payss", "onCreate: $response")
+            var intent =Intent(this, PaymentDoneActivity::class.java)
+            intent.putExtra("id", paymentId)
+            startActivity(intent)
+            finish()
+        })
+
         prices?.let {
-            // Set installment prices
             firstInstallmentPrice = it[0].split(": ")[1].toInt()
             secondInstallmentPrice = it[1].split(": ")[1].toInt()
             thirdInstallmentPrice = it[2].split(": ")[1].toInt()
             totalPrice = it[3].split(": ")[1].toInt()
-            newTotal = totalPrice
 
-            // Set prices in TextViews
-            binding.firstInstallmentTv.text = "₹" + firstInstallmentPrice.toString()
-            binding.secondInstallmentTv.text = "₹" + secondInstallmentPrice.toString()
-            binding.thirdInstallmentTv.text = "₹" + thirdInstallmentPrice.toString()
-            binding.allTotalPriseTv.text = "₹" + totalPrice.toString()
+            // Show total amount initially
+            binding.totalCostTv.text = "PAY  " + "₹$totalPrice"
+            binding.allTotalPriseTv.text = "₹$totalPrice"
 
-            // Set initial total cost
-            binding.totalCostTv.text = "₹$totalPrice"
+            // Show first installment option for EMI
+            binding.firstInstallmentTv.text = "₹$firstInstallmentPrice"
         }
 
-        // Set checkbox listeners
-        binding.firstInstallmentCheckBox.setOnCheckedChangeListener { _, isChecked ->
-            updateTotalPrice()
+        // Full payment button
+        binding.totalCostTv.setOnClickListener {
+            startPayment(totalPrice) // Pay total amount
         }
 
-        binding.secoundInstallmentCheckBox.setOnCheckedChangeListener { _, isChecked ->
-            if (!isChecked) {
-                // If 2nd is unchecked, uncheck 3rd as well
-                binding.thirdInstallmentCheckBox.isChecked = false
-            }
-            updateTotalPrice()
-        }
-
-        binding.thirdInstallmentCheckBox.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked && !binding.secoundInstallmentCheckBox.isChecked) {
-                // If 3rd is checked but 2nd is not checked, uncheck 3rd
-                binding.thirdInstallmentCheckBox.isChecked = false
-                Toast.makeText(this, "Please select 2nd installment first", Toast.LENGTH_SHORT).show()
-            }
-            updateTotalPrice()
-        }
-
-        // Ensure the first checkbox is always checked
-        binding.firstInstallmentCheckBox.isEnabled = false
-
-        binding.continueBtn.setOnClickListener{
-            startPayment(newTotal)
+        binding.continueBtn.text = "Pay  " + "$firstInstallmentPrice"
+        // EMI first installment button
+        binding.continueBtn.setOnClickListener {
+            startPayment(firstInstallmentPrice) // Pay only first installment
         }
     }
 
+
     private fun updateTotalPrice() {
-         newTotal = 0
-
-        if (binding.firstInstallmentCheckBox.isChecked) {
-            newTotal += firstInstallmentPrice
-        }
-        if (binding.secoundInstallmentCheckBox.isChecked) {
-            newTotal += secondInstallmentPrice
-        }
-        if (binding.thirdInstallmentCheckBox.isChecked) {
-            newTotal += thirdInstallmentPrice
-        }
-
-        // Ensure at least one checkbox is checked
-        if (newTotal == 0) {
-            binding.firstInstallmentCheckBox.isChecked = true
-            newTotal += firstInstallmentPrice
-        }
+        newTotal = 0
 
         // Update total price TextView
         binding.allTotalPriseTv.text = "₹$newTotal"
@@ -144,7 +151,23 @@ class PaymentOptionActivity : AppCompatActivity(), PaymentResultListener {
     }
 
     override fun onPaymentSuccess(razorpayPaymentID: String?) {
-        Toast.makeText(this, "Payment Successful: $razorpayPaymentID", Toast.LENGTH_SHORT).show()
+        val reservation = mapOf(
+            "user_id" to userId,
+            "pickup_location" to (pickupLocation ?: ""),
+            "drop_location" to (dropLocation ?: ""),
+            "pickup_latitude" to pickupLatitude.toString(),
+            "pickup_longitude" to pickupLongitude.toString(),
+            "drop_latitude" to dropLatitude.toString(),
+            "drop_longitude" to dropLongitude.toString(),
+            "paid" to firstInstallmentPrice.toString(),
+            "total_amount" to totalPrice.toString(),
+            "installment_paid" to "1",
+            "plan" to mode,
+            "payment_id" to (razorpayPaymentID ?: "")
+        )
+        paymentId = razorpayPaymentID ?: ""
+
+        viewModel.storeReservation(token, reservation)
     }
 
     override fun onPaymentError(code: Int, response: String?) {

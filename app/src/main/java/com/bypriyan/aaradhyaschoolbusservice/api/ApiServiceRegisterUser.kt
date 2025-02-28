@@ -12,17 +12,17 @@ interface ApiServiceRegisterUser {
     @Multipart
     @POST("register")
     suspend fun registerUser(
-        @Part("full_name") fullName: RequestBody,
+        @Part("fullName") fullName: RequestBody,
         @Part("email") email: RequestBody,
-        @Part("class") className: RequestBody,
+        @Part("className") className: RequestBody,
         @Part("password") password: RequestBody,
         @Part("age") age: RequestBody,
         @Part("standard") standard: RequestBody,
         @Part("year") year: RequestBody,
-        @Part("father_name") fatherName: RequestBody,
-        @Part("father_number") fatherNumber: RequestBody,
-        @Part("mother_name") motherName: RequestBody,
-        @Part("mother_number") motherNumber: RequestBody,
-        @Part image: MultipartBody.Part? // This is nullable
+        @Part("fatherName") fatherName: RequestBody,
+        @Part("fatherNumber") fatherNumber: RequestBody,
+        @Part("motherName") motherName: RequestBody,
+        @Part("motherNumber") motherNumber: RequestBody,
+        @Part imageUri: MultipartBody.Part?
     ): ApiResponceRegisterUser
 }

@@ -10,6 +10,8 @@ import com.bypriyan.aaradhyaschoolbusservice.model.RegisterRequest
 import com.bypriyan.aaradhyaschoolbusservice.repo.RegisterUserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.Response
 import javax.inject.Inject
 
@@ -18,27 +20,43 @@ class RegisterViewModel @Inject constructor(
     private val registerUserRepository: RegisterUserRepository
 ) : ViewModel() {
 
-    private val _isLoading = MutableLiveData<Boolean>()
-    val isLoading: LiveData<Boolean> get() = _isLoading
-
     private val _registerResponse = MutableLiveData<ApiResponceRegisterUser>()
     val registerResponse: LiveData<ApiResponceRegisterUser> get() = _registerResponse
 
-    private val _errorMessage = MutableLiveData<String>()
-    val errorMessage: LiveData<String> get() = _errorMessage
-
-    fun registerUser(request: RegisterRequest) {
+    fun registerUser(
+        fullName: RequestBody,
+        email: RequestBody,
+        className: RequestBody,
+        password: RequestBody,
+        age: RequestBody,
+        standard: RequestBody,
+        year: RequestBody,
+        fatherName: RequestBody,
+        fatherNumber: RequestBody,
+        motherName: RequestBody,
+        motherNumber: RequestBody,
+        imageUri: MultipartBody.Part?
+    ) {
         viewModelScope.launch {
-            _isLoading.value = true
             try {
-                val response = registerUserRepository.registerUser(request)
+                val response = registerUserRepository.registerUser(
+                    fullName,
+                    email,
+                    className,
+                    password,
+                    age,
+                    standard,
+                    year,
+                    fatherName,
+                    fatherNumber,
+                    motherName,
+                    motherNumber,
+                    imageUri
+                )
                 Log.d("reg", "registerUser: $response")
                 _registerResponse.value = response
-
             } catch (e: Exception) {
-
-            } finally {
-                _isLoading.value = false
+                Log.e("reg", "registerUser: ${e.message}")
             }
         }
     }

@@ -17,6 +17,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.lifecycleScope
 import coil3.toUri
 import com.bypriyan.aaradhyaschoolbusservice.R
 import com.bypriyan.aaradhyaschoolbusservice.databinding.ActivityLoginBinding
@@ -28,15 +29,18 @@ import com.bypriyan.bustrackingsystem.utility.Constants
 import com.bypriyan.bustrackingsystem.utility.PreferenceManager
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
 import java.io.InputStream
 import javax.inject.Inject
+import kotlin.text.category
 
 @AndroidEntryPoint
 class OtpActivity : AppCompatActivity() {
@@ -69,42 +73,66 @@ class OtpActivity : AppCompatActivity() {
         binding.continueBtn.setOnClickListener {
             Log.d("fetch", "onCreate: ${binding.firstPinView.text.toString()} + $otp")
             if (binding.firstPinView.text.toString().isNotEmpty()) {
-                // Check if imageUriString is not null before parsing
-                val compressedImagePath = if (!imageUriString.isNullOrBlank()) {
-//                    val compressedFile = compressImage(this, Uri.parse(imageUriString))
-                } else {
-                    null // Handle the case where no image is selected
+                // Launch a coroutine to call the suspend function
+                isLoading(true)
+                lifecycleScope.launch {
+                    // Check if imageUriString is not null before parsing
+                    val fileUri = Uri.parse(imageUriString)
+                    val compressedFile = compressImage(this@OtpActivity, fileUri)
+
+                    val filePart = compressedFile?.let { file ->
+                        MultipartBody.Part.createFormData(
+                            "fileToUpload",
+                            file.name,
+                            file.asRequestBody("image/jpeg".toMediaTypeOrNull())
+                        )
+                    }
+                    Log.d("fetch", "onCreate: $filePart")
+
+                    val params = mapOf(
+                        "fullName" to fullName,
+                        "email" to email,
+                        "className" to className,
+                        "password" to password,
+                        "age" to age,
+                        "standard" to standard,
+                        "year" to year,
+                        "fatherName" to fatherName,
+                        "fatherNumber" to fatherPhone,
+                        "motherName" to motherName,
+                        "motherNumber" to motherPhone
+                    ).mapValues { it.value?.toRequestBody("text/plain".toMediaTypeOrNull()) }
+
+                    // Ensure that all RequestBody values are not null
+                    val fullNameBody = params["fullName"]!!
+                    val emailBody = params["email"]!!
+                    val classNameBody = params["className"]!!
+                    val passwordBody = params["password"]!!
+                    val ageBody = params["age"]!!
+                    val standardBody = params["standard"]!!
+                    val yearBody = params["year"]!!
+                    val fatherNameBody = params["fatherName"]!!
+                    val fatherNumberBody = params["fatherNumber"]!!
+                    val motherNameBody = params["motherName"]!!
+                    val motherNumberBody = params["motherNumber"]!!
+
+                    registerUserViewModel.registerUser(
+                        fullNameBody, emailBody, classNameBody, passwordBody,
+                        ageBody, standardBody, yearBody,
+                        fatherNameBody, fatherNumberBody, motherNameBody,
+                        motherNumberBody, filePart
+                    )
                 }
-
-                Log.d("fetch", "onCreate: ${binding.firstPinView.text.toString()} + $otp")
-
-                // Create RegisterRequest
-                val registerRequest = RegisterRequest(
-                    fullName = fullName!!,
-                    email = email!!,
-                    className = className!!,
-                    password = password!!,
-                    age = age!!,
-                    standard = standard!!,
-                    year = year!!,
-                    fatherName = fatherName!!,
-                    fatherNumber = fatherPhone!!,
-                    motherName = motherName!!,
-                    motherNumber = motherPhone!!,
-                    imageUri = null
-                )
-
-                // Call ViewModel to register user
-                registerUserViewModel.registerUser(registerRequest)
-
                 // Observe the response
-                registerUserViewModel.registerResponse.observe(this, Observer { response ->
-                    Log.d("fetch", "onCreate: $response")
-                })
+
             } else {
                 Toast.makeText(this, "OTP does not match", Toast.LENGTH_SHORT).show()
             }
         }
+
+        registerUserViewModel.registerResponse.observe(this, Observer { response ->
+            Log.d("fetch", "onCreate: $response")
+        })
     }
 
     fun isLoading(isLoading: Boolean) {
@@ -153,8 +181,7 @@ class OtpActivity : AppCompatActivity() {
                 val inputStream: InputStream? = context.contentResolver.openInputStream(uri)
                 val bitmap = BitmapFactory.decodeStream(inputStream) ?: return@withContext null
 
-                val compressedFile =
-                    File(context.cacheDir, "compressed_${System.currentTimeMillis()}.jpg")
+                val compressedFile = File(context.cacheDir, "compressed_${System.currentTimeMillis()}.jpg")
                 val outputStream = FileOutputStream(compressedFile)
 
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 50, outputStream)
@@ -170,10 +197,4 @@ class OtpActivity : AppCompatActivity() {
         }
     }
 
-    private fun compressBitmap(bitmap: Bitmap, quality: Int): Bitmap {
-        val outputStream = ByteArrayOutputStream()
-        bitmap.compress(Bitmap.CompressFormat.JPEG, quality, outputStream)
-        val byteArray = outputStream.toByteArray()
-        return BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size)
-    }
 }
