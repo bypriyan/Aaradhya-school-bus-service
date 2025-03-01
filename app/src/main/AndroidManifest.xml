@@ -26,18 +26,22 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyDoK6uVnsidH3hQqZkaSqclQnCgFg-MxLc" />
 
+
         <activity
             android:name=".activity.PaymentHistory"
             android:exported="false" />
         <activity
             android:name=".activity.PaymentDoneActivity"
             android:exported="false" />
+
         <activity
             android:name=".activity.PaymentOptionActivity"
-            android:exported="false" />
+            android:exported="true"
+            android:theme="@style/Base.Theme.AaradhyaSchoolBusService" />
+
         <activity
             android:name=".activity.PickupDropActivity"
-            android:exported="true"></activity>
+            android:exported="true" />
         <activity
             android:name=".onBordingScreenActivity.OnBordingScreenActivity"
             android:exported="true"
@@ -59,19 +63,19 @@
         <activity
             android:name=".activity.DasboardActivity"
             android:exported="true"
-            android:theme="@style/Base.Theme.AaradhyaSchoolBusService"></activity>
+            android:theme="@style/Base.Theme.AaradhyaSchoolBusService" />
         <activity
             android:name=".activity.SignUpActivity"
             android:exported="true"
-            android:theme="@style/Base.Theme.AaradhyaSchoolBusService"></activity>
+            android:theme="@style/Base.Theme.AaradhyaSchoolBusService" />
         <activity
             android:name=".activity.OtpActivity"
             android:exported="true"
-            android:theme="@style/Base.Theme.AaradhyaSchoolBusService"></activity>
+            android:theme="@style/Base.Theme.AaradhyaSchoolBusService" />
         <activity
             android:name=".activity.TermsAndConditionActivity"
             android:exported="true"
-            android:theme="@style/Base.Theme.AaradhyaSchoolBusService"></activity>
+            android:theme="@style/Base.Theme.AaradhyaSchoolBusService" />
     </application>
 
 </manifest>

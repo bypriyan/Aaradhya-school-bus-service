@@ -213,6 +213,7 @@ class PickupDropActivity : AppCompatActivity(), OnMapReadyCallback {
 
     }
 
+    /////
     private fun setPickupLocation(latLng: LatLng) {
         val address = getAddressFromLatLng(latLng)
         pickupLocation = latLng
@@ -230,7 +231,10 @@ class PickupDropActivity : AppCompatActivity(), OnMapReadyCallback {
 
         // Update the pickup address in the UI
         binding.etPickup.setText(address)
-        binding.btnClearPickup.visibility = View.VISIBLE
+
+        when(mode){
+            "SAME_LOCATION" -> binding.btnClearPickup.visibility= View.GONE
+        }
 
 
 
@@ -446,16 +450,18 @@ class PickupDropActivity : AppCompatActivity(), OnMapReadyCallback {
 //        binding.txtPLocation.visibility = View.VISIBLE
 //        binding.etPickup.visibility = View.VISIBLE
 //        binding.btnClearPickup.visibility = View.VISIBLE
-
         binding.txtDLocation.visibility = View.VISIBLE
         binding.etDrop.visibility = View.VISIBLE
         binding.btnClearDrop.visibility = View.VISIBLE
         binding.txtDLocation.setText("Same Pickup And Drop")
+        binding.etOnlyDrop.requestFocus()
+        binding.etPickup.isEnabled= false
 
-        // Hide only drop-related views
-        binding.onlyDropLocation.visibility = View.GONE
-        binding.etOnlyDrop.visibility = View.GONE
-        binding.btnClearOnlyDrop.visibility = View.GONE
+
+//        // Hide only drop-related views
+//        binding.onlyDropLocation.visibility = View.GONE
+//        binding.etOnlyDrop.visibility = View.GONE
+//        binding.btnClearOnlyDrop.visibility = View.GONE
 
 
         // Set the same location for pickup and drop
@@ -538,7 +544,7 @@ class PickupDropActivity : AppCompatActivity(), OnMapReadyCallback {
 
                 // Calculate total distance based on mode
                 totalDistance = when (mode) {
-                    "SAME_LOCATION" -> gguToPickupDistance + gguToDropDistance
+                    "SAME_LOCATION" -> gguToDropDistance
                     "ONLY_DROP" -> gguToOnlyDropDistance
                     "DIFFERENT_LOCATION" -> gguToPickupDistance + gguToDropDistance
                     else -> 0f
