@@ -43,8 +43,10 @@ class PaymentDoneActivity : AppCompatActivity() {
             startActivity(Intent(this, DasboardActivity::class.java))
             finish()
         }
+
         binding.btnDownload.setOnClickListener{
-//            checkPermissionsAndGeneratePdf()
+            checkPermissionsAndGeneratePdf("123","02-02-2025","vidhayak",
+                "near yahua church ","79744","10000","12","8000","March","Sept")
         }
         observePdfGeneration()
     }
