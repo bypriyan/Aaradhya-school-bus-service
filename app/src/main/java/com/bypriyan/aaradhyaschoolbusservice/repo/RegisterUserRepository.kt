@@ -16,37 +16,22 @@ import javax.inject.Inject
 
 class RegisterUserRepository @Inject constructor(private val apiService: ApiServiceRegisterUser) {
 
-
-
-    suspend fun registerUser(fullName: RequestBody,
-                             email: RequestBody,
-                             className: RequestBody,
-                             password: RequestBody,
-                             age: RequestBody,
-                             standard: RequestBody,
-                             year: RequestBody,
-                             fatherName: RequestBody,
-                             fatherNumber: RequestBody,
-                             motherName: RequestBody,
-                             motherNumber: RequestBody,
-                             imageUri : MultipartBody.Part?): ApiResponceRegisterUser
-
-    {
-
-        // Make the API call
-        return apiService.registerUser(
-            fullName,
-            email,
-            className,
-            password,
-            age,
-            standard,
-            year,
-            fatherName,
-            fatherNumber,
-            motherName,
-            motherNumber,
-            imageUri
-        )
+    suspend fun registerUser(
+        fullName: RequestBody,
+        email: RequestBody,
+        userClass: RequestBody,
+        age: RequestBody,
+        standard: RequestBody,
+        year: RequestBody,
+        fatherName: RequestBody,
+        fatherNumber: RequestBody,
+        motherName: RequestBody,
+        motherNumber: RequestBody,
+        password: RequestBody,
+        image: MultipartBody.Part
+    ) = withContext(Dispatchers.IO) {
+        apiService.registerUser(fullName, email, userClass, age, standard, year, fatherName, fatherNumber, motherName, motherNumber, password, image)
     }
+
+
 }

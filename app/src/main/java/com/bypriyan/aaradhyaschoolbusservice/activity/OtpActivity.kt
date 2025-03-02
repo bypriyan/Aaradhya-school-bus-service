@@ -71,117 +71,83 @@ class OtpActivity : AppCompatActivity() {
         val imageUriString = intent.getStringExtra(Constants.KEY_PROFILE_IMAGE_URI)
 
         binding.continueBtn.setOnClickListener {
-            Log.d("fetch", "onCreate: ${binding.firstPinView.text.toString()} + $otp")
             if (binding.firstPinView.text.toString().isNotEmpty()) {
-                // Launch a coroutine to call the suspend function
                 isLoading(true)
                 lifecycleScope.launch {
-                    // Check if imageUriString is not null before parsing
-                    val fileUri = Uri.parse(imageUriString)
-                    val compressedFile = compressImage(this@OtpActivity, fileUri)
+                    try {
+                        val fileUri = Uri.parse(imageUriString)
+                        val compressedFile = compressImage(this@OtpActivity, fileUri)
 
-                    val filePart = compressedFile?.let { file ->
-                        MultipartBody.Part.createFormData(
-                            "fileToUpload",
-                            file.name,
-                            file.asRequestBody("image/jpeg".toMediaTypeOrNull())
-                        )
+                        val filePart =
+                            compressedFile?.asRequestBody("image/jpeg".toMediaTypeOrNull())?.let { body ->
+                                MultipartBody.Part.createFormData(
+                                    "image", // Ensure this matches the server's expected field name
+                                    compressedFile.name,
+                                    body
+                                )
+                            }
+
+                        val params = mapOf(
+                            "full_name" to fullName,
+                            "email" to email,
+                            "class" to className,
+                            "password" to password,
+                            "age" to age,
+                            "standard" to standard,
+                            "year" to year,
+                            "father_name" to fatherName,
+                            "father_number" to fatherPhone,
+                            "mother_name" to motherName,
+                            "mother_number" to motherPhone
+                        ).mapValues { it.value?.toRequestBody("text/plain".toMediaTypeOrNull()) }
+
+                        if (filePart != null) {
+                            registerUserViewModel.registerUser(
+                                params["full_name"]!!,
+                                params["email"]!!,
+                                params["class"]!!,
+                                params["age"]!!,
+                                params["standard"]!!,
+                                params["year"]!!,
+                                params["father_name"]!!,
+                                params["father_number"]!!,
+                                params["mother_name"]!!,
+                                params["mother_number"]!!,
+                                params["password"]!!,
+                                filePart
+                            )
+                        }
+                    } catch (e: Exception) {
+                        Log.e("OtpActivity", "Registration failed: ${e.message}")
+                        isLoading(false)
                     }
-                    Log.d("fetch", "onCreate: $filePart")
-
-                    val params = mapOf(
-                        "fullName" to fullName,
-                        "email" to email,
-                        "className" to className,
-                        "password" to password,
-                        "age" to age,
-                        "standard" to standard,
-                        "year" to year,
-                        "fatherName" to fatherName,
-                        "fatherNumber" to fatherPhone,
-                        "motherName" to motherName,
-                        "motherNumber" to motherPhone
-                    ).mapValues { it.value?.toRequestBody("text/plain".toMediaTypeOrNull()) }
-
-                    // Ensure that all RequestBody values are not null
-                    val fullNameBody = params["fullName"]!!
-                    val emailBody = params["email"]!!
-                    val classNameBody = params["className"]!!
-                    val passwordBody = params["password"]!!
-                    val ageBody = params["age"]!!
-                    val standardBody = params["standard"]!!
-                    val yearBody = params["year"]!!
-                    val fatherNameBody = params["fatherName"]!!
-                    val fatherNumberBody = params["fatherNumber"]!!
-                    val motherNameBody = params["motherName"]!!
-                    val motherNumberBody = params["motherNumber"]!!
-
-                    registerUserViewModel.registerUser(
-                        fullNameBody, emailBody, classNameBody, passwordBody,
-                        ageBody, standardBody, yearBody,
-                        fatherNameBody, fatherNumberBody, motherNameBody,
-                        motherNumberBody, filePart
-                    )
                 }
-                // Observe the response
-
             } else {
                 Toast.makeText(this, "OTP does not match", Toast.LENGTH_SHORT).show()
             }
         }
 
         registerUserViewModel.registerResponse.observe(this, Observer { response ->
-            Log.d("fetch", "onCreate: $response")
+            isLoading(false)
+            response?.let {
+                Toast.makeText(this, "Registration Successful", Toast.LENGTH_LONG).show()
+            }
         })
     }
 
-    fun isLoading(isLoading: Boolean) {
-        if (isLoading) {
-            binding.progressbar.visibility = View.VISIBLE
-            binding.continueBtn.visibility = View.GONE
-        } else {
-            binding.progressbar.visibility = View.GONE
-            binding.continueBtn.visibility = View.VISIBLE
-        }
+    private fun isLoading(isLoading: Boolean) {
+        binding.progressbar.visibility = if (isLoading) View.VISIBLE else View.GONE
+        binding.continueBtn.visibility = if (isLoading) View.GONE else View.VISIBLE
     }
 
-    private fun saveDataToPreferences(
-        fullName: String?,
-        standard: String?,
-        className: String?,
-        age: String?,
-        year: String?,
-        fatherName: String?,
-        fatherPhone: String?,
-        motherName: String?,
-        motherPhone: String?,
-        email: String?,
-        password: String?
-    ) {
-        // Save each value to SharedPreferences
-        preferenceManager.putString(Constants.KEY_FULL_NAME, fullName)
-        preferenceManager.putString(Constants.KEY_STANDARD, standard)
-        preferenceManager.putString(Constants.KEY_CLASS, className)
-        preferenceManager.putString(Constants.KEY_AGE, age)
-        preferenceManager.putString(Constants.KEY_YEAR, year)
-        preferenceManager.putString(Constants.KEY_FATHER_NAME, fatherName)
-        preferenceManager.putString(Constants.KEY_FATHER_PHONE, fatherPhone)
-        preferenceManager.putString(Constants.KEY_MOTHER_NAME, motherName)
-        preferenceManager.putString(Constants.KEY_MOTHER_PHONE, motherPhone)
-        preferenceManager.putString(Constants.KEY_EMAIL, email)
-        preferenceManager.putString(Constants.KEY_PASSWORD, password)
-        // Optionally, set a flag to indicate the user is logged in
-        preferenceManager.putBoolean(Constants.KEY_IS_LOGGED_IN, true)
-    }
-
-    // In OtpActivity
     private suspend fun compressImage(context: Context, uri: Uri): File? {
         return withContext(Dispatchers.IO) {
             try {
                 val inputStream: InputStream? = context.contentResolver.openInputStream(uri)
                 val bitmap = BitmapFactory.decodeStream(inputStream) ?: return@withContext null
 
-                val compressedFile = File(context.cacheDir, "compressed_${System.currentTimeMillis()}.jpg")
+                val compressedFile =
+                    File(context.cacheDir, "compressed_${System.currentTimeMillis()}.jpg")
                 val outputStream = FileOutputStream(compressedFile)
 
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 50, outputStream)
@@ -196,5 +162,4 @@ class OtpActivity : AppCompatActivity() {
             }
         }
     }
-
 }

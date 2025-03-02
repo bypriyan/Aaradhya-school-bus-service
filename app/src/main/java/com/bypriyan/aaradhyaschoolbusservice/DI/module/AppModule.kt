@@ -8,6 +8,7 @@ import com.bypriyan.aaradhyaschoolbusservice.api.ApiServiceLogin
 import com.bypriyan.aaradhyaschoolbusservice.api.ApiServiceOTP
 import com.bypriyan.aaradhyaschoolbusservice.api.ApiServiceRegisterUser
 import com.bypriyan.aaradhyaschoolbusservice.api.ApiServiceUserDetails
+import com.bypriyan.aaradhyaschoolbusservice.repo.PdfRepository
 import com.bypriyan.bustrackingsystem.utility.PreferenceManager
 import dagger.Module
 import dagger.Provides
@@ -67,4 +68,11 @@ object AppModule {
     fun providePreferenceManager(@ApplicationContext context: Context): PreferenceManager {
         return PreferenceManager(context)
     }
+
+    @Provides
+    @Singleton
+    fun providePdfRepository(@ApplicationContext context: Context): PdfRepository {
+        return PdfRepository(context)
+    }
+
 }

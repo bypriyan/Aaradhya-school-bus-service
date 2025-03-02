@@ -1,18 +1,29 @@
 package com.bypriyan.aaradhyaschoolbusservice.activity
 
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import com.bypriyan.aaradhyaschoolbusservice.databinding.ActivityLoginBinding
 import com.bypriyan.aaradhyaschoolbusservice.model.LoginUser
 import com.bypriyan.aaradhyaschoolbusservice.viewModel.LoginViewModel
+import com.bypriyan.aaradhyaschoolbusservice.viewModel.PdfViewModel
 import com.bypriyan.bustrackingsystem.utility.Constants
 import com.bypriyan.bustrackingsystem.utility.PreferenceManager
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
+import android.Manifest
+import android.content.pm.PackageManager
+import androidx.core.app.ActivityCompat
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class LoginActivity : AppCompatActivity() {
@@ -21,6 +32,7 @@ class LoginActivity : AppCompatActivity() {
     private val loginViewModel: LoginViewModel by viewModels()
     @Inject
     lateinit var preferenceManager: PreferenceManager
+    private val pdfViewModel: PdfViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,9 +41,11 @@ class LoginActivity : AppCompatActivity() {
 
         // Navigate to SignUpActivity
         binding.signUpBtn.setOnClickListener {
-            startActivity(Intent(this, SignUpActivity::class.java))
+//            startActivity(Intent(this, SignUpActivity::class.java))
+            checkPermissionsAndGeneratePdf()
         }
 
+        observePdfGeneration()
         binding.usernameET.setText("104priyanshu@gmail.com")
         binding.passwordEt.setText("123456")
         // Handle login button click
@@ -98,5 +112,56 @@ class LoginActivity : AppCompatActivity() {
             preferenceManager.putString(Constants.KEY_TOKEN_TYPE, tokenType)
             preferenceManager.putString(Constants.KEY_USER_ID, userId)
         }
+    }
+
+    private fun checkPermissionsAndGeneratePdf() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            generatePdf()
+        } else {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                == PackageManager.PERMISSION_GRANTED
+            ) {
+                generatePdf()
+            } else {
+                ActivityCompat.requestPermissions(
+                    this,
+                    arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
+                    REQUEST_CODE_STORAGE_PERMISSION
+                )
+            }
+        }
+    }
+
+    private fun generatePdf() {
+        pdfViewModel.generatePdf(
+            receiptNo = "123456",
+            date = "2023-09-15",
+            studentName = "Priyanshu",
+            address = "132 housere no",
+            mobileNo = "123456789",
+            amount = "5000",
+            std = "lili",
+            totalFees = "15000",
+            monthFrom= "aug ",
+            monthTo = "sept"
+        )
+    }
+
+    private fun observePdfGeneration() {
+        lifecycleScope.launch {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                pdfViewModel.pdfState.collect { result ->
+                    result?.onSuccess { filePath ->
+                        Toast.makeText(this@LoginActivity, "PDF Saved at: $filePath", Toast.LENGTH_LONG).show()
+                    }?.onFailure { error ->
+                        Toast.makeText(this@LoginActivity, "Error: ${error.localizedMessage}", Toast.LENGTH_LONG).show()
+                    }
+                }
+            }
+        }
+    }
+
+    companion object {
+        private const val REQUEST_CODE_STORAGE_PERMISSION = 1001
     }
 }
