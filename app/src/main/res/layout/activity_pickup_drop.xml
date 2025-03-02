@@ -27,9 +27,10 @@
         <ImageView
             android:id="@+id/ivvPointer"
             android:layout_width="@dimen/_28sdp"
-            android:layout_height="@dimen/_28sdp"
+            android:layout_height="@dimen/_35sdp"
             android:layout_margin="@dimen/_10sdp"
             android:layout_centerInParent="true"
+            android:paddingBottom="@dimen/_10sdp"
             android:layout_above="@+id/ivPointer"
             android:src="@drawable/pin_marker" />
 
@@ -239,19 +240,9 @@
 
             </LinearLayout>
 
-
-
         </RelativeLayout>
 
-
-        <!-- Pickup Location -->
-
-
     </ScrollView>
-
-
-
-
 
 
 </RelativeLayout>

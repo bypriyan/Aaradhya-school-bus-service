@@ -15,7 +15,7 @@ class PreferenceManager @Inject constructor(context: Context) {
         editor.apply()
     }
 
-    fun getBoolean(key: String): Boolean {
+    fun getBoolean(key: String, bool: Boolean): Boolean {
         return sharedPreferences.getBoolean(key, false)
     }
 

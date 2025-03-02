@@ -40,7 +40,7 @@ class PaymentDoneActivity : AppCompatActivity() {
         binding.txtTransactionNumber.text = intent.getStringExtra("id")!!
 
         binding.btnDone.setOnClickListener(){
-            startActivity(Intent(this, DasboardActivity::class.java))
+            startActivity(Intent(this, DashBoard1Activity::class.java))
             finish()
         }
 
