@@ -14,7 +14,6 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.transition.Visibility
 import com.bypriyan.aaradhyaschoolbusservice.databinding.ActivityPickupDropBinding
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.*
@@ -25,11 +24,9 @@ import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.tasks.Task
 import com.google.maps.DirectionsApi
 import com.google.maps.GeoApiContext
-import com.google.maps.model.DirectionsResult
 import com.google.maps.model.TravelMode
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import java.io.IOException
 import java.util.*
 
@@ -43,7 +40,8 @@ class PickupDropActivity : AppCompatActivity(), OnMapReadyCallback {
     private var dropLocation: LatLng? = null
     private var mode: String? = null
     private var onlyDropLocation: LatLng? = null
-
+    private lateinit var pickupAddress: String
+    private lateinit var dropAddress: String
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityPickupDropBinding.inflate(layoutInflater)
@@ -60,13 +58,14 @@ class PickupDropActivity : AppCompatActivity(), OnMapReadyCallback {
             "DIFFERENT_LOCATION" -> updateUIForDifferentLocation()
         }
 
-        val mapFragment = supportFragmentManager.findFragmentById(com.bypriyan.aaradhyaschoolbusservice.R.id.mapFragment) as SupportMapFragment
+        val mapFragment =
+            supportFragmentManager.findFragmentById(com.bypriyan.aaradhyaschoolbusservice.R.id.mapFragment) as SupportMapFragment
         mapFragment.getMapAsync(this)
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
 
 
-        binding.btnCurrentLocation.setOnClickListener {    checkLocationSettings()}
+        binding.btnCurrentLocation.setOnClickListener { checkLocationSettings() }
         binding.btnClearPickup.setOnClickListener { clearPickupLocation() }
         binding.btnClearDrop.setOnClickListener { clearDropLocation() }
         binding.btnClearOnlyDrop.setOnClickListener { clearOnlyDropLocation() }
@@ -110,18 +109,30 @@ class PickupDropActivity : AppCompatActivity(), OnMapReadyCallback {
                 // Disable pickup and drop fields when only drop is focused
                 binding.etPickup.isEnabled = false
                 binding.etDrop.isEnabled = false
-            } else{}
+            } else {
+            }
         }
 
         binding.btnConfirm.setOnClickListener {
             when (mode) {
                 "SAME_LOCATION" -> {
-                    val pickupAddress = binding.etPickup.text.toString()
-                    val dropAddress = binding.etDrop.text.toString()
+                    pickupAddress = binding.etDrop.text.toString()
+                    dropAddress = binding.etDrop.text.toString()
                     if (pickupAddress.isEmpty() || dropAddress.isEmpty()) {
                         Toast.makeText(this, "Please enter a location", Toast.LENGTH_SHORT).show()
                     } else {
-                        Toast.makeText(this, "Same Pickup and Drop Location Selected: $pickupAddress", Toast.LENGTH_SHORT).show()
+                        // Pass data to the next activity
+                        val intent = Intent(this, PaymentOptionActivity::class.java).apply {
+                            putExtra("PICKUP_LOCATION", pickupAddress)
+                            putExtra("DROP_LOCATION", dropAddress)
+                            putExtra("PICKUP_LATITUDE", pickupLocation?.latitude)
+                            putExtra("PICKUP_LONGITUDE", pickupLocation?.longitude)
+                            putExtra("DROP_LATITUDE", dropLocation?.latitude)
+                            putExtra("DROP_LONGITUDE", dropLocation?.longitude)
+                            putExtra("TOTAL_DISTANCE", totalDistance)
+                            putExtra("MODE", mode)
+                        }
+                        startActivity(intent)
                     }
                 }
                 "ONLY_DROP" -> {
@@ -129,28 +140,40 @@ class PickupDropActivity : AppCompatActivity(), OnMapReadyCallback {
                     if (onlyDropAddress.isEmpty()) {
                         Toast.makeText(this, "Please enter a drop location", Toast.LENGTH_SHORT).show()
                     } else {
-                        Toast.makeText(this, "Only Drop Location Selected: $onlyDropAddress", Toast.LENGTH_SHORT).show()
+                        // Pass data to the next activity
+                        val intent = Intent(this, PaymentOptionActivity::class.java).apply {
+                            putExtra("DROP_LOCATION", onlyDropAddress)
+                            putExtra("DROP_LATITUDE", onlyDropLocation?.latitude)
+                            putExtra("DROP_LONGITUDE", onlyDropLocation?.longitude)
+                            putExtra("TOTAL_DISTANCE", totalDistance)
+                            putExtra("MODE", mode)
+                        }
+                        startActivity(intent)
                     }
                 }
                 "DIFFERENT_LOCATION" -> {
-                    val pickupAddress = binding.etPickup.text.toString()
-                    val dropAddress = binding.etDrop.text.toString()
+                    pickupAddress = binding.etPickup.text.toString()
+                    dropAddress = binding.etDrop.text.toString()
                     if (pickupAddress.isEmpty() && dropAddress.isEmpty()) {
                         Toast.makeText(this, "Please select at least one location", Toast.LENGTH_SHORT).show()
                     } else {
-                        Toast.makeText(this, "Pickup: $pickupAddress, Drop: $dropAddress", Toast.LENGTH_SHORT).show()
+                        // Pass data to the next activity
+                        val intent = Intent(this, PaymentOptionActivity::class.java).apply {
+                            putExtra("PICKUP_LOCATION", pickupAddress)
+                            putExtra("DROP_LOCATION", dropAddress)
+                            putExtra("PICKUP_LATITUDE", pickupLocation?.latitude)
+                            putExtra("PICKUP_LONGITUDE", pickupLocation?.longitude)
+                            putExtra("DROP_LATITUDE", dropLocation?.latitude)
+                            putExtra("DROP_LONGITUDE", dropLocation?.longitude)
+                            putExtra("TOTAL_DISTANCE", totalDistance)
+                            putExtra("MODE", mode)
+                        }
+                        startActivity(intent)
                     }
                 }
             }
-            // Pass total distance and mode to PaymentOptionActivity
-            val intent = Intent(this, PaymentOptionActivity::class.java).apply {
-                putExtra("TOTAL_DISTANCE", totalDistance)
-                putExtra("MODE", mode)
-            }
-            startActivity(intent)
         }
     }
-
     override fun onMapReady(map: GoogleMap) {
         googleMap = map
 
@@ -189,6 +212,7 @@ class PickupDropActivity : AppCompatActivity(), OnMapReadyCallback {
 
     }
 
+    /////
     private fun setPickupLocation(latLng: LatLng) {
         val address = getAddressFromLatLng(latLng)
         pickupLocation = latLng
@@ -206,7 +230,10 @@ class PickupDropActivity : AppCompatActivity(), OnMapReadyCallback {
 
         // Update the pickup address in the UI
         binding.etPickup.setText(address)
-        binding.btnClearPickup.visibility = View.VISIBLE
+
+        when(mode){
+            "SAME_LOCATION" -> binding.btnClearPickup.visibility= View.GONE
+        }
 
 
 
@@ -419,19 +446,22 @@ class PickupDropActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private fun updateUIForSameLocation() {
         // Show pickup and drop fields
-        binding.txtPLocation.visibility = View.VISIBLE
-        binding.etPickup.visibility = View.VISIBLE
-        binding.btnClearPickup.visibility = View.VISIBLE
-
+//        binding.txtPLocation.visibility = View.VISIBLE
+//        binding.etPickup.visibility = View.VISIBLE
+//        binding.btnClearPickup.visibility = View.VISIBLE
         binding.txtDLocation.visibility = View.VISIBLE
         binding.etDrop.visibility = View.VISIBLE
         binding.btnClearDrop.visibility = View.VISIBLE
         binding.txtDLocation.setText("Same Pickup And Drop")
+        binding.etPickup.requestFocus()
+        binding.etPickup.isEnabled= false
 
-        // Hide only drop-related views
-        binding.onlyDropLocation.visibility = View.GONE
-        binding.etOnlyDrop.visibility = View.GONE
-        binding.btnClearOnlyDrop.visibility = View.GONE
+
+//        // Hide only drop-related views
+//        binding.onlyDropLocation.visibility = View.GONE
+//        binding.etOnlyDrop.visibility = View.GONE
+//        binding.btnClearOnlyDrop.visibility = View.GONE
+
 
         // Set the same location for pickup and drop
         binding.etDrop.setOnEditorActionListener { _, actionId, _ ->
@@ -472,7 +502,7 @@ class PickupDropActivity : AppCompatActivity(), OnMapReadyCallback {
     private var totalDistance: Float = 0f
 
     private fun calculateDistance() {
-        val guruGhasidasLatLng = LatLng(22.126461551343123, 82.1371706108157) // GGU Coordinates
+        val rklGalaxySchool = LatLng(18.65355422287287, 73.88056008151783) // GGU Coordinates
 
         val context = GeoApiContext.Builder()
             .apiKey("AIzaSyDoK6uVnsidH3hQqZkaSqclQnCgFg-MxLc") // Replace with your API Key
@@ -486,7 +516,7 @@ class PickupDropActivity : AppCompatActivity(), OnMapReadyCallback {
 
                 if (pickupLocation != null) {
                     val result = DirectionsApi.newRequest(context)
-                        .origin("${guruGhasidasLatLng.latitude},${guruGhasidasLatLng.longitude}")
+                        .origin("${rklGalaxySchool.latitude},${rklGalaxySchool.longitude}")
                         .destination("${pickupLocation!!.latitude},${pickupLocation!!.longitude}")
                         .mode(TravelMode.DRIVING)
                         .await()
@@ -495,7 +525,7 @@ class PickupDropActivity : AppCompatActivity(), OnMapReadyCallback {
 
                 if (dropLocation != null) {
                     val result = DirectionsApi.newRequest(context)
-                        .origin("${guruGhasidasLatLng.latitude},${guruGhasidasLatLng.longitude}")
+                        .origin("${rklGalaxySchool.latitude},${rklGalaxySchool.longitude}")
                         .destination("${dropLocation!!.latitude},${dropLocation!!.longitude}")
                         .mode(TravelMode.DRIVING)
                         .await()
@@ -504,7 +534,7 @@ class PickupDropActivity : AppCompatActivity(), OnMapReadyCallback {
 
                 if (onlyDropLocation != null) {
                     val result = DirectionsApi.newRequest(context)
-                        .origin("${guruGhasidasLatLng.latitude},${guruGhasidasLatLng.longitude}")
+                        .origin("${rklGalaxySchool.latitude},${rklGalaxySchool.longitude}")
                         .destination("${onlyDropLocation!!.latitude},${onlyDropLocation!!.longitude}")
                         .mode(TravelMode.DRIVING)
                         .await()
@@ -513,7 +543,7 @@ class PickupDropActivity : AppCompatActivity(), OnMapReadyCallback {
 
                 // Calculate total distance based on mode
                 totalDistance = when (mode) {
-                    "SAME_LOCATION" -> gguToPickupDistance + gguToDropDistance
+                    "SAME_LOCATION" -> gguToDropDistance
                     "ONLY_DROP" -> gguToOnlyDropDistance
                     "DIFFERENT_LOCATION" -> gguToPickupDistance + gguToDropDistance
                     else -> 0f

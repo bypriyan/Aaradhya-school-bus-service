@@ -1,18 +1,29 @@
 package com.bypriyan.aaradhyaschoolbusservice.activity
 
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import com.bypriyan.aaradhyaschoolbusservice.databinding.ActivityLoginBinding
 import com.bypriyan.aaradhyaschoolbusservice.model.LoginUser
 import com.bypriyan.aaradhyaschoolbusservice.viewModel.LoginViewModel
+import com.bypriyan.aaradhyaschoolbusservice.viewModel.PdfViewModel
 import com.bypriyan.bustrackingsystem.utility.Constants
 import com.bypriyan.bustrackingsystem.utility.PreferenceManager
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
+import android.Manifest
+import android.content.pm.PackageManager
+import androidx.core.app.ActivityCompat
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class LoginActivity : AppCompatActivity() {
@@ -21,6 +32,7 @@ class LoginActivity : AppCompatActivity() {
     private val loginViewModel: LoginViewModel by viewModels()
     @Inject
     lateinit var preferenceManager: PreferenceManager
+    private val pdfViewModel: PdfViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -99,4 +111,6 @@ class LoginActivity : AppCompatActivity() {
             preferenceManager.putString(Constants.KEY_USER_ID, userId)
         }
     }
+
+
 }

@@ -1,5 +1,6 @@
 package com.bypriyan.aaradhyaschoolbusservice.viewModel
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -9,6 +10,8 @@ import com.bypriyan.aaradhyaschoolbusservice.model.RegisterRequest
 import com.bypriyan.aaradhyaschoolbusservice.repo.RegisterUserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.Response
 import javax.inject.Inject
 
@@ -17,25 +20,35 @@ class RegisterViewModel @Inject constructor(
     private val registerUserRepository: RegisterUserRepository
 ) : ViewModel() {
 
-    private val _isLoading = MutableLiveData<Boolean>()
-    val isLoading: LiveData<Boolean> get() = _isLoading
-
     private val _registerResponse = MutableLiveData<ApiResponceRegisterUser>()
     val registerResponse: LiveData<ApiResponceRegisterUser> get() = _registerResponse
 
-    private val _errorMessage = MutableLiveData<String>()
-    val errorMessage: LiveData<String> get() = _errorMessage
-
-    fun registerUser(request: RegisterRequest) {
+    fun registerUser(
+        fullName: RequestBody,
+        email: RequestBody,
+        userClass: RequestBody,
+        age: RequestBody,
+        standard: RequestBody,
+        year: RequestBody,
+        fatherName: RequestBody,
+        fatherNumber: RequestBody,
+        motherName: RequestBody,
+        motherNumber: RequestBody,
+        password: RequestBody,
+        image: MultipartBody.Part
+    ) {
         viewModelScope.launch {
-            _isLoading.value = true
             try {
-                val response = registerUserRepository.registerUser(request)
-
+                val response = registerUserRepository.registerUser(
+                    fullName, email, userClass, age, standard, year, fatherName, fatherNumber, motherName, motherNumber, password, image
+                )
+                if (response.status == "success") {
+                    _registerResponse.value = response
+                } else {
+                    Log.e("RegisterViewModel", "Registration failed: ${response.message}")
+                }
             } catch (e: Exception) {
-
-            } finally {
-                _isLoading.value = false
+                Log.e("RegisterViewModel", "Registration failed: ${e.message}")
             }
         }
     }

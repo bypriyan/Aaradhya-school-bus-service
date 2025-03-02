@@ -3,10 +3,12 @@ package com.bypriyan.togocartstore.DI.module
 import android.content.Context
 import android.content.SharedPreferences
 import android.location.Geocoder
+import com.bypriyan.aaradhyaschoolbusservice.api.ApiServiceAddUserPlan
 import com.bypriyan.aaradhyaschoolbusservice.api.ApiServiceLogin
 import com.bypriyan.aaradhyaschoolbusservice.api.ApiServiceOTP
 import com.bypriyan.aaradhyaschoolbusservice.api.ApiServiceRegisterUser
 import com.bypriyan.aaradhyaschoolbusservice.api.ApiServiceUserDetails
+import com.bypriyan.aaradhyaschoolbusservice.repo.PdfRepository
 import com.bypriyan.bustrackingsystem.utility.PreferenceManager
 import dagger.Module
 import dagger.Provides
@@ -57,7 +59,20 @@ object AppModule {
 
     @Provides
     @Singleton
+    fun provideApiServiceAddUserPlan(retrofit: Retrofit): ApiServiceAddUserPlan {
+        return retrofit.create(ApiServiceAddUserPlan::class.java)
+    }
+
+    @Provides
+    @Singleton
     fun providePreferenceManager(@ApplicationContext context: Context): PreferenceManager {
         return PreferenceManager(context)
     }
+
+    @Provides
+    @Singleton
+    fun providePdfRepository(@ApplicationContext context: Context): PdfRepository {
+        return PdfRepository(context)
+    }
+
 }

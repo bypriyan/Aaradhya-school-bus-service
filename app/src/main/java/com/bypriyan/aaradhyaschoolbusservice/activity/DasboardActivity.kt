@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.annotation.IdRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
@@ -13,7 +14,9 @@ import com.bypriyan.aaradhyaschoolbusservice.R
 import com.bypriyan.aaradhyaschoolbusservice.databinding.ActivityDasboardBinding
 import com.bypriyan.aaradhyaschoolbusservice.viewModel.UserViewModel
 import com.bypriyan.bustrackingsystem.utility.Constants
+import com.bypriyan.bustrackingsystem.utility.PreferenceManager
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class DasboardActivity : AppCompatActivity() {
@@ -23,6 +26,7 @@ class DasboardActivity : AppCompatActivity() {
     lateinit var token: String
     lateinit var token_type: String
     private val userViewModel: UserViewModel by viewModels()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
