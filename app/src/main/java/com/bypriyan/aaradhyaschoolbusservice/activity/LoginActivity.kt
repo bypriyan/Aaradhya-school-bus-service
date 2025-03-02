@@ -41,11 +41,9 @@ class LoginActivity : AppCompatActivity() {
 
         // Navigate to SignUpActivity
         binding.signUpBtn.setOnClickListener {
-//            startActivity(Intent(this, SignUpActivity::class.java))
-            checkPermissionsAndGeneratePdf()
+            startActivity(Intent(this, SignUpActivity::class.java))
         }
 
-        observePdfGeneration()
         binding.usernameET.setText("104priyanshu@gmail.com")
         binding.passwordEt.setText("123456")
         // Handle login button click
@@ -114,54 +112,5 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-    private fun checkPermissionsAndGeneratePdf() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            generatePdf()
-        } else {
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                == PackageManager.PERMISSION_GRANTED
-            ) {
-                generatePdf()
-            } else {
-                ActivityCompat.requestPermissions(
-                    this,
-                    arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
-                    REQUEST_CODE_STORAGE_PERMISSION
-                )
-            }
-        }
-    }
 
-    private fun generatePdf() {
-        pdfViewModel.generatePdf(
-            receiptNo = "123456",
-            date = "2023-09-15",
-            studentName = "Priyanshu",
-            address = "132 housere no",
-            mobileNo = "123456789",
-            amount = "5000",
-            std = "lili",
-            totalFees = "15000",
-            monthFrom= "aug ",
-            monthTo = "sept"
-        )
-    }
-
-    private fun observePdfGeneration() {
-        lifecycleScope.launch {
-            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                pdfViewModel.pdfState.collect { result ->
-                    result?.onSuccess { filePath ->
-                        Toast.makeText(this@LoginActivity, "PDF Saved at: $filePath", Toast.LENGTH_LONG).show()
-                    }?.onFailure { error ->
-                        Toast.makeText(this@LoginActivity, "Error: ${error.localizedMessage}", Toast.LENGTH_LONG).show()
-                    }
-                }
-            }
-        }
-    }
-
-    companion object {
-        private const val REQUEST_CODE_STORAGE_PERMISSION = 1001
-    }
 }
