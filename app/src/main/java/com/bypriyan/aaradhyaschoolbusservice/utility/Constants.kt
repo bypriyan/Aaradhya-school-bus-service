@@ -27,4 +27,6 @@ object Constants{
     const val KEY_EMAIL = "email"
     const val KEY_PASSWORD = "password"
     const val KEY_PROFILE_IMAGE_URI = "profile_image_uri"
+    const val PAYMENT_STATUS = "PAYMENT_STATUS"
+    const val KEY_FULL_PAYMENT_DONE = "full_payment_done"
 }

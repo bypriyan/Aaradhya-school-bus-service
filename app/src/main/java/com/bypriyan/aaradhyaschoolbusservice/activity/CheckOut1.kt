@@ -3,20 +3,16 @@ package com.bypriyan.aaradhyaschoolbusservice.activity
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.GravityCompat
-import androidx.drawerlayout.widget.DrawerLayout
 import com.bumptech.glide.Glide
-import com.bypriyan.aaradhyaschoolbusservice.R
 import com.bypriyan.aaradhyaschoolbusservice.databinding.ActivityDasboardBinding
 import com.bypriyan.aaradhyaschoolbusservice.viewModel.UserViewModel
 import com.bypriyan.bustrackingsystem.utility.Constants
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class DasboardActivity : AppCompatActivity() {
+class CheckOut1 : AppCompatActivity() {
 
     lateinit var  binding: ActivityDasboardBinding
     lateinit var userId: String

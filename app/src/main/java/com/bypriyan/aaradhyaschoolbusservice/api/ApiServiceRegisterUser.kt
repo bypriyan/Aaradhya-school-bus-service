@@ -7,6 +7,7 @@ import okhttp3.RequestBody
 import retrofit2.http.Multipart
 import retrofit2.http.POST
 import retrofit2.http.Part
+
 interface ApiServiceRegisterUser {
     @Multipart
     @POST("register")
@@ -22,6 +23,6 @@ interface ApiServiceRegisterUser {
         @Part("fatherNumber") fatherNumber: RequestBody,
         @Part("motherName") motherName: RequestBody,
         @Part("motherNumber") motherNumber: RequestBody,
-        @Part image: MultipartBody.Part? // Accept MultipartBody.Part?
+        @Part imageUri: MultipartBody.Part?
     ): ApiResponceRegisterUser
 }

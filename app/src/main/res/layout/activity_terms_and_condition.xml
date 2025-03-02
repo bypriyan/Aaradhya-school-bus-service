@@ -11,16 +11,14 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:clipToPadding="false">
+        android:layout_height="match_parent">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:padding="12dp"
-            android:layout_marginTop="?attr/actionBarSize"
-            android:background="#E4E4E4"
+            android:background="@drawable/dd"
             android:elevation="4dp">
 
             <TextView
@@ -185,7 +183,9 @@ android:text="4.  Payment for 11 months (term is 3 term in year) will be taken.
             <!-- Add similar LinearLayouts for all remaining checkboxes -->
 
         </LinearLayout>
+
           </ScrollView>
+
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_confirm"

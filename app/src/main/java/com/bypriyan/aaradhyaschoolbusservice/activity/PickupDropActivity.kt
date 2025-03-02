@@ -40,16 +40,14 @@ class PickupDropActivity : AppCompatActivity(), OnMapReadyCallback {
     private var dropLocation: LatLng? = null
     private var mode: String? = null
     private var onlyDropLocation: LatLng? = null
-
+    private lateinit var pickupAddress: String
+    private lateinit var dropAddress: String
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityPickupDropBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
         // Get the mode from the intent
         mode = intent.getStringExtra("MODE")
-
-
 
         when (mode) {
             "SAME_LOCATION" -> updateUIForSameLocation()
@@ -115,16 +113,38 @@ class PickupDropActivity : AppCompatActivity(), OnMapReadyCallback {
         binding.btnConfirm.setOnClickListener {
             when (mode) {
                 "SAME_LOCATION" -> {
-                    val pickupAddress = binding.etPickup.text.toString()
-                    val dropAddress = binding.etDrop.text.toString()
+                    pickupAddress = binding.etDrop.text.toString()
+                    dropAddress = binding.etDrop.text.toString()
                     if (pickupAddress.isEmpty() || dropAddress.isEmpty()) {
                         Toast.makeText(this, "Please enter a location", Toast.LENGTH_SHORT).show()
+                    } else if (totalDistance == 0f) {
+                        Toast.makeText(this, "Your distance is zero", Toast.LENGTH_SHORT).show()
+                    } else if (totalDistance in 0.1f..0.9f) {
+                        // Allow user to proceed if distance is between 0.1 and 0.9
+                        val intent = Intent(this, PaymentOptionActivity::class.java).apply {
+                            putExtra("PICKUP_LOCATION", pickupAddress)
+                            putExtra("DROP_LOCATION", dropAddress)
+                            putExtra("PICKUP_LATITUDE", pickupLocation?.latitude)
+                            putExtra("PICKUP_LONGITUDE", pickupLocation?.longitude)
+                            putExtra("DROP_LATITUDE", dropLocation?.latitude)
+                            putExtra("DROP_LONGITUDE", dropLocation?.longitude)
+                            putExtra("TOTAL_DISTANCE", totalDistance)
+                            putExtra("MODE", mode)
+                        }
+                        startActivity(intent)
                     } else {
-                        Toast.makeText(
-                            this,
-                            "Same Pickup and Drop Location Selected: $pickupAddress",
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        // Proceed if distance is greater than or equal to 1.0
+                        val intent = Intent(this, PaymentOptionActivity::class.java).apply {
+                            putExtra("PICKUP_LOCATION", pickupAddress)
+                            putExtra("DROP_LOCATION", dropAddress)
+                            putExtra("PICKUP_LATITUDE", pickupLocation?.latitude)
+                            putExtra("PICKUP_LONGITUDE", pickupLocation?.longitude)
+                            putExtra("DROP_LATITUDE", dropLocation?.latitude)
+                            putExtra("DROP_LONGITUDE", dropLocation?.longitude)
+                            putExtra("TOTAL_DISTANCE", totalDistance)
+                            putExtra("MODE", mode)
+                        }
+                        startActivity(intent)
                     }
                 }
 
@@ -133,46 +153,71 @@ class PickupDropActivity : AppCompatActivity(), OnMapReadyCallback {
                     if (onlyDropAddress.isEmpty()) {
                         Toast.makeText(this, "Please enter a drop location", Toast.LENGTH_SHORT)
                             .show()
+                    } else if (totalDistance == 0.00f) {
+                        Toast.makeText(this, "Your distance is zero", Toast.LENGTH_SHORT).show()
+                    } else if (totalDistance in 0.1f..0.9f) {
+                        // Allow user to proceed if distance is between 0.1 and 0.9
+                        val intent = Intent(this, PaymentOptionActivity::class.java).apply {
+                            putExtra("DROP_LOCATION", onlyDropAddress)
+                            putExtra("DROP_LATITUDE", onlyDropLocation?.latitude)
+                            putExtra("DROP_LONGITUDE", onlyDropLocation?.longitude)
+                            putExtra("TOTAL_DISTANCE", totalDistance)
+                            putExtra("MODE", mode)
+                        }
+                        startActivity(intent)
                     } else {
-                        Toast.makeText(
-                            this,
-                            "Only Drop Location Selected: $onlyDropAddress",
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        // Proceed if distance is greater than or equal to 1.0
+                        val intent = Intent(this, PaymentOptionActivity::class.java).apply {
+                            putExtra("DROP_LOCATION", onlyDropAddress)
+                            putExtra("DROP_LATITUDE", onlyDropLocation?.latitude)
+                            putExtra("DROP_LONGITUDE", onlyDropLocation?.longitude)
+                            putExtra("TOTAL_DISTANCE", totalDistance)
+                            putExtra("MODE", mode)
+                        }
+                        startActivity(intent)
                     }
                 }
 
                 "DIFFERENT_LOCATION" -> {
-                    val pickupAddress = binding.etPickup.text.toString()
-                    val dropAddress = binding.etDrop.text.toString()
+                    pickupAddress = binding.etPickup.text.toString()
+                    dropAddress = binding.etDrop.text.toString()
                     if (pickupAddress.isEmpty() && dropAddress.isEmpty()) {
                         Toast.makeText(
                             this,
                             "Please select at least one location",
                             Toast.LENGTH_SHORT
                         ).show()
+                    } else if (totalDistance == 0.00f) {
+                        Toast.makeText(this, "Your distance is zero", Toast.LENGTH_SHORT).show()
+                    } else if (totalDistance in 0.1f..0.9f) {
+                        // Allow user to proceed if distance is between 0.1 and 0.9
+                        val intent = Intent(this, PaymentOptionActivity::class.java).apply {
+                            putExtra("PICKUP_LOCATION", pickupAddress)
+                            putExtra("DROP_LOCATION", dropAddress)
+                            putExtra("PICKUP_LATITUDE", pickupLocation?.latitude)
+                            putExtra("PICKUP_LONGITUDE", pickupLocation?.longitude)
+                            putExtra("DROP_LATITUDE", dropLocation?.latitude)
+                            putExtra("DROP_LONGITUDE", dropLocation?.longitude)
+                            putExtra("TOTAL_DISTANCE", totalDistance)
+                            putExtra("MODE", mode)
+                        }
+                        startActivity(intent)
                     } else {
-                        Toast.makeText(
-                            this,
-                            "Pickup: $pickupAddress, Drop: $dropAddress",
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        // Proceed if distance is greater than or equal to 1.0
+                        val intent = Intent(this, PaymentOptionActivity::class.java).apply {
+                            putExtra("PICKUP_LOCATION", pickupAddress)
+                            putExtra("DROP_LOCATION", dropAddress)
+                            putExtra("PICKUP_LATITUDE", pickupLocation?.latitude)
+                            putExtra("PICKUP_LONGITUDE", pickupLocation?.longitude)
+                            putExtra("DROP_LATITUDE", dropLocation?.latitude)
+                            putExtra("DROP_LONGITUDE", dropLocation?.longitude)
+                            putExtra("TOTAL_DISTANCE", totalDistance)
+                            putExtra("MODE", mode)
+                        }
+                        startActivity(intent)
                     }
                 }
             }
-            // Check if the distance is more than 15 km
-            if (totalDistance > 15) {
-                Toast.makeText(this, "Your distance should be under 15 km", Toast.LENGTH_SHORT)
-                    .show()
-                return@setOnClickListener
-            }
-
-            // Pass total distance and mode to PaymentOptionActivity
-            val intent = Intent(this, PaymentOptionActivity::class.java).apply {
-                putExtra("TOTAL_DISTANCE", totalDistance)
-                putExtra("MODE", mode)
-            }
-            startActivity(intent)
         }
     }
     override fun onMapReady(map: GoogleMap) {
@@ -454,7 +499,7 @@ class PickupDropActivity : AppCompatActivity(), OnMapReadyCallback {
         binding.etDrop.visibility = View.VISIBLE
         binding.btnClearDrop.visibility = View.VISIBLE
         binding.txtDLocation.setText("Same Pickup And Drop")
-        binding.etOnlyDrop.requestFocus()
+        binding.etPickup.requestFocus()
         binding.etPickup.isEnabled= false
 
 

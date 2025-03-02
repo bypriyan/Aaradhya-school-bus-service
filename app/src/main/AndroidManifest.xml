@@ -19,6 +19,9 @@
         android:theme="@style/Base.Theme.AaradhyaSchoolBusService"
         tools:targetApi="31">
         <activity
+            android:name=".activity.DashBoard1Activity"
+            android:exported="false" />
+        <activity
             android:name=".activity.StudentDetailActivity"
             android:exported="false" />
 
@@ -26,19 +29,16 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyDoK6uVnsidH3hQqZkaSqclQnCgFg-MxLc" />
 
-
-        <activity
-            android:name=".activity.PaymentHistory"
-            android:exported="false" />
         <activity
             android:name=".activity.PaymentDoneActivity"
             android:exported="false" />
-
+        <activity
+            android:name=".activity.SlabActivity"
+            android:exported="false" />
         <activity
             android:name=".activity.PaymentOptionActivity"
             android:exported="true"
             android:theme="@style/Base.Theme.AaradhyaSchoolBusService" />
-
         <activity
             android:name=".activity.PickupDropActivity"
             android:exported="true" />
@@ -61,7 +61,7 @@
             android:exported="true"
             android:theme="@style/Base.Theme.AaradhyaSchoolBusService" />
         <activity
-            android:name=".activity.DasboardActivity"
+            android:name=".activity.CheckOut1"
             android:exported="true"
             android:theme="@style/Base.Theme.AaradhyaSchoolBusService" />
         <activity
