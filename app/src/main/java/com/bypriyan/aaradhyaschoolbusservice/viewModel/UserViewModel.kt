@@ -1,5 +1,6 @@
 package com.bypriyan.aaradhyaschoolbusservice.viewModel
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -23,6 +24,7 @@ class UserViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 val response = userRepository.getUserDetails(userId, token)
+                Log.d("vm", "getUserDetails: $response")
                 if(response.status == "success" && response.body != null){
                     _userDetails.value = response.body
                 }

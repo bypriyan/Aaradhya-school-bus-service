@@ -63,7 +63,7 @@
                     android:layout_marginLeft="@dimen/_12sdp"
                     android:layout_marginTop="@dimen/_10sdp"
                     android:layout_marginBottom="@dimen/_6sdp"
-                    android:text="You can also pay in Installment just tap on first intstallment checkbox"
+                    android:text="You can also pay in Installment "
                     android:textColor="@color/greay"
                     android:textSize="@dimen/_10ssp"
                     android:textStyle="bold" />
@@ -84,13 +84,16 @@
                     android:layout_height="wrap_content"
                     android:padding="@dimen/_10sdp">
 
-                    <TextView
-                        android:id="@+id/firstInstallment"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:padding="@dimen/_5sdp"
-                        android:text="First Installment : "
-                        android:textColor="@color/black" />
+
+
+                        <TextView
+                            android:id="@+id/firstInstallment"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:padding="@dimen/_5sdp"
+                            android:text="First Installment : "
+                            android:textColor="@color/black" />
+
 
                     <TextView
                         android:id="@+id/firstInstallmentTv"
@@ -100,21 +103,61 @@
                         android:padding="@dimen/_5sdp"
                         android:text="0"
                         android:textColor="@color/black" />
-
-
-                    <TextView
-                        android:id="@+id/thirdInstallment"
-                        android:layout_width="wrap_content"
+                    <RelativeLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
-                        android:padding="@dimen/_5sdp"
-                        android:layout_marginTop="@dimen/_10sdp"
-                        android:text=""
-                        android:textColor="@color/black" />
+                        android:layout_below="@+id/firstInstallment"
+                    android:background="@drawable/dd"
+                        android:id="@+id/relativeLayout">
+
+                        <TextView
+
+                            android:id="@+id/secondInstallment"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:padding="@dimen/_5sdp"
+                            android:text="Second Installment : "
+                            android:textColor="@color/black" />
+
+                        <TextView
+                            android:id="@+id/thirdInstallmentTxt"
+                            android:layout_width="wrap_content"
+                            android:layout_below="@+id/secondInstallment"
+                            android:layout_height="wrap_content"
+                            android:padding="@dimen/_5sdp"
+                            android:text="Third Installment : "
+                            android:textColor="@color/black" />
+
+                        <TextView
+                            android:id="@+id/thirdInstallmentTv"
+                            android:layout_width="wrap_content"
+                            android:layout_below="@+id/SecondInstallmentTv"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentRight="true"
+                            android:padding="@dimen/_5sdp"
+                            android:text="0"
+                            android:textColor="@color/black" />
+
+
+
+
+                        <TextView
+                            android:id="@+id/SecondInstallmentTv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentRight="true"
+                            android:padding="@dimen/_5sdp"
+                            android:text="0"
+                            android:textColor="@color/black" />
+
+                    </RelativeLayout>
+
+
+
 
                     <View
                         android:id="@+id/view"
-                        android:layout_below="@id/firstInstallmentTv"
+                        android:layout_below="@id/relativeLayout"
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/_2sdp"
                         android:layout_margin="@dimen/_6sdp"
@@ -160,7 +203,7 @@
         android:orientation="vertical">
 
         <TextView
-
+            android:id="@+id/showtxt"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/view"
@@ -169,8 +212,6 @@
             android:text="you can pay first installment"
             android:textColor="@color/greay"
             android:textSize="@dimen/_10ssp" />
-
-
 
 
         <com.google.android.material.button.MaterialButton
@@ -188,13 +229,13 @@
 
 
         <TextView
-
+android:id="@+id/fullAmtTxt"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/view"
             android:layout_alignParentEnd="true"
             android:padding="@dimen/_5sdp"
-            android:text="Pay Full Payment"
+            android:text="Pay Yearly Payment"
             android:textColor="@color/greay"
             android:textSize="@dimen/_10ssp" />
         <com.google.android.material.button.MaterialButton

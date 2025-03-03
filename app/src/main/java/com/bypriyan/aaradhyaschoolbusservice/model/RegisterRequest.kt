@@ -1,8 +1,5 @@
 package com.bypriyan.aaradhyaschoolbusservice.model
 
-import android.net.Uri
-import okhttp3.MultipartBody
-
 data class RegisterRequest(
     val fullName: String,
     val email: String,
@@ -15,5 +12,5 @@ data class RegisterRequest(
     val fatherNumber: String,
     val motherName: String,
     val motherNumber: String,
-    val imageUri : MultipartBody.Part?
+    val imageUri: String? // Use MultipartBody.Part? instead of String
 )

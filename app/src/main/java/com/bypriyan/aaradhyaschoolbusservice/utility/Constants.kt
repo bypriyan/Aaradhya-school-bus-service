@@ -27,4 +27,30 @@ object Constants{
     const val KEY_EMAIL = "email"
     const val KEY_PASSWORD = "password"
     const val KEY_PROFILE_IMAGE_URI = "profile_image_uri"
+    const val PAYMENT_STATUS = "PAYMENT_STATUS"
+    const val KEY_FULL_PAYMENT_DONE = "full_payment_done"
+
+    // Receipt Keys
+    const val KEY_RECEIPT_NO = "receipt_no"
+    const val KEY_DATE = "date"
+    const val KEY_STUDENT_NAME = "student_name"
+    const val KEY_ADDRESS = "address"
+    const val KEY_MOBILE_NO = "mobile_no"
+    const val KEY_AMOUNT = "amount"
+    const val KEY_STD = "std"
+    const val KEY_TOTAL_FEES = "total_fees"
+    const val KEY_MONTH_FROM = "month_from"
+    const val KEY_MONTH_TO = "month_to"
+
+    const val KEY_USER_CLASS = "user_class"
+    const val KEY_IMAGE = "image"
+    const val KEY_FATHER_NUMBER = "father_number"
+    const val KEY_MOTHER_NUMBER = "mother_number"
+    const val KEY_EMAIL_VERIFIED_AT = "email_verified_at"
+    const val KEY_CREATED_AT = "created_at"
+    const val KEY_UPDATED_AT = "updated_at"
+    const val KEY_IS_APPROVED = "is_approved"
+    const val KEY_USER_TYPE = "user_type"
+    const val KEY_OTP_VERIFIED = "otp_verified"
+
 }

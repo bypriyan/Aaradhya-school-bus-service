@@ -1,0 +1,332 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:background="@color/white"
+    android:layout_height="match_parent"
+    tools:context=".activity.DashBoard1Activity">
+
+    <RelativeLayout
+        android:id="@+id/rel"
+        android:layout_width="match_parent"
+        android:layout_margin="@dimen/_5sdp"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/white">
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/profileImageCard"
+            android:layout_width="@dimen/_27sdp"
+            android:layout_height="@dimen/_27sdp"
+            app:cardCornerRadius="@dimen/_80sdp"
+            app:strokeColor="@color/transparent"
+            app:cardBackgroundColor="#324580F4"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/_15sdp">
+
+            <ImageView
+                android:layout_width="@dimen/_27sdp"
+                android:layout_height="@dimen/_27sdp"
+                android:id="@+id/profile_image"
+                android:layout_gravity="center"/>
+
+        </com.google.android.material.card.MaterialCardView>
+
+
+        <ImageView
+            android:layout_width="@dimen/_27sdp"
+            android:layout_height="@dimen/_27sdp"
+            android:src="@drawable/sign_out_icon"
+            android:padding="@dimen/_6sdp"
+            android:layout_centerVertical="true"
+            app:tint="@color/red"
+            android:layout_alignParentEnd="true"
+            android:layout_marginRight="@dimen/_10sdp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Loading.."
+            android:id="@+id/name"
+            android:layout_centerVertical="true"
+            android:textColor="@color/black"
+            android:layout_toRightOf="@id/profileImageCard"
+            android:layout_marginLeft="@dimen/_15sdp"
+            android:textSize="@dimen/_11ssp"
+            android:fontFamily="@font/semibold" />
+
+
+    </RelativeLayout>
+
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_below="@+id/rel"
+        android:layout_height="wrap_content">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+
+        android:layout_margin="@dimen/_10sdp">
+
+
+        <TextView
+            android:id="@+id/notice"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_2sdp"
+            android:background="@drawable/custom_design"
+            android:gravity="center"
+            android:padding="@dimen/_5sdp"
+            android:text="Notice"
+            android:textColor="@color/white"
+            android:textSize="@dimen/_16sdp"
+            android:textStyle="bold" />
+
+
+
+
+
+        <LinearLayout
+            android:id="@+id/linearLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/notice"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:background="@drawable/custom_background">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                android:layout_margin="@dimen/_10sdp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Dear Parents,"
+                    android:textColor="@color/black"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_10sdp"
+                    android:text="We will pleased to inform about the rate chart formulated by the transpoter for your perusal and action.
+"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/_8sdp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_10sdp"
+                    android:text="The transpoter will put up a travel desk from 1st April to 10 April to register for the bus services to the availed.
+"
+                    android:textColor="@color/black"
+
+                    android:textSize="@dimen/_8sdp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_10sdp"
+                    android:text="Point to be noted: -"
+                    android:textColor="@color/appColor"
+                    android:textSize="@dimen/_10sdp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_5sdp"
+                    android:text="1.  1 Payment for 11 months will be taken"
+                    android:textColor="@color/black"
+
+                    android:textSize="@dimen/_8sdp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_5sdp"
+                    android:text="2.  1 st Instalment April to August"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/_8sdp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_5sdp"
+                    android:text="3.  2nd Instalment September to December"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/_8sdp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_5sdp"
+                    android:text="4.  3rd Instalment January to March"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/_8sdp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_5sdp"
+                    android:text="5.   Payment to be done to Aaradhya Transport"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/_8sdp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_5sdp"
+                    android:text="6.   All RTO guidelines will be followed GPS,CCTV Camera, lady Attendant etc."
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/_8sdp"
+                    android:textStyle="bold" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_1sdp"
+                    android:layout_marginTop="@dimen/_5sdp"
+                    android:background="@color/black"
+                    android:backgroundTint="@color/black"
+                    android:outlineAmbientShadowColor="@color/black" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/relativeLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:background="@drawable/dd"
+            android:layout_below="@+id/linearLayout">
+
+            <TextView
+                android:id="@+id/PickupRNumber"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/_5sdp"
+                android:textColor="@color/black"
+                android:text="Pickup Route" />
+
+            <TextView
+                android:id="@+id/PickupTv"
+                android:textColor="@color/black"
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="6dp"
+                android:text="r1" />
+
+
+
+            <TextView
+                android:id="@+id/DropRNumber"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:layout_marginLeft="@dimen/_30sdp"
+                android:layout_below="@+id/PickupRNumber"
+                android:padding="@dimen/_5sdp"
+                android:text="Drop Route" />
+
+            <TextView
+                android:id="@+id/DropTv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="6dp"
+                android:textColor="@color/black"
+                android:text="r2" />
+
+
+        </LinearLayout>
+
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/DownloadRecieptBtn"
+            android:layout_width="167dp"
+            android:layout_height="60dp"
+            android:layout_below="@+id/relativeLayout"
+            android:layout_gravity="center"
+            android:layout_marginStart="@dimen/_5sdp"
+            android:layout_marginLeft="@dimen/_5sdp"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:layout_marginEnd="@dimen/_5sdp"
+            android:layout_marginRight="@dimen/_5sdp"
+            android:layout_marginBottom="@dimen/_5sdp"
+            android:layout_weight="1"
+            android:backgroundTint="@color/appColor"
+            android:drawableEnd="@drawable/baseline_download_24"
+            android:text="Download Fee Reciept"
+            android:textColor="@color/white"
+            app:cornerRadius="@dimen/_10sdp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/SlabStructureBtn"
+            android:layout_width="194dp"
+            android:layout_height="60dp"
+            android:layout_below="@+id/relativeLayout"
+            android:layout_gravity="center"
+            android:layout_marginStart="@dimen/_5sdp"
+            android:layout_marginLeft="@dimen/_5sdp"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:layout_marginEnd="@dimen/_5sdp"
+            android:layout_marginRight="@dimen/_5sdp"
+            android:layout_marginBottom="@dimen/_5sdp"
+            android:layout_toRightOf="@id/DownloadRecieptBtn"
+            android:layout_weight="1"
+            android:backgroundTint="@color/appColor"
+            android:drawableEnd="@drawable/baseline_arrow_forward_24"
+            android:text="Slab Structure"
+            android:textColor="@color/white"
+            app:cornerRadius="@dimen/_10sdp" />
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/paidNextAmount"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_50sdp"
+            android:layout_gravity="center"
+            android:layout_margin="@dimen/_5sdp"
+            android:layout_weight="1"
+            android:layout_below="@+id/SlabStructureBtn"
+            android:backgroundTint="@color/appColor"
+            android:text="Pay Next full payment / Installment"
+            android:drawableEnd="@drawable/baseline_arrow_forward_24"
+            android:textColor="@color/white"
+            app:cornerRadius="@dimen/_10sdp" />
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/CheckOutAct"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_50sdp"
+            android:layout_gravity="center"
+            android:layout_margin="@dimen/_5sdp"
+            android:layout_weight="1"
+            android:layout_below="@+id/paidNextAmount"
+            android:backgroundTint="@color/appColor"
+            android:text="Go to checkout screen"
+            android:drawableEnd="@drawable/baseline_arrow_forward_24"
+            android:textColor="@color/white"
+            app:cornerRadius="@dimen/_10sdp" />
+    </RelativeLayout>
+        </ScrollView>
+    </RelativeLayout>
+
+
+
+
+
+
+
+
+

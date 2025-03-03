@@ -64,7 +64,7 @@ class PdfRepository @Inject constructor(private val context: Context) {
 
             // Amount section
             canvas.drawRect(40f, 220f, 560f, 250f, borderPaint)
-            canvas.drawText("Rupees in Words: $amount", 50f, 240f, paint)
+            canvas.drawText("Rupees in Words: ${convertNumberToWords(amount)}", 50f, 240f, paint)
 
             // Standard and Total Fees with outline
             canvas.drawRect(40f, 260f, 560f, 290f, borderPaint)
@@ -92,6 +92,36 @@ class PdfRepository @Inject constructor(private val context: Context) {
             pdfDocument.close()
             return@withContext filePath
         }
+    }
+
+    fun convertNumberToWords(number: String): String {
+        val num = number.toLongOrNull() ?: return "Invalid number"
+
+        if (num == 0L) return "zero"
+
+        val units = arrayOf("", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten",
+            "eleven", "twelve", "thirteen", "fourteen", "fifteen", "sixteen", "seventeen", "eighteen", "nineteen")
+        val tens = arrayOf("", "", "twenty", "thirty", "forty", "fifty", "sixty", "seventy", "eighty", "ninety")
+        val scales = arrayOf("", "thousand", "lakh", "crore")
+
+        fun convertChunk(n: Int): String {
+            return when {
+                n < 20 -> units[n]
+                n < 100 -> tens[n / 10] + if (n % 10 != 0) " " + units[n % 10] else ""
+                else -> units[n / 100] + " hundred" + if (n % 100 != 0) " " + convertChunk(n % 100) else ""
+            }
+        }
+
+        val parts = arrayOf(num % 1000, (num / 1000) % 100, (num / 100000) % 100, (num / 10000000) % 100)  // Supports up to crores
+        val wordParts = mutableListOf<String>()
+
+        for (i in parts.indices.reversed()) {
+            if (parts[i] > 0) {
+                wordParts.add(convertChunk(parts[i].toInt()) + " " + scales[i])
+            }
+        }
+
+        return wordParts.joinToString(" ").trim()
     }
 
     private fun savePdf(pdfDocument: PdfDocument): String {

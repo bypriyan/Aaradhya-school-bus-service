@@ -46,11 +46,8 @@ class PickupDropActivity : AppCompatActivity(), OnMapReadyCallback {
         super.onCreate(savedInstanceState)
         binding = ActivityPickupDropBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
         // Get the mode from the intent
         mode = intent.getStringExtra("MODE")
-
-
 
         when (mode) {
             "SAME_LOCATION" -> updateUIForSameLocation()
@@ -120,8 +117,23 @@ class PickupDropActivity : AppCompatActivity(), OnMapReadyCallback {
                     dropAddress = binding.etDrop.text.toString()
                     if (pickupAddress.isEmpty() || dropAddress.isEmpty()) {
                         Toast.makeText(this, "Please enter a location", Toast.LENGTH_SHORT).show()
+                    } else if (totalDistance == 0f) {
+                        Toast.makeText(this, "Your distance is zero", Toast.LENGTH_SHORT).show()
+                    } else if (totalDistance in 0.1f..0.9f) {
+                        // Allow user to proceed if distance is between 0.1 and 0.9
+                        val intent = Intent(this, PaymentOptionActivity::class.java).apply {
+                            putExtra("PICKUP_LOCATION", pickupAddress)
+                            putExtra("DROP_LOCATION", dropAddress)
+                            putExtra("PICKUP_LATITUDE", pickupLocation?.latitude)
+                            putExtra("PICKUP_LONGITUDE", pickupLocation?.longitude)
+                            putExtra("DROP_LATITUDE", dropLocation?.latitude)
+                            putExtra("DROP_LONGITUDE", dropLocation?.longitude)
+                            putExtra("TOTAL_DISTANCE", totalDistance)
+                            putExtra("MODE", mode)
+                        }
+                        startActivity(intent)
                     } else {
-                        // Pass data to the next activity
+                        // Proceed if distance is greater than or equal to 1.0
                         val intent = Intent(this, PaymentOptionActivity::class.java).apply {
                             putExtra("PICKUP_LOCATION", pickupAddress)
                             putExtra("DROP_LOCATION", dropAddress)
@@ -135,12 +147,26 @@ class PickupDropActivity : AppCompatActivity(), OnMapReadyCallback {
                         startActivity(intent)
                     }
                 }
+
                 "ONLY_DROP" -> {
                     val onlyDropAddress = binding.etOnlyDrop.text.toString()
                     if (onlyDropAddress.isEmpty()) {
-                        Toast.makeText(this, "Please enter a drop location", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this, "Please enter a drop location", Toast.LENGTH_SHORT)
+                            .show()
+                    } else if (totalDistance == 0.00f) {
+                        Toast.makeText(this, "Your distance is zero", Toast.LENGTH_SHORT).show()
+                    } else if (totalDistance in 0.1f..0.9f) {
+                        // Allow user to proceed if distance is between 0.1 and 0.9
+                        val intent = Intent(this, PaymentOptionActivity::class.java).apply {
+                            putExtra("DROP_LOCATION", onlyDropAddress)
+                            putExtra("DROP_LATITUDE", onlyDropLocation?.latitude)
+                            putExtra("DROP_LONGITUDE", onlyDropLocation?.longitude)
+                            putExtra("TOTAL_DISTANCE", totalDistance)
+                            putExtra("MODE", mode)
+                        }
+                        startActivity(intent)
                     } else {
-                        // Pass data to the next activity
+                        // Proceed if distance is greater than or equal to 1.0
                         val intent = Intent(this, PaymentOptionActivity::class.java).apply {
                             putExtra("DROP_LOCATION", onlyDropAddress)
                             putExtra("DROP_LATITUDE", onlyDropLocation?.latitude)
@@ -151,13 +177,33 @@ class PickupDropActivity : AppCompatActivity(), OnMapReadyCallback {
                         startActivity(intent)
                     }
                 }
+
                 "DIFFERENT_LOCATION" -> {
                     pickupAddress = binding.etPickup.text.toString()
                     dropAddress = binding.etDrop.text.toString()
                     if (pickupAddress.isEmpty() && dropAddress.isEmpty()) {
-                        Toast.makeText(this, "Please select at least one location", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            this,
+                            "Please select at least one location",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    } else if (totalDistance == 0.00f) {
+                        Toast.makeText(this, "Your distance is zero", Toast.LENGTH_SHORT).show()
+                    } else if (totalDistance in 0.1f..0.9f) {
+                        // Allow user to proceed if distance is between 0.1 and 0.9
+                        val intent = Intent(this, PaymentOptionActivity::class.java).apply {
+                            putExtra("PICKUP_LOCATION", pickupAddress)
+                            putExtra("DROP_LOCATION", dropAddress)
+                            putExtra("PICKUP_LATITUDE", pickupLocation?.latitude)
+                            putExtra("PICKUP_LONGITUDE", pickupLocation?.longitude)
+                            putExtra("DROP_LATITUDE", dropLocation?.latitude)
+                            putExtra("DROP_LONGITUDE", dropLocation?.longitude)
+                            putExtra("TOTAL_DISTANCE", totalDistance)
+                            putExtra("MODE", mode)
+                        }
+                        startActivity(intent)
                     } else {
-                        // Pass data to the next activity
+                        // Proceed if distance is greater than or equal to 1.0
                         val intent = Intent(this, PaymentOptionActivity::class.java).apply {
                             putExtra("PICKUP_LOCATION", pickupAddress)
                             putExtra("DROP_LOCATION", dropAddress)

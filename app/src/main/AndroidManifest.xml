@@ -18,8 +18,16 @@
         android:supportsRtl="true"
         android:theme="@style/Base.Theme.AaradhyaSchoolBusService"
         tools:targetApi="31">
+
         <activity
             android:name=".activity.ProfileActivity"
+            android:exported="true"
+            android:theme="@style/Base.Theme.AaradhyaSchoolBusService" />
+        <activity
+            android:name=".activity.DashBoard1Activity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.StudentDetailActivity"
             android:exported="false" />
 
         <meta-data
@@ -27,17 +35,18 @@
             android:value="AIzaSyDoK6uVnsidH3hQqZkaSqclQnCgFg-MxLc" />
 
         <activity
-            android:name=".activity.PaymentHistory"
-            android:exported="false" />
-        <activity
             android:name=".activity.PaymentDoneActivity"
             android:exported="false" />
         <activity
-            android:name=".activity.PaymentOptionActivity"
+            android:name=".activity.SlabActivity"
             android:exported="false" />
         <activity
+            android:name=".activity.PaymentOptionActivity"
+            android:exported="true"
+            android:theme="@style/Base.Theme.AaradhyaSchoolBusService" />
+        <activity
             android:name=".activity.PickupDropActivity"
-            android:exported="true"></activity>
+            android:exported="true" />
         <activity
             android:name=".onBordingScreenActivity.OnBordingScreenActivity"
             android:exported="true"
@@ -57,21 +66,21 @@
             android:exported="true"
             android:theme="@style/Base.Theme.AaradhyaSchoolBusService" />
         <activity
-            android:name=".activity.DasboardActivity"
+            android:name=".activity.CheckOut1"
             android:exported="true"
-            android:theme="@style/Base.Theme.AaradhyaSchoolBusService"></activity>
+            android:theme="@style/Base.Theme.AaradhyaSchoolBusService" />
         <activity
             android:name=".activity.SignUpActivity"
             android:exported="true"
-            android:theme="@style/Base.Theme.AaradhyaSchoolBusService"></activity>
+            android:theme="@style/Base.Theme.AaradhyaSchoolBusService" />
         <activity
             android:name=".activity.OtpActivity"
             android:exported="true"
-            android:theme="@style/Base.Theme.AaradhyaSchoolBusService"></activity>
+            android:theme="@style/Base.Theme.AaradhyaSchoolBusService" />
         <activity
             android:name=".activity.TermsAndConditionActivity"
             android:exported="true"
-            android:theme="@style/Base.Theme.AaradhyaSchoolBusService"></activity>
+            android:theme="@style/Base.Theme.AaradhyaSchoolBusService" />
     </application>
 
 </manifest>
