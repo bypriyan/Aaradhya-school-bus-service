@@ -26,8 +26,7 @@ class RegisterViewModel @Inject constructor(
     fun registerUser(
         fullName: RequestBody,
         email: RequestBody,
-        className: RequestBody,
-        password: RequestBody,
+        userClass: RequestBody,
         age: RequestBody,
         standard: RequestBody,
         year: RequestBody,
@@ -35,28 +34,21 @@ class RegisterViewModel @Inject constructor(
         fatherNumber: RequestBody,
         motherName: RequestBody,
         motherNumber: RequestBody,
-        imageUri: MultipartBody.Part?
+        password: RequestBody,
+        image: MultipartBody.Part
     ) {
         viewModelScope.launch {
             try {
                 val response = registerUserRepository.registerUser(
-                    fullName,
-                    email,
-                    className,
-                    password,
-                    age,
-                    standard,
-                    year,
-                    fatherName,
-                    fatherNumber,
-                    motherName,
-                    motherNumber,
-                    imageUri
+                    fullName, email, userClass, age, standard, year, fatherName, fatherNumber, motherName, motherNumber, password, image
                 )
-                Log.d("reg", "registerUser: $response")
-                _registerResponse.value = response
+                if (response.status == "success") {
+                    _registerResponse.value = response
+                } else {
+                    Log.e("RegisterViewModel", "Registration failed: ${response.message}")
+                }
             } catch (e: Exception) {
-                Log.e("reg", "registerUser: ${e.message}")
+                Log.e("RegisterViewModel", "Registration failed: ${e.message}")
             }
         }
     }

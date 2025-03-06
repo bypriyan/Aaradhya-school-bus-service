@@ -15,6 +15,9 @@ import com.razorpay.Checkout
 import com.razorpay.PaymentResultListener
 import dagger.hilt.android.AndroidEntryPoint
 import org.json.JSONObject
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 import javax.inject.Inject
 import kotlin.collections.contains
 import kotlin.text.toInt
@@ -58,6 +61,7 @@ class PaymentOptionActivity : AppCompatActivity(), PaymentResultListener {
     var newTotal = 0
     private var installmentStatus = 0
     private var isFullPaymentDone: Boolean = false // Flag to track full payment
+    private var paidAmount =0
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -80,6 +84,7 @@ class PaymentOptionActivity : AppCompatActivity(), PaymentResultListener {
         val distanceText = "Total Distance: %.2f km".format(totalDistance)
         userId = preferenceManager.getString(Constants.KEY_USER_ID) ?: ""
         token = preferenceManager.getString(Constants.KEY_TOKEN) ?: ""
+        preferenceManager.putString(Constants.KEY_TOTAL_FEES, totalPrice.toString())
 
         if (userId.isEmpty() || token.isEmpty()) {
             Log.e("PaymentOptionActivity", "User ID or Token is missing!")
@@ -109,7 +114,7 @@ class PaymentOptionActivity : AppCompatActivity(), PaymentResultListener {
 
 
         // Create reservation map with all values as Strings
-        viewModel.reservationResponse.observe(this, Observer { response ->
+        viewModel.responseMessage.observe(this, Observer { response ->
             Log.d("payss", "onCreate: $response")
             var intent = Intent(this, PaymentDoneActivity::class.java)
             intent.putExtra("id", paymentId)
@@ -183,7 +188,7 @@ class PaymentOptionActivity : AppCompatActivity(), PaymentResultListener {
 
         // Full payment button
         binding.totalCostTv.setOnClickListener {
-
+            paidAmount = totalPrice
             startPayment(totalPrice) // Pay total amount
             installmentStatus=4
             preferenceManager.putString("installment_status", "4") // Save status persistently
@@ -209,10 +214,13 @@ class PaymentOptionActivity : AppCompatActivity(), PaymentResultListener {
         // EMI first installment button
         binding.continueBtn.setOnClickListener {
             if (installmentStatus == 0) {
+                paidAmount = firstInstallmentPrice
                 startPayment(firstInstallmentPrice) // Pay only first installment
             } else if (installmentStatus == 1) {
+                paidAmount = secondInstallmentPrice
                 startPayment(secondInstallmentPrice) // Pay second installment
             } else if (installmentStatus == 2) {
+                paidAmount = thirdInstallmentPrice
                 startPayment(thirdInstallmentPrice) // Pay third installment
             }  else
             {
@@ -267,9 +275,17 @@ class PaymentOptionActivity : AppCompatActivity(), PaymentResultListener {
         }
     }
 
-
-
     override fun onPaymentSuccess(razorpayPaymentID: String?) {
+
+        preferenceManager.putString(Constants.KEY_AMOUNT,paidAmount.toString())
+        preferenceManager.putString(Constants.KEY_TOTAL_FEES, totalPrice.toString())
+        if(totalPrice==paidAmount){
+            preferenceManager.putString(Constants.KEY_MONTH_FROM, "April")
+            preferenceManager.putString(Constants.KEY_MONTH_TO, "March")
+        }else{
+            preferenceManager.putString(Constants.KEY_MONTH_FROM, "April")
+            preferenceManager.putString(Constants.KEY_MONTH_TO, "August")
+        }
         try {
             if (razorpayPaymentID.isNullOrEmpty()) {
                 Toast.makeText(this, "Payment ID is null!", Toast.LENGTH_SHORT).show()
@@ -304,11 +320,20 @@ class PaymentOptionActivity : AppCompatActivity(), PaymentResultListener {
 
             Log.d("PaymentOptionActivity", "Storing reservation: $reservation")
 
-            viewModel.storeReservation(token, reservation)
+            viewModel.createReservation(
+                userId, finalPickupLocation, dropLocation, finalPickupLatitude, finalPickupLongitude,
+                dropLatitude, dropLongitude, firstInstallmentPrice.toString(), totalPrice.toString(),
+                (installmentStatus + 1).toString(), mode
+            )
 
             // Update the installment status and payment status in PreferenceManager
             preferenceManager.putString("installment_status", (installmentStatus + 1).toString())
             preferenceManager.putString(Constants.PAYMENT_STATUS, "true")
+
+            //recipt
+            preferenceManager.putString(Constants.KEY_RECEIPT_NO, paymentId)
+            preferenceManager.putString(Constants.KEY_DATE, getCurrentDate())
+
 
             // Update the UI for paid installment
             if (installmentStatus == 0) {
@@ -334,6 +359,11 @@ class PaymentOptionActivity : AppCompatActivity(), PaymentResultListener {
 
     override fun onPaymentError(code: Int, response: String?) {
         Toast.makeText(this, "Payment Failed: $response", Toast.LENGTH_SHORT).show()
+    }
+
+    fun getCurrentDate(): String {
+        val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+        return dateFormat.format(Date())
     }
 }
 

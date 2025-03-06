@@ -9,7 +9,7 @@ import com.bypriyan.aaradhyaschoolbusservice.R
 
 class SlabActivity : AppCompatActivity() {
 
-    override fun onCreate(savedInstanceState: Bundle?) {
+        override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_slab)
@@ -18,12 +18,12 @@ class SlabActivity : AppCompatActivity() {
         val hideButton = intent.getBooleanExtra("hideButton", false)
         // If the extra is true, hide the button
         if (hideButton) {
-            btn.visibility = Button.INVISIBLE  // Hide the button
+            btn.visibility = Button.INVISIBLE
+        // Hide the button
         }
         btn.setOnClickListener(){
             startActivity(Intent(this, TermsAndConditionActivity::class.java))
         }
-
 
 
     }

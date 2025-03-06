@@ -4,12 +4,16 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.viewModels
+import androidx.annotation.IdRes
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.ui.unit.Constraints
 import com.bumptech.glide.Glide
 import com.bypriyan.aaradhyaschoolbusservice.databinding.ActivityDasboardBinding
 import com.bypriyan.aaradhyaschoolbusservice.viewModel.UserViewModel
 import com.bypriyan.bustrackingsystem.utility.Constants
+import com.bypriyan.bustrackingsystem.utility.PreferenceManager
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class CheckOut1 : AppCompatActivity() {
@@ -19,30 +23,50 @@ class CheckOut1 : AppCompatActivity() {
     lateinit var token: String
     lateinit var token_type: String
     private val userViewModel: UserViewModel by viewModels()
+    @Inject
+    lateinit var preferenceManager: PreferenceManager
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityDasboardBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-
         userId = getIntent().getStringExtra(Constants.KEY_USER_ID).toString()
         token = getIntent().getStringExtra(Constants.KEY_TOKEN).toString()
         token_type = getIntent().getStringExtra(Constants.KEY_TOKEN_TYPE).toString()
 
-        Log.d("dash", "onCreate: $userId, $token, $token_type")
+        preferenceManager.putString(Constants.KEY_USER_ID, userId)
+        preferenceManager.putString(Constants.KEY_TOKEN, token)
+        preferenceManager.putString(Constants.KEY_TOKEN_TYPE, token_type)
+
+        Log.d("dashss", "onCreate: $userId, $token, $token_type")
+        userViewModel.fetchUser(userId)
 
         binding.profileImage.setOnClickListener(){
-            startActivity(Intent(this, StudentDetailActivity::class.java))
+            startActivity(Intent(this, ProfileActivity::class.java))
         }
 
-        userViewModel.getUserDetails(userId, token)
-
-        userViewModel.userDetails.observe(this) { userDetails ->
-            // Update UI with user details
-            binding.name.text = "Hi, ${userDetails.fullName}"
-            loadImageWithGlide(Constants.KEY_IMAGE_PATH+userDetails.image)
+         // data getting
+        userViewModel.user.observe(this) { userDetails ->
+            userDetails?.data?.let { data ->
+                Log.d("TAGss", "onCreate: $data")
+                loadImageWithGlide(Constants.KEY_IMAGE_PATH+data.image_url)
+                preferenceManager.apply {
+                    putString(Constants.KEY_FULL_NAME, data.full_name ?: "")
+                    putString(Constants.KEY_EMAIL, data.email ?: "")
+                    putString(Constants.KEY_USER_CLASS, data.`class`?: "")
+                    putString(Constants.KEY_IMAGE, data.image_url ?: "")
+                    putString(Constants.KEY_YEAR, data.year ?: "")
+                    putString(Constants.KEY_STANDARD, data.standard ?: "")
+                    putString(Constants.KEY_AGE, data.age.toString() ?: "")
+                }
+            } ?: run {
+                Log.e("UserDetails", "userDetails or data is null")
+            }
         }
+
+
 
         binding.txtPickupDropSameLocation.setOnClickListener {
             // Start PickupDropActivity for same pickup and drop location

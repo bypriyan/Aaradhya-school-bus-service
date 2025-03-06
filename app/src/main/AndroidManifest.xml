@@ -18,6 +18,11 @@
         android:supportsRtl="true"
         android:theme="@style/Base.Theme.AaradhyaSchoolBusService"
         tools:targetApi="31">
+
+        <activity
+            android:name=".activity.ProfileActivity"
+            android:exported="true"
+            android:theme="@style/Base.Theme.AaradhyaSchoolBusService" />
         <activity
             android:name=".activity.DashBoard1Activity"
             android:exported="false" />

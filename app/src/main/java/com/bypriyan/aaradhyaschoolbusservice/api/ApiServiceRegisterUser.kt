@@ -4,25 +4,27 @@ package com.bypriyan.aaradhyaschoolbusservice.api
 import com.bypriyan.aaradhyaschoolbusservice.apiResponce.ApiResponceRegisterUser
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import okhttp3.Response
 import retrofit2.http.Multipart
 import retrofit2.http.POST
 import retrofit2.http.Part
 
 interface ApiServiceRegisterUser {
+
     @Multipart
-    @POST("register")
+    @POST("register.php")
     suspend fun registerUser(
-        @Part("fullName") fullName: RequestBody,
+        @Part("full_name") fullName: RequestBody,
         @Part("email") email: RequestBody,
-        @Part("className") className: RequestBody,
-        @Part("password") password: RequestBody,
+        @Part("class") userClass: RequestBody,
         @Part("age") age: RequestBody,
         @Part("standard") standard: RequestBody,
         @Part("year") year: RequestBody,
-        @Part("fatherName") fatherName: RequestBody,
-        @Part("fatherNumber") fatherNumber: RequestBody,
-        @Part("motherName") motherName: RequestBody,
-        @Part("motherNumber") motherNumber: RequestBody,
-        @Part imageUri: MultipartBody.Part?
+        @Part("father_name") fatherName: RequestBody,
+        @Part("father_number") fatherNumber: RequestBody,
+        @Part("mother_name") motherName: RequestBody,
+        @Part("mother_number") motherNumber: RequestBody,
+        @Part("password") password: RequestBody,
+        @Part image: MultipartBody.Part
     ): ApiResponceRegisterUser
 }

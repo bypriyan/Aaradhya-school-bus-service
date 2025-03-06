@@ -1,0 +1,512 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    tools:context=".activity.ProfileActivity">
+
+    <RelativeLayout
+        android:id="@+id/rel"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:layout_alignParentTop="true"
+        android:background="@color/white">
+
+        <ImageView
+            android:id="@+id/back"
+            android:layout_width="@dimen/_27sdp"
+            android:layout_height="@dimen/_27sdp"
+            android:src="@drawable/ic_back"
+            android:padding="@dimen/_2sdp"
+            android:layout_centerVertical="true"
+            app:tint="@color/black"
+            android:layout_alignParentStart="true"
+            android:layout_marginLeft="@dimen/_15sdp"
+            android:layout_marginRight="@dimen/_10sdp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Profile"
+            android:layout_centerVertical="true"
+            android:textColor="@color/black"
+            android:layout_toRightOf="@id/back"
+            android:textSize="@dimen/_13ssp"
+            android:fontFamily="@font/bold" />
+
+
+
+    </RelativeLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/rel">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="@dimen/_15sdp"
+            android:orientation="vertical">
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/select_image_card"
+                android:layout_centerHorizontal="true"
+                android:layout_width="@dimen/_100sdp"
+                android:layout_height="@dimen/_100sdp"
+                app:cardCornerRadius="@dimen/_80sdp"
+                app:strokeColor="@color/transparent"
+                app:cardBackgroundColor="#324580F4"
+                android:layout_gravity="center_horizontal"
+                android:layout_margin="@dimen/_8sdp">
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:id="@+id/profile_image"
+                        android:layout_gravity="center"
+                        android:scaleType="centerCrop"/>
+
+                </FrameLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <TextView
+                android:text="Full Name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_15sdp"
+                android:textSize="@dimen/_10ssp"
+                android:textStyle="bold"
+                android:layout_below="@+id/username"
+                android:textColor="@color/bg"/>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/fullName"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:textColorHint="@color/greay"
+                app:hintTextColor="@color/black"
+                android:textColor="@color/black"
+                android:enabled="false"
+                android:clickable="false"
+                app:boxStrokeColor="@color/black">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/fullNameEt"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:enabled="false"
+                    android:clickable="false"
+                    android:background="@drawable/bg_gradient_edit_text"
+                    android:inputType="textPersonName"
+                    android:textColor="@color/black" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                android:text="Standard"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_15sdp"
+                android:textSize="@dimen/_10ssp"
+                android:textStyle="bold"
+                android:clickable="false"
+                android:layout_below="@+id/username"
+                android:textColor="@color/bg"/>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/standerdTi"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:textColorHint="@color/greay"
+                app:hintTextColor="@color/black"
+                android:enabled="false"
+                android:clickable="false"
+                android:textColor="@color/black"
+                app:boxStrokeColor="@color/black">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/standerdEt"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:enabled="false"
+                    android:clickable="false"
+                    android:background="@drawable/bg_gradient_edit_text"
+                    android:textColor="@color/black"
+                    android:inputType="text" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                android:text="Class"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_15sdp"
+                android:textSize="@dimen/_10ssp"
+                android:textStyle="bold"
+                android:layout_below="@+id/username"
+                android:textColor="@color/bg"/>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/classs"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:textColorHint="@color/greay"
+                app:hintTextColor="@color/black"
+                android:textColor="@color/black"
+                android:enabled="false"
+                android:clickable="false"
+                app:boxStrokeColor="@color/black">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/classEt"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_gradient_edit_text"
+                    android:textColor="@color/black"
+                    android:enabled="false"
+                    android:clickable="false"
+                    android:inputType="number" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                android:text="Age"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_15sdp"
+                android:textSize="@dimen/_10ssp"
+                android:textStyle="bold"
+                android:clickable="false"
+                android:layout_below="@+id/username"
+                android:textColor="@color/bg"/>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/age"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:textColorHint="@color/greay"
+                app:hintTextColor="@color/black"
+                android:textColor="@color/black"
+                android:enabled="false"
+                android:clickable="false"
+                app:boxStrokeColor="@color/black">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/ageEt"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:enabled="false"
+                    android:clickable="false"
+                    android:background="@drawable/bg_gradient_edit_text"
+                    android:textColor="@color/black"
+                    android:inputType="number" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                android:text="Year"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_15sdp"
+                android:textSize="@dimen/_10ssp"
+                android:textStyle="bold"
+                android:layout_below="@+id/username"
+                android:textColor="@color/bg"/>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/year"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:textColorHint="@color/greay"
+                app:hintTextColor="@color/black"
+                android:enabled="false"
+                android:clickable="false"
+                android:textColor="@color/black"
+                app:boxStrokeColor="@color/black">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/yearEt"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_gradient_edit_text"
+                    android:textColor="@color/black"
+                    android:enabled="false"
+                    android:clickable="false"
+                    android:inputType="textEmailAddress" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                android:visibility="gone"
+                android:text="Father's Name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_15sdp"
+                android:textSize="@dimen/_10ssp"
+                android:textStyle="bold"
+                android:layout_below="@+id/username"
+                android:textColor="@color/bg"/>
+            <com.google.android.material.textfield.TextInputLayout
+                android:visibility="gone"
+                android:id="@+id/fatherName"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:textColorHint="@color/greay"
+                app:hintTextColor="@color/black"
+                android:textColor="@color/black"
+                android:enabled="false"
+                android:clickable="false"
+                app:boxStrokeColor="@color/black">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/fatherNameEt"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_gradient_edit_text"
+                    android:textColor="@color/black"
+                    android:enabled="false"
+                    android:clickable="false"
+                    android:inputType="textPersonName" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                android:visibility="gone"
+                android:text="Father's Phone Number"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_15sdp"
+                android:textSize="@dimen/_10ssp"
+                android:textStyle="bold"
+                android:clickable="false"
+                android:layout_below="@+id/username"
+                android:textColor="@color/bg"/>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:visibility="gone"
+                android:id="@+id/fPhoneNum"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:textColorHint="@color/greay"
+                app:hintTextColor="@color/black"
+                android:textColor="@color/black"
+                android:enabled="false"
+                android:clickable="false"
+                app:boxStrokeColor="@color/black">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/fPhoneNumEt"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_gradient_edit_text"
+                    android:textColor="@color/black"
+                    android:enabled="false"
+                    android:clickable="false"
+                    android:inputType="phone" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                android:visibility="gone"
+                android:text="Mother's Name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_15sdp"
+                android:textSize="@dimen/_10ssp"
+                android:textStyle="bold"
+                android:enabled="false"
+                android:clickable="false"
+                android:layout_below="@+id/username"
+                android:textColor="@color/bg"/>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:visibility="gone"
+                android:id="@+id/motherNAME"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:textColorHint="@color/greay"
+                app:hintTextColor="@color/black"
+                android:textColor="@color/black"
+                android:enabled="false"
+                android:clickable="false"
+                app:boxStrokeColor="@color/black">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/mothersName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_gradient_edit_text"
+                    android:textColor="@color/black"
+                    android:enabled="false"
+                    android:clickable="false"
+                    android:inputType="textEmailAddress" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                android:text="Mother's Phone Number"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_15sdp"
+                android:textSize="@dimen/_10ssp"
+                android:textStyle="bold"
+                android:visibility="gone"
+                android:layout_below="@+id/username"
+                android:textColor="@color/bg"/>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/mPhoneNumber"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:layout_centerHorizontal="true"
+                android:textColorHint="@color/greay"
+                app:hintTextColor="@color/black"
+                android:enabled="false"
+                android:clickable="false"
+                android:textColor="@color/black"
+                app:boxStrokeColor="@color/black">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/mPhoneEt"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_gradient_edit_text"
+                    android:textColor="@color/black"
+                    android:enabled="false"
+                    android:clickable="false"
+                    android:inputType="phone" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+
+            <TextView
+                android:visibility="gone"
+                android:text="Guardian's Name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_15sdp"
+                android:textSize="@dimen/_10ssp"
+                android:textStyle="bold"
+                android:layout_below="@+id/username"
+                android:textColor="@color/bg"/>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:visibility="gone"
+                android:id="@+id/guardianNAME"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:textColorHint="@color/greay"
+                app:hintTextColor="@color/black"
+                android:textColor="@color/black"
+                android:enabled="false"
+                android:clickable="false"
+                app:boxStrokeColor="@color/black">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/guardianName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_gradient_edit_text"
+                    android:textColor="@color/black"
+                    android:enabled="false"
+                    android:clickable="false"
+                    android:inputType="textEmailAddress" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                android:visibility="gone"
+                android:text="Guardian's Phone Number"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_15sdp"
+                android:textSize="@dimen/_10ssp"
+                android:textStyle="bold"
+                android:layout_below="@+id/username"
+                android:textColor="@color/bg"/>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:visibility="gone"
+                android:id="@+id/guardianNumber"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:textColorHint="@color/greay"
+                app:hintTextColor="@color/black"
+                android:textColor="@color/black"
+                android:enabled="false"
+                android:clickable="false"
+                app:boxStrokeColor="@color/black">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/guardianPhoneEt"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:enabled="false"
+                    android:clickable="false"
+                    android:background="@drawable/bg_gradient_edit_text"
+                    android:textColor="@color/black"
+                    android:inputType="phone" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                android:text="Email"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_15sdp"
+                android:textSize="@dimen/_10ssp"
+                android:textStyle="bold"
+                android:layout_below="@+id/username"
+                android:textColor="@color/bg"/>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/email"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:textColorHint="@color/greay"
+                app:hintTextColor="@color/black"
+                android:textColor="@color/black"
+                android:enabled="false"
+                android:clickable="false"
+                app:boxStrokeColor="@color/black">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/emailEt"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_gradient_edit_text"
+                    android:textColor="@color/black"
+                    android:enabled="false"
+                    android:clickable="false"
+                    android:inputType="textEmailAddress" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</RelativeLayout>

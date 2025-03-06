@@ -5,10 +5,14 @@ import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import com.bypriyan.aaradhyaschoolbusservice.databinding.ActivityPaymentDoneBinding
+import dagger.hilt.android.AndroidEntryPoint
 
+
+@AndroidEntryPoint
 class PaymentDoneActivity : AppCompatActivity() {
 
     lateinit var binding: ActivityPaymentDoneBinding
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -18,10 +22,16 @@ class PaymentDoneActivity : AppCompatActivity() {
 
         binding.txtTransactionNumber.text = intent.getStringExtra("id")!!
 
-
         binding.btnDone.setOnClickListener(){
             startActivity(Intent(this, DashBoard1Activity::class.java))
             finish()
         }
+
+        binding.btnDownload.setOnClickListener{
+
+        }
+
     }
+
+
 }
