@@ -7,7 +7,7 @@ object Constants{
     const val KEY_IS_LOGGED_IN = "is_logged_in"
 
     const val KEY_IS_ONBORDING_SCREEN_SEEN = "isSeen"
-    const val KEY_IMAGE_PATH = "https://aaradhyaschoolbusservice.com/public/image/"
+    const val KEY_IMAGE_PATH = "https://bypriyan.com/busApi/"
     // API Keys
     const val KEY_API_SUCCESS = "success"
     const val KEY_OTP = "otp"

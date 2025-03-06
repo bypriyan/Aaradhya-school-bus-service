@@ -45,7 +45,7 @@ class LoginActivity : AppCompatActivity() {
             startActivity(Intent(this, SignUpActivity::class.java))
         }
 
-        binding.usernameET.setText("czstar8094@gmail.com")
+        binding.usernameET.setText("czstar81094@gmail.com")
         binding.passwordEt.setText("123456")
 
         // Handle login button click

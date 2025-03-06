@@ -114,7 +114,7 @@ class PaymentOptionActivity : AppCompatActivity(), PaymentResultListener {
 
 
         // Create reservation map with all values as Strings
-        viewModel.reservationResponse.observe(this, Observer { response ->
+        viewModel.responseMessage.observe(this, Observer { response ->
             Log.d("payss", "onCreate: $response")
             var intent = Intent(this, PaymentDoneActivity::class.java)
             intent.putExtra("id", paymentId)
@@ -320,7 +320,11 @@ class PaymentOptionActivity : AppCompatActivity(), PaymentResultListener {
 
             Log.d("PaymentOptionActivity", "Storing reservation: $reservation")
 
-            viewModel.storeReservation(token, reservation)
+            viewModel.createReservation(
+                userId, finalPickupLocation, dropLocation, finalPickupLatitude, finalPickupLongitude,
+                dropLatitude, dropLongitude, firstInstallmentPrice.toString(), totalPrice.toString(),
+                (installmentStatus + 1).toString(), mode
+            )
 
             // Update the installment status and payment status in PreferenceManager
             preferenceManager.putString("installment_status", (installmentStatus + 1).toString())

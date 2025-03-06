@@ -6,6 +6,7 @@ import android.util.Log
 import androidx.activity.viewModels
 import androidx.annotation.IdRes
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.ui.unit.Constraints
 import com.bumptech.glide.Glide
 import com.bypriyan.aaradhyaschoolbusservice.databinding.ActivityDasboardBinding
 import com.bypriyan.aaradhyaschoolbusservice.viewModel.UserViewModel
@@ -31,11 +32,9 @@ class CheckOut1 : AppCompatActivity() {
         binding = ActivityDasboardBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-
         userId = getIntent().getStringExtra(Constants.KEY_USER_ID).toString()
         token = getIntent().getStringExtra(Constants.KEY_TOKEN).toString()
         token_type = getIntent().getStringExtra(Constants.KEY_TOKEN_TYPE).toString()
-
 
         preferenceManager.putString(Constants.KEY_USER_ID, userId)
         preferenceManager.putString(Constants.KEY_TOKEN, token)
@@ -51,16 +50,17 @@ class CheckOut1 : AppCompatActivity() {
          // data getting
         userViewModel.user.observe(this) { userDetails ->
             userDetails?.data?.let { data ->
-                val intent = Intent(this, ProfileActivity::class.java).apply {
-                    putExtra(Constants.KEY_FULL_NAME, data.full_name ?: "")
-                    putExtra(Constants.KEY_EMAIL, data.email ?: "")
-                    putExtra(Constants.KEY_USER_CLASS, data.`class`?: "")
-                    putExtra(Constants.KEY_IMAGE, data.image_url ?: "")
-                    putExtra(Constants.KEY_YEAR, data.year ?: "")
-                    putExtra(Constants.KEY_AGE, data.age ?: "")
-                    putExtra(Constants.KEY_STANDARD, data.standard ?: "")
+                Log.d("TAGss", "onCreate: $data")
+                loadImageWithGlide(Constants.KEY_IMAGE_PATH+data.image_url)
+                preferenceManager.apply {
+                    putString(Constants.KEY_FULL_NAME, data.full_name ?: "")
+                    putString(Constants.KEY_EMAIL, data.email ?: "")
+                    putString(Constants.KEY_USER_CLASS, data.`class`?: "")
+                    putString(Constants.KEY_IMAGE, data.image_url ?: "")
+                    putString(Constants.KEY_YEAR, data.year ?: "")
+                    putString(Constants.KEY_STANDARD, data.standard ?: "")
+                    putString(Constants.KEY_AGE, data.age.toString() ?: "")
                 }
-                startActivity(intent)
             } ?: run {
                 Log.e("UserDetails", "userDetails or data is null")
             }

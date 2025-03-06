@@ -5,12 +5,23 @@ import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.bypriyan.aaradhyaschoolbusservice.databinding.ActivityProfileBinding
 import com.bypriyan.bustrackingsystem.utility.Constants
+import com.bypriyan.bustrackingsystem.utility.PreferenceManager
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class ProfileActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityProfileBinding
+    @Inject
+    lateinit var preferenceManager: PreferenceManager
+    private lateinit var fullName: String
+    private lateinit var email: String
+    private lateinit var userClass: String
+    private lateinit var age: String
+    private lateinit var standard: String
+    private lateinit var year: String
+    private lateinit var image: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -18,14 +29,16 @@ class ProfileActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         // Retrieve data from Intent safely
-        val fullName = intent.getStringExtra(Constants.KEY_FULL_NAME) ?: "N/A"
-        val email = intent.getStringExtra(Constants.KEY_EMAIL) ?: "N/A"
-        val userClass = intent.getStringExtra(Constants.KEY_USER_CLASS) ?: "N/A"
-        val age = intent.getStringExtra(Constants.KEY_AGE) ?: "N/A"
-        val standard = intent.getStringExtra(Constants.KEY_STANDARD) ?: "N/A"
-        val year = intent.getStringExtra(Constants.KEY_YEAR) ?: "N/A"
-        val image = intent.getStringExtra(Constants.KEY_IMAGE) ?: ""
-        val createdAt = intent.getStringExtra(Constants.KEY_CREATED_AT) ?: "N/A"
+        preferenceManager.apply {
+             fullName = getString(Constants.KEY_FULL_NAME).toString()
+             email = getString(Constants.KEY_EMAIL).toString()
+             userClass = getString(Constants.KEY_USER_CLASS).toString()
+             age = getString(Constants.KEY_AGE).toString()
+             standard = getString(Constants.KEY_STANDARD).toString()
+             year = getString(Constants.KEY_YEAR).toString()
+             image = Constants.KEY_IMAGE_PATH+getString(Constants.KEY_IMAGE)
+
+        }
 
         val fatherName = intent.getStringExtra(Constants.KEY_FATHER_NAME) ?: "N/A"
         val fatherNumber = intent.getStringExtra(Constants.KEY_FATHER_NUMBER) ?: "N/A"
@@ -44,7 +57,7 @@ class ProfileActivity : AppCompatActivity() {
         binding.emailEt.setText(email)
 
         // Load image using Glide
-        loadImageWithGlide(Constants.KEY_IMAGE_PATH + image)
+        loadImageWithGlide(image)
     }
 
     private fun loadImageWithGlide(imageUrl: String) {
