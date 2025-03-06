@@ -25,7 +25,7 @@ class ReservationViewModel @Inject constructor(private val repository: Reservati
             try {
                 val response = repository.storeReservation(token, reservation)
                 Log.d("respo", "storeReservation: $response")
-                _reservationResponse.value = response
+//                _reservationResponse.value = response
             } catch (e: Exception) {
                 // Handle error
             }

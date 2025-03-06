@@ -12,7 +12,7 @@ import retrofit2.http.Part
 interface ApiServiceRegisterUser {
 
     @Multipart
-    @POST("register")
+    @POST("register.php")
     suspend fun registerUser(
         @Part("full_name") fullName: RequestBody,
         @Part("email") email: RequestBody,

@@ -1,17 +1,20 @@
 package com.bypriyan.aaradhyaschoolbusservice.api
 
+import com.android.volley.Response
 import com.bypriyan.aaradhyaschoolbusservice.apiResponce.ReservationResponse
 import retrofit2.http.Body
 import retrofit2.http.Header
 import retrofit2.http.POST
+
 
 interface ApiServiceAddUserPlan {
     @POST("storeReservation")
     suspend fun storeReservation(
         @Header("Authorization") token: String,
         @Body reservation: Map<String, String>
-    ): ReservationResponse
+    ): Response<ReservationResponse>  // ✅ Ensure Response<> wrapper
 }
+
 
 data class ReservationRequest(
     val user_id: String,

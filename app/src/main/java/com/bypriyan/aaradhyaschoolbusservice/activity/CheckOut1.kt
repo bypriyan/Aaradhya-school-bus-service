@@ -36,45 +36,37 @@ class CheckOut1 : AppCompatActivity() {
         token = getIntent().getStringExtra(Constants.KEY_TOKEN).toString()
         token_type = getIntent().getStringExtra(Constants.KEY_TOKEN_TYPE).toString()
 
+
         preferenceManager.putString(Constants.KEY_USER_ID, userId)
         preferenceManager.putString(Constants.KEY_TOKEN, token)
         preferenceManager.putString(Constants.KEY_TOKEN_TYPE, token_type)
 
-        Log.d("dash", "onCreate: $userId, $token, $token_type")
-        userViewModel.getUserDetails(userId, token)
+        Log.d("dashss", "onCreate: $userId, $token, $token_type")
+        userViewModel.fetchUser(userId)
 
         binding.profileImage.setOnClickListener(){
             startActivity(Intent(this, ProfileActivity::class.java))
         }
 
-        userViewModel.userDetails.observe(this) { userDetails ->
-            // Update UI with user details
-            Log.d("checks", "onCreate: $userDetails")
-            binding.name.text = "Hi, ${userDetails.fullName}"
-            loadImageWithGlide(Constants.KEY_IMAGE_PATH+userDetails.image)
-            preferenceManager.putString(Constants.KEY_STANDARD, userDetails.standard)
-            preferenceManager.putString(Constants.KEY_FULL_NAME, userDetails.fullName)
-
-
-            // Save user details in SharedPreferences
-            preferenceManager.putString(Constants.KEY_USER_ID, userDetails.id.toString())
-            preferenceManager.putString(Constants.KEY_EMAIL, userDetails.email)
-            preferenceManager.putString(Constants.KEY_USER_CLASS, userDetails.userClass)
-            preferenceManager.putString(Constants.KEY_IMAGE, userDetails.image)
-            preferenceManager.putString(Constants.KEY_YEAR, userDetails.year)
-            preferenceManager.putString(Constants.KEY_FATHER_NAME, userDetails.fatherName)
-            preferenceManager.putString(Constants.KEY_FATHER_NUMBER, userDetails.fatherNumber)
-            preferenceManager.putString(Constants.KEY_MOTHER_NAME, userDetails.motherName)
-            preferenceManager.putString(Constants.KEY_MOTHER_NUMBER, userDetails.motherNumber)
-            preferenceManager.putString(Constants.KEY_EMAIL_VERIFIED_AT, userDetails.emailVerifiedAt)
-            preferenceManager.putString(Constants.KEY_CREATED_AT, userDetails.createdAt)
-            preferenceManager.putString(Constants.KEY_UPDATED_AT, userDetails.updatedAt)
-            preferenceManager.putString(Constants.KEY_AGE, userDetails.age.toString())
-            preferenceManager.putString(Constants.KEY_IS_APPROVED, userDetails.isApproved.toString())
-            preferenceManager.putString(Constants.KEY_USER_TYPE, userDetails.userType)
-            preferenceManager.putString(Constants.KEY_OTP, userDetails.otp)
-            preferenceManager.putString(Constants.KEY_OTP_VERIFIED, userDetails.otpVerified.toString())
+         // data getting
+        userViewModel.user.observe(this) { userDetails ->
+            userDetails?.data?.let { data ->
+                val intent = Intent(this, ProfileActivity::class.java).apply {
+                    putExtra(Constants.KEY_FULL_NAME, data.full_name ?: "")
+                    putExtra(Constants.KEY_EMAIL, data.email ?: "")
+                    putExtra(Constants.KEY_USER_CLASS, data.`class`?: "")
+                    putExtra(Constants.KEY_IMAGE, data.image_url ?: "")
+                    putExtra(Constants.KEY_YEAR, data.year ?: "")
+                    putExtra(Constants.KEY_AGE, data.age ?: "")
+                    putExtra(Constants.KEY_STANDARD, data.standard ?: "")
+                }
+                startActivity(intent)
+            } ?: run {
+                Log.e("UserDetails", "userDetails or data is null")
+            }
         }
+
+
 
         binding.txtPickupDropSameLocation.setOnClickListener {
             // Start PickupDropActivity for same pickup and drop location

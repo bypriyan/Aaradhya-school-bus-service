@@ -6,6 +6,7 @@ import retrofit2.http.Body
 import retrofit2.http.POST
 
 interface ApiServiceOTP {
-    @POST("sendOTP")
+
+    @POST("otp.php")
     suspend fun sendOtp(@Body request: Map<String, String>): Response<ApiResponceSendOTP>
 }

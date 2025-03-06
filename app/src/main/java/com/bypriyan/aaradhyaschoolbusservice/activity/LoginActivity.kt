@@ -45,7 +45,7 @@ class LoginActivity : AppCompatActivity() {
             startActivity(Intent(this, SignUpActivity::class.java))
         }
 
-        binding.usernameET.setText("104priyanshu@gmail.com")
+        binding.usernameET.setText("czstar8094@gmail.com")
         binding.passwordEt.setText("123456")
 
         // Handle login button click
@@ -55,8 +55,7 @@ class LoginActivity : AppCompatActivity() {
 
             if (validateInputFields(email, password)) {
                 isLoading(true)
-                val loginRequest = LoginUser(email, password)
-                loginViewModel.loginUser(loginRequest)
+                loginViewModel.loginUser(email,password)
             }
         }
 
@@ -66,31 +65,31 @@ class LoginActivity : AppCompatActivity() {
             response?.let {
                 if (it.status == "success") {
                     // Save token and navigate to the next screen
-                    Log.d("login", "onCreate: $it")
-                    saveToken(it.token, it.token_type, it.id)
+                    Log.d("loginss", "onCreate: $it")
+                 //   saveToken(it.token, it.token_type, it.id)
 
                     val paymentStatus = preferenceManager.getString(Constants.PAYMENT_STATUS)?.toBoolean() ?: false
                     if (paymentStatus) {
                         // If the user has made a payment, redirect to DashboardActivity
                         val dashboardIntent = Intent(this@LoginActivity, DashBoard1Activity::class.java)
                         Log.d("lls", "onCreate: $it")
-                        intent.putExtra(Constants.KEY_TOKEN, it.token)
-                        intent.putExtra(Constants.KEY_TOKEN_TYPE, it.token_type)
+////                        intent.putExtra(Constants.KEY_TOKEN, it.token)
+//                        intent.putExtra(Constants.KEY_TOKEN_TYPE, it.token_type)
                         intent.putExtra(Constants.KEY_USER_ID, it.id)
                         preferenceManager.putString(Constants.KEY_USER_ID, it.id)
-                        preferenceManager.putString(Constants.KEY_TOKEN, it.token)
-                        preferenceManager.putString(Constants.KEY_TOKEN_TYPE, it.token_type)
+//                        preferenceManager.putString(Constants.KEY_TOKEN, it.token)
+//                        preferenceManager.putString(Constants.KEY_TOKEN_TYPE, it.token_type)
                         startActivity(dashboardIntent)
                         finish()
                     } else {
                         // Otherwise, go to CheckOut1 (payment screen)
                         var intent = Intent(this@LoginActivity, CheckOut1::class.java)
-                        intent.putExtra(Constants.KEY_TOKEN, it.token)
-                        intent.putExtra(Constants.KEY_TOKEN_TYPE, it.token_type)
-                        intent.putExtra(Constants.KEY_USER_ID, it.id)
-                        preferenceManager.putString(Constants.KEY_USER_ID, it.id)
-                        preferenceManager.putString(Constants.KEY_TOKEN, it.token)
-                        preferenceManager.putString(Constants.KEY_TOKEN_TYPE, it.token_type)
+//                        intent.putExtra(Constants.KEY_TOKEN, it.token)
+//                        intent.putExtra(Constants.KEY_TOKEN_TYPE, it.token_type)
+                        intent.putExtra(Constants.KEY_USER_ID, it.id.toString())
+                        preferenceManager.putString(Constants.KEY_USER_ID, it.id.toString())
+//                        preferenceManager.putString(Constants.KEY_TOKEN, it.token)
+//                        preferenceManager.putString(Constants.KEY_TOKEN_TYPE, it.token_type)
                         startActivity(intent)
                         finish()
                     }

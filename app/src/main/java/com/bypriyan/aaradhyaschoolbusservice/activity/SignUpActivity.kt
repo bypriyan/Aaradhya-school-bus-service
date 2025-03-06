@@ -18,6 +18,8 @@ import com.bypriyan.aaradhyaschoolbusservice.viewModel.OTPViewModel
 import com.bypriyan.bustrackingsystem.utility.Constants
 import dagger.hilt.android.AndroidEntryPoint
 
+
+
 @AndroidEntryPoint
 class SignUpActivity : AppCompatActivity() {
     private lateinit var binding : ActivitySignUpBinding
@@ -32,7 +34,6 @@ class SignUpActivity : AppCompatActivity() {
         setContentView(binding.root)
 
 
-
         //selected image
         pickImageLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
             uri?.let {
@@ -45,7 +46,8 @@ class SignUpActivity : AppCompatActivity() {
         binding.sendOTPBtn.setOnClickListener {
             if(validateInputFields()){
                 isLoading(true)
-                otpViewModel.sendOtp(binding.emailEt.text.toString())
+//                startOtpActivity("123")
+otpViewModel.sendOtp(binding.emailEt.text.toString())
             }
         }
 

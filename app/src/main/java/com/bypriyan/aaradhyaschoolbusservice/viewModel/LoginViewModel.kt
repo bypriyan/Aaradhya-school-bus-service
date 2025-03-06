@@ -22,10 +22,10 @@ class LoginViewModel @Inject constructor(
     private val _loginResponse = MutableLiveData<ApiLoginResponse?>()
     val loginResponse: LiveData<ApiLoginResponse?> get() = _loginResponse
 
-    fun loginUser(request: LoginUser) {
+    fun loginUser(email:String,password:String) {
         viewModelScope.launch {
             try {
-                val response = loginUserRepository.loginUser(request)
+                val response = loginUserRepository.loginUser(email,password)
                 Log.d("login", "loginUser: $response")
                 _loginResponse.value = response
             } catch (e: Exception) {

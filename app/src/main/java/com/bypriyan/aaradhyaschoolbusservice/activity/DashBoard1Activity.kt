@@ -53,7 +53,7 @@ class DashBoard1Activity : AppCompatActivity() {
         token_type = preferenceManager.getString(Constants.KEY_TOKEN_TYPE)!!
         Log.d("aaaa", "onCreate: $userId $token $token_type")
 
-        userViewModel.getUserDetails(userId, token)
+//        userViewModel.getUserDetails(userId, token)
 
         binding.SlabStructureBtn.setOnClickListener {
             val intent = Intent(this, SlabActivity::class.java)
@@ -62,38 +62,38 @@ class DashBoard1Activity : AppCompatActivity() {
         }
 
         binding.profileImage.setOnClickListener {
-            userViewModel.userDetails.value?.let { userDetails ->
-                val intent = Intent(this, ProfileActivity::class.java)
-                startActivity(intent)
-            }
+//            userViewModel.userDetails.value?.let { userDetails ->
+//                val intent = Intent(this, ProfileActivity::class.java)
+//                startActivity(intent)
+//            }
         }
 
-        userViewModel.userDetails.observe(this) { userDetails ->
-            // Update UI with user details
-            Log.d("checks", "onCreate: $resources")
-            binding.name.text = "Hi, ${userDetails.fullName}"
-            loadImageWithGlide(Constants.KEY_IMAGE_PATH+userDetails.image)
-            preferenceManager.putString(Constants.KEY_STANDARD, userDetails.standard)
-            preferenceManager.putString(Constants.KEY_FULL_NAME, userDetails.fullName)
-            // Save user details in SharedPreferences
-            preferenceManager.putString(Constants.KEY_USER_ID, userDetails.id.toString())
-            preferenceManager.putString(Constants.KEY_EMAIL, userDetails.email)
-            preferenceManager.putString(Constants.KEY_USER_CLASS, userDetails.userClass)
-            preferenceManager.putString(Constants.KEY_IMAGE, userDetails.image)
-            preferenceManager.putString(Constants.KEY_YEAR, userDetails.year)
-            preferenceManager.putString(Constants.KEY_FATHER_NAME, userDetails.fatherName)
-            preferenceManager.putString(Constants.KEY_FATHER_NUMBER, userDetails.fatherNumber)
-            preferenceManager.putString(Constants.KEY_MOTHER_NAME, userDetails.motherName)
-            preferenceManager.putString(Constants.KEY_MOTHER_NUMBER, userDetails.motherNumber)
-            preferenceManager.putString(Constants.KEY_EMAIL_VERIFIED_AT, userDetails.emailVerifiedAt)
-            preferenceManager.putString(Constants.KEY_CREATED_AT, userDetails.createdAt)
-            preferenceManager.putString(Constants.KEY_UPDATED_AT, userDetails.updatedAt)
-            preferenceManager.putString(Constants.KEY_AGE, userDetails.age.toString())
-            preferenceManager.putString(Constants.KEY_IS_APPROVED, userDetails.isApproved.toString())
-            preferenceManager.putString(Constants.KEY_USER_TYPE, userDetails.userType)
-            preferenceManager.putString(Constants.KEY_OTP, userDetails.otp)
-            preferenceManager.putString(Constants.KEY_OTP_VERIFIED, userDetails.otpVerified.toString())
-        }
+//        userViewModel.userDetails.observe(this) { userDetails ->
+//            // Update UI with user details
+//            Log.d("checks", "onCreate: $resources")
+//            binding.name.text = "Hi, ${userDetails.fullName}"
+//            loadImageWithGlide(Constants.KEY_IMAGE_PATH+userDetails.image)
+//            preferenceManager.putString(Constants.KEY_STANDARD, userDetails.standard)
+//            preferenceManager.putString(Constants.KEY_FULL_NAME, userDetails.fullName)
+//            // Save user details in SharedPreferences
+//            preferenceManager.putString(Constants.KEY_USER_ID, userDetails.id.toString())
+//            preferenceManager.putString(Constants.KEY_EMAIL, userDetails.email)
+//            preferenceManager.putString(Constants.KEY_USER_CLASS, userDetails.userClass)
+//            preferenceManager.putString(Constants.KEY_IMAGE, userDetails.image)
+//            preferenceManager.putString(Constants.KEY_YEAR, userDetails.year)
+//            preferenceManager.putString(Constants.KEY_FATHER_NAME, userDetails.fatherName)
+//            preferenceManager.putString(Constants.KEY_FATHER_NUMBER, userDetails.fatherNumber)
+//            preferenceManager.putString(Constants.KEY_MOTHER_NAME, userDetails.motherName)
+//            preferenceManager.putString(Constants.KEY_MOTHER_NUMBER, userDetails.motherNumber)
+//            preferenceManager.putString(Constants.KEY_EMAIL_VERIFIED_AT, userDetails.emailVerifiedAt)
+//            preferenceManager.putString(Constants.KEY_CREATED_AT, userDetails.createdAt)
+//            preferenceManager.putString(Constants.KEY_UPDATED_AT, userDetails.updatedAt)
+//            preferenceManager.putString(Constants.KEY_AGE, userDetails.age.toString())
+//            preferenceManager.putString(Constants.KEY_IS_APPROVED, userDetails.isApproved.toString())
+//            preferenceManager.putString(Constants.KEY_USER_TYPE, userDetails.userType)
+//            preferenceManager.putString(Constants.KEY_OTP, userDetails.otp)
+//            preferenceManager.putString(Constants.KEY_OTP_VERIFIED, userDetails.otpVerified.toString())
+//        }
 
         binding.CheckOutAct.setOnClickListener {
             startActivity(Intent(this, CheckOut1::class.java))
