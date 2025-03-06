@@ -22,10 +22,10 @@
             <InsightsFilterSettings>
               <option name="connection">
                 <ConnectionSetting>
-                  <option name="appId" value="PLACEHOLDER" />
-                  <option name="mobileSdkAppId" value="" />
-                  <option name="projectId" value="" />
-                  <option name="projectNumber" value="" />
+                  <option name="appId" value="com.bypriyan.aaradhyaschoolbusservice" />
+                  <option name="mobileSdkAppId" value="1:54311692473:android:82b26345a28180535fd368" />
+                  <option name="projectId" value="aaradhyaschoolbus" />
+                  <option name="projectNumber" value="54311692473" />
                 </ConnectionSetting>
               </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />

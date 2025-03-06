@@ -6,11 +6,14 @@ import android.util.Log
 import androidx.activity.viewModels
 import androidx.annotation.IdRes
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.ui.unit.Constraints
 import com.bumptech.glide.Glide
 import com.bypriyan.aaradhyaschoolbusservice.databinding.ActivityDasboardBinding
+import com.bypriyan.aaradhyaschoolbusservice.viewModel.TokenViewModel
 import com.bypriyan.aaradhyaschoolbusservice.viewModel.UserViewModel
 import com.bypriyan.bustrackingsystem.utility.Constants
 import com.bypriyan.bustrackingsystem.utility.PreferenceManager
+import com.google.firebase.messaging.FirebaseMessaging
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -24,13 +27,13 @@ class CheckOut1 : AppCompatActivity() {
     private val userViewModel: UserViewModel by viewModels()
     @Inject
     lateinit var preferenceManager: PreferenceManager
+    private val tokenViewModel: TokenViewModel by viewModels()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityDasboardBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
 
         userId = getIntent().getStringExtra(Constants.KEY_USER_ID).toString()
         token = getIntent().getStringExtra(Constants.KEY_TOKEN).toString()
@@ -40,41 +43,34 @@ class CheckOut1 : AppCompatActivity() {
         preferenceManager.putString(Constants.KEY_TOKEN, token)
         preferenceManager.putString(Constants.KEY_TOKEN_TYPE, token_type)
 
-        Log.d("dash", "onCreate: $userId, $token, $token_type")
-        userViewModel.getUserDetails(userId, token)
+        Log.d("dashss", "onCreate: $userId, $token, $token_type")
+        userViewModel.fetchUser(userId)
 
         binding.profileImage.setOnClickListener(){
             startActivity(Intent(this, ProfileActivity::class.java))
         }
 
-        userViewModel.userDetails.observe(this) { userDetails ->
-            // Update UI with user details
-            Log.d("checks", "onCreate: $userDetails")
-            binding.name.text = "Hi, ${userDetails.fullName}"
-            loadImageWithGlide(Constants.KEY_IMAGE_PATH+userDetails.image)
-            preferenceManager.putString(Constants.KEY_STANDARD, userDetails.standard)
-            preferenceManager.putString(Constants.KEY_FULL_NAME, userDetails.fullName)
-
-
-            // Save user details in SharedPreferences
-            preferenceManager.putString(Constants.KEY_USER_ID, userDetails.id.toString())
-            preferenceManager.putString(Constants.KEY_EMAIL, userDetails.email)
-            preferenceManager.putString(Constants.KEY_USER_CLASS, userDetails.userClass)
-            preferenceManager.putString(Constants.KEY_IMAGE, userDetails.image)
-            preferenceManager.putString(Constants.KEY_YEAR, userDetails.year)
-            preferenceManager.putString(Constants.KEY_FATHER_NAME, userDetails.fatherName)
-            preferenceManager.putString(Constants.KEY_FATHER_NUMBER, userDetails.fatherNumber)
-            preferenceManager.putString(Constants.KEY_MOTHER_NAME, userDetails.motherName)
-            preferenceManager.putString(Constants.KEY_MOTHER_NUMBER, userDetails.motherNumber)
-            preferenceManager.putString(Constants.KEY_EMAIL_VERIFIED_AT, userDetails.emailVerifiedAt)
-            preferenceManager.putString(Constants.KEY_CREATED_AT, userDetails.createdAt)
-            preferenceManager.putString(Constants.KEY_UPDATED_AT, userDetails.updatedAt)
-            preferenceManager.putString(Constants.KEY_AGE, userDetails.age.toString())
-            preferenceManager.putString(Constants.KEY_IS_APPROVED, userDetails.isApproved.toString())
-            preferenceManager.putString(Constants.KEY_USER_TYPE, userDetails.userType)
-            preferenceManager.putString(Constants.KEY_OTP, userDetails.otp)
-            preferenceManager.putString(Constants.KEY_OTP_VERIFIED, userDetails.otpVerified.toString())
+         // data getting
+        userViewModel.user.observe(this) { userDetails ->
+            userDetails?.data?.let { data ->
+                Log.d("TAGss", "onCreate: $data")
+                loadImageWithGlide(Constants.KEY_IMAGE_PATH+data.image_url)
+                uploadToken(data.id.toString())
+                preferenceManager.apply {
+                    putString(Constants.KEY_FULL_NAME, data.full_name ?: "")
+                    putString(Constants.KEY_EMAIL, data.email ?: "")
+                    putString(Constants.KEY_USER_CLASS, data.`class`?: "")
+                    putString(Constants.KEY_IMAGE, data.image_url ?: "")
+                    putString(Constants.KEY_YEAR, data.year ?: "")
+                    putString(Constants.KEY_STANDARD, data.standard ?: "")
+                    putString(Constants.KEY_AGE, data.age.toString() ?: "")
+                }
+            } ?: run {
+                Log.e("UserDetails", "userDetails or data is null")
+            }
         }
+
+
 
         binding.txtPickupDropSameLocation.setOnClickListener {
             // Start PickupDropActivity for same pickup and drop location
@@ -96,12 +92,28 @@ class CheckOut1 : AppCompatActivity() {
             intent.putExtra("MODE", "DIFFERENT_LOCATION") // Flag for different locations
             startActivity(intent)
         }
+
+        tokenViewModel.tokenResponse.observe(this) { response ->
+            Log.d("token", "onCreate: $response")
+        }
     }
 
     private fun loadImageWithGlide(imageUrl: String) {
         Glide.with(this)
             .load(imageUrl) // Load the image URL
             .into(binding.profileImage) // Set the image to the ImageView
+    }
+
+    private fun uploadToken(userId: String){
+        FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                val token = task.result
+                Log.d("FCM_TOKEN", "FCM Token: $token")
+                tokenViewModel.insertOrUpdateToken(userId, token)
+            } else {
+                Log.e("FCM_TOKEN", "Failed to get FCM token", task.exception)
+            }
+        }
     }
 }
 

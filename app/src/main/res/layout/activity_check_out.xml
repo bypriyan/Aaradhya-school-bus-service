@@ -76,11 +76,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_2sdp"
-            android:background="@drawable/custom_design"
+            android:background="@drawable/custom_background"
             android:gravity="center"
             android:padding="@dimen/_5sdp"
             android:text="Notice"
-            android:textColor="@color/white"
+            android:textColor="@color/black"
             android:textSize="@dimen/_16sdp"
             android:textStyle="bold" />
 
@@ -96,19 +96,23 @@
             android:layout_marginTop="@dimen/_5sdp"
             android:background="@drawable/custom_background">
 
+
             <LinearLayout
+
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
 
                 android:layout_margin="@dimen/_10sdp"
                 android:orientation="vertical">
-
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Dear Parents,"
                     android:textColor="@color/black"
                     android:textStyle="bold" />
+
+
+
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -137,6 +141,14 @@
                     android:textColor="@color/appColor"
                     android:textSize="@dimen/_10sdp"
                     android:textStyle="bold" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/_8sdp"
+                    android:textStyle="bold"
+                    android:text="Transport fees are non refundable and non adjustable"
+                    android:textColor="@color/black"
+                    />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -241,6 +253,7 @@
                 android:layout_below="@+id/PickupRNumber"
                 android:padding="@dimen/_5sdp"
                 android:text="Drop Route" />
+
 
             <TextView
                 android:id="@+id/DropTv"

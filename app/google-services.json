@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "54311692473",
+    "project_id": "aaradhyaschoolbus",
+    "storage_bucket": "aaradhyaschoolbus.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:54311692473:android:82b26345a28180535fd368",
+        "android_client_info": {
+          "package_name": "com.bypriyan.aaradhyaschoolbusservice"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD4oBec0dNw3WPN2mAroeKiExxgwhPlcDc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

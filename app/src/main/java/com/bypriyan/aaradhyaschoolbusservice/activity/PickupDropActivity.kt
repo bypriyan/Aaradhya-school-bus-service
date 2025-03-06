@@ -132,6 +132,7 @@ class PickupDropActivity : AppCompatActivity(), OnMapReadyCallback {
                             putExtra("MODE", mode)
                         }
                         startActivity(intent)
+                        finish()
                     } else {
                         // Proceed if distance is greater than or equal to 1.0
                         val intent = Intent(this, PaymentOptionActivity::class.java).apply {
@@ -165,6 +166,7 @@ class PickupDropActivity : AppCompatActivity(), OnMapReadyCallback {
                             putExtra("MODE", mode)
                         }
                         startActivity(intent)
+                        finish()
                     } else {
                         // Proceed if distance is greater than or equal to 1.0
                         val intent = Intent(this, PaymentOptionActivity::class.java).apply {
@@ -202,6 +204,7 @@ class PickupDropActivity : AppCompatActivity(), OnMapReadyCallback {
                             putExtra("MODE", mode)
                         }
                         startActivity(intent)
+                        finish()
                     } else {
                         // Proceed if distance is greater than or equal to 1.0
                         val intent = Intent(this, PaymentOptionActivity::class.java).apply {

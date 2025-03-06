@@ -7,6 +7,7 @@ import com.bypriyan.aaradhyaschoolbusservice.api.ApiServiceAddUserPlan
 import com.bypriyan.aaradhyaschoolbusservice.api.ApiServiceLogin
 import com.bypriyan.aaradhyaschoolbusservice.api.ApiServiceOTP
 import com.bypriyan.aaradhyaschoolbusservice.api.ApiServiceRegisterUser
+import com.bypriyan.aaradhyaschoolbusservice.api.ApiServiceToken
 import com.bypriyan.aaradhyaschoolbusservice.api.ApiServiceUserDetails
 import com.bypriyan.aaradhyaschoolbusservice.repo.PdfRepository
 import com.bypriyan.bustrackingsystem.utility.PreferenceManager
@@ -28,7 +29,7 @@ object AppModule {
     @Singleton
     fun provideRetrofit(): Retrofit {
         return Retrofit.Builder()
-            .baseUrl("https://aaradhyaschoolbusservice.com/") // Replace with your base URL
+            .baseUrl("https://bypriyan.com/busApi/") // Replace with your base URL
             .addConverterFactory(GsonConverterFactory.create())
             .build()
     }
@@ -55,6 +56,12 @@ object AppModule {
     @Singleton
     fun provideApiServiceUserDetails(retrofit: Retrofit): ApiServiceUserDetails {
         return retrofit.create(ApiServiceUserDetails::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideApiServiceToken(retrofit: Retrofit): ApiServiceToken {
+        return retrofit.create(ApiServiceToken::class.java)
     }
 
     @Provides

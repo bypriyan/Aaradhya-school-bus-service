@@ -6,24 +6,13 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
-import android.util.Base64
 import android.util.Log
 import android.view.View
 import android.widget.Toast
-import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.lifecycleScope
-import coil3.toUri
-import com.bypriyan.aaradhyaschoolbusservice.R
-import com.bypriyan.aaradhyaschoolbusservice.databinding.ActivityLoginBinding
 import com.bypriyan.aaradhyaschoolbusservice.databinding.ActivityOtpBinding
-import com.bypriyan.aaradhyaschoolbusservice.model.RegisterRequest
-import com.bypriyan.aaradhyaschoolbusservice.repo.RegisterUserRepository
 import com.bypriyan.aaradhyaschoolbusservice.viewModel.RegisterViewModel
 import com.bypriyan.bustrackingsystem.utility.Constants
 import com.bypriyan.bustrackingsystem.utility.PreferenceManager
@@ -35,12 +24,10 @@ import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
-import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
 import java.io.InputStream
 import javax.inject.Inject
-import kotlin.text.category
 
 @AndroidEntryPoint
 class OtpActivity : AppCompatActivity() {
@@ -57,50 +44,103 @@ class OtpActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         // Retrieve data from Intent
-        val fullName = intent.getStringExtra(Constants.KEY_FULL_NAME) ?: ""
-        val standard = intent.getStringExtra(Constants.KEY_STANDARD) ?: ""
-        val className = intent.getStringExtra(Constants.KEY_CLASS) ?: ""
-        val age = intent.getStringExtra(Constants.KEY_AGE) ?: ""
-        val year = intent.getStringExtra(Constants.KEY_YEAR) ?: ""
-        val fatherName = intent.getStringExtra(Constants.KEY_FATHER_NAME) ?: ""
-        val fatherPhone = intent.getStringExtra(Constants.KEY_FATHER_PHONE) ?: ""
-        val motherName = intent.getStringExtra(Constants.KEY_MOTHER_NAME) ?: ""
-        val motherPhone = intent.getStringExtra(Constants.KEY_MOTHER_PHONE) ?: ""
-        val email = intent.getStringExtra(Constants.KEY_EMAIL) ?: ""
-        val password = intent.getStringExtra(Constants.KEY_PASSWORD) ?: ""
+        val fullName = intent.getStringExtra(Constants.KEY_FULL_NAME)
+        val standard = intent.getStringExtra(Constants.KEY_STANDARD)
+        val className = intent.getStringExtra(Constants.KEY_CLASS)
+        val age = intent.getStringExtra(Constants.KEY_AGE)
+        val year = intent.getStringExtra(Constants.KEY_YEAR)
+        val fatherName = intent.getStringExtra(Constants.KEY_FATHER_NAME)
+        val fatherPhone = intent.getStringExtra(Constants.KEY_FATHER_PHONE)
+        val motherName = intent.getStringExtra(Constants.KEY_MOTHER_NAME)
+        val motherPhone = intent.getStringExtra(Constants.KEY_MOTHER_PHONE)
+        val email = intent.getStringExtra(Constants.KEY_EMAIL)
+        val password = intent.getStringExtra(Constants.KEY_PASSWORD)
+        val otp = intent.getStringExtra(Constants.KEY_OTP)
         val imageUriString = intent.getStringExtra(Constants.KEY_PROFILE_IMAGE_URI)
 
         binding.continueBtn.setOnClickListener {
             if (binding.firstPinView.text.toString().isNotEmpty()) {
                 isLoading(true)
-
                 lifecycleScope.launch {
                     try {
-                        val imageFile: File? = imageUriString?.let {
-                            compressImage(this@OtpActivity, Uri.parse(it))
+                        if (imageUriString.isNullOrEmpty()) {
+                            Log.e("OtpActivity", "Image URI is null or empty")
+                            showToast("Error: No image selected.")
+                            isLoading(false)
+                            return@launch
+                        }
+
+                        val fileUri = Uri.parse(imageUriString)
+                        val compressedFile = compressImage(this@OtpActivity, fileUri)
+
+                        if (compressedFile == null || !compressedFile.exists()) {
+                            Log.e("OtpActivity", "Failed to compress image")
+                            showToast("Error: Image compression failed.")
+                            isLoading(false)
+                            return@launch
+                        }
+
+                        val filePart = MultipartBody.Part.createFormData(
+                            "image",
+                            compressedFile.name,
+                            compressedFile.asRequestBody("image/jpeg".toMediaTypeOrNull())
+                        )
+
+                        val params = mapOf(
+                            "full_name" to fullName,
+                            "email" to email,
+                            "class" to className,
+                            "password" to password,
+                            "age" to age,
+                            "standard" to standard,
+                            "year" to year,
+                            "father_name" to fatherName,
+                            "father_number" to fatherPhone,
+                            "mother_name" to motherName,
+                            "mother_number" to motherPhone
+                        ).mapValues {
+                            it.value?.toRequestBody("text/plain".toMediaTypeOrNull())
+                        }
+
+                        if (params.values.any { it == null }) {
+                            Log.e("OtpActivity", "Missing required registration fields")
+                            showToast("Error: Please fill all required fields.")
+                            isLoading(false)
+                            return@launch
                         }
 
                         registerUserViewModel.registerUser(
-                            fullName, email, className, age, standard, year,
-                            fatherName, fatherPhone, motherName, motherPhone, password, imageFile
+                            params["full_name"]!!,
+                            params["email"]!!,
+                            params["class"]!!,
+                            params["age"]!!,
+                            params["standard"]!!,
+                            params["year"]!!,
+                            params["father_name"]!!,
+                            params["father_number"]!!,
+                            params["mother_name"]!!,
+                            params["mother_number"]!!,
+                            params["password"]!!,
+                            filePart
                         )
-
                     } catch (e: Exception) {
                         Log.e("OtpActivity", "Registration failed: ${e.message}")
+                        showToast("Error: Registration failed. Try again.")
                         isLoading(false)
                     }
                 }
             } else {
-                Toast.makeText(this, "OTP does not match", Toast.LENGTH_SHORT).show()
+                showToast("OTP does not match")
             }
         }
 
-        registerUserViewModel.registerResponse.observe(this, Observer { response ->
+        registerUserViewModel.registerResponse.observe(this) { response ->
             isLoading(false)
             response?.let {
-                Toast.makeText(this, "Registration Successful", Toast.LENGTH_LONG).show()
-            }
-        })
+                showToast("Registration Successful")
+                finish()
+            } ?: showToast("Error: Registration failed.")
+        }
     }
 
     private fun isLoading(isLoading: Boolean) {
@@ -112,9 +152,16 @@ class OtpActivity : AppCompatActivity() {
         return withContext(Dispatchers.IO) {
             try {
                 val inputStream: InputStream? = context.contentResolver.openInputStream(uri)
-                val bitmap = BitmapFactory.decodeStream(inputStream) ?: return@withContext null
+                val bitmap = BitmapFactory.decodeStream(inputStream)
+                inputStream?.close()
 
-                val compressedFile = File(context.cacheDir, "compressed_${System.currentTimeMillis()}.jpg")
+                if (bitmap == null) {
+                    Log.e("Upload", "Bitmap decoding failed")
+                    return@withContext null
+                }
+
+                val compressedFile =
+                    File(context.cacheDir, "compressed_${System.currentTimeMillis()}.jpg")
                 val outputStream = FileOutputStream(compressedFile)
 
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 50, outputStream)
@@ -127,6 +174,12 @@ class OtpActivity : AppCompatActivity() {
                 Log.e("Upload", "Image compression failed: ${e.message}")
                 return@withContext null
             }
+        }
+    }
+
+    private fun showToast(message: String) {
+        runOnUiThread {
+            Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
         }
     }
 }

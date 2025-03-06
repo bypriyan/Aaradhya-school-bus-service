@@ -19,13 +19,14 @@ class PaymentDoneActivity : AppCompatActivity() {
         enableEdgeToEdge()
         binding= ActivityPaymentDoneBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        binding.txtTransactionNumber.text = intent.getStringExtra("id")!!
+//
+//        binding.txtTransactionNumber.text = intent.getStringExtra("id")!!
 
         binding.btnDone.setOnClickListener(){
             startActivity(Intent(this, DashBoard1Activity::class.java))
             finish()
         }
+
 
         binding.btnDownload.setOnClickListener{
 
