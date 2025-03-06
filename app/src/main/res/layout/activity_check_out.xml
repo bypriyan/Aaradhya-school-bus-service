@@ -76,11 +76,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_2sdp"
-            android:background="@drawable/custom_design"
+            android:background="@drawable/custom_background"
             android:gravity="center"
             android:padding="@dimen/_5sdp"
             android:text="Notice"
-            android:textColor="@color/white"
+            android:textColor="@color/black"
             android:textSize="@dimen/_16sdp"
             android:textStyle="bold" />
 
@@ -253,6 +253,7 @@
                 android:layout_below="@+id/PickupRNumber"
                 android:padding="@dimen/_5sdp"
                 android:text="Drop Route" />
+
 
             <TextView
                 android:id="@+id/DropTv"
