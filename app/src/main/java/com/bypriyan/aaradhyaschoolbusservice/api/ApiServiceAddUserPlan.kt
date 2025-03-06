@@ -6,7 +6,7 @@ import retrofit2.http.Header
 import retrofit2.http.POST
 
 interface ApiServiceAddUserPlan {
-    @POST("storeReservation")
+    @POST("api/v1/storeReservation")
     suspend fun storeReservation(
         @Header("Authorization") token: String,
         @Body reservation: Map<String, String>

@@ -6,6 +6,6 @@ import retrofit2.http.Body
 import retrofit2.http.POST
 
 interface ApiServiceOTP {
-    @POST("sendOTP")
+    @POST("api/v1/sendOTP")
     suspend fun sendOtp(@Body request: Map<String, String>): Response<ApiResponceSendOTP>
 }

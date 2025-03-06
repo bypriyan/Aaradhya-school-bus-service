@@ -45,7 +45,8 @@ import kotlin.text.category
 @AndroidEntryPoint
 class OtpActivity : AppCompatActivity() {
 
-    lateinit var binding: ActivityOtpBinding
+    private lateinit var binding: ActivityOtpBinding
+
     @Inject
     lateinit var preferenceManager: PreferenceManager
     private val registerUserViewModel: RegisterViewModel by viewModels()
@@ -56,67 +57,34 @@ class OtpActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         // Retrieve data from Intent
-        val fullName = intent.getStringExtra(Constants.KEY_FULL_NAME)
-        val standard = intent.getStringExtra(Constants.KEY_STANDARD)
-        val className = intent.getStringExtra(Constants.KEY_CLASS)
-        val age = intent.getStringExtra(Constants.KEY_AGE)
-        val year = intent.getStringExtra(Constants.KEY_YEAR)
-        val fatherName = intent.getStringExtra(Constants.KEY_FATHER_NAME)
-        val fatherPhone = intent.getStringExtra(Constants.KEY_FATHER_PHONE)
-        val motherName = intent.getStringExtra(Constants.KEY_MOTHER_NAME)
-        val motherPhone = intent.getStringExtra(Constants.KEY_MOTHER_PHONE)
-        val email = intent.getStringExtra(Constants.KEY_EMAIL)
-        val password = intent.getStringExtra(Constants.KEY_PASSWORD)
-        val otp = intent.getStringExtra(Constants.KEY_OTP)
+        val fullName = intent.getStringExtra(Constants.KEY_FULL_NAME) ?: ""
+        val standard = intent.getStringExtra(Constants.KEY_STANDARD) ?: ""
+        val className = intent.getStringExtra(Constants.KEY_CLASS) ?: ""
+        val age = intent.getStringExtra(Constants.KEY_AGE) ?: ""
+        val year = intent.getStringExtra(Constants.KEY_YEAR) ?: ""
+        val fatherName = intent.getStringExtra(Constants.KEY_FATHER_NAME) ?: ""
+        val fatherPhone = intent.getStringExtra(Constants.KEY_FATHER_PHONE) ?: ""
+        val motherName = intent.getStringExtra(Constants.KEY_MOTHER_NAME) ?: ""
+        val motherPhone = intent.getStringExtra(Constants.KEY_MOTHER_PHONE) ?: ""
+        val email = intent.getStringExtra(Constants.KEY_EMAIL) ?: ""
+        val password = intent.getStringExtra(Constants.KEY_PASSWORD) ?: ""
         val imageUriString = intent.getStringExtra(Constants.KEY_PROFILE_IMAGE_URI)
 
         binding.continueBtn.setOnClickListener {
             if (binding.firstPinView.text.toString().isNotEmpty()) {
                 isLoading(true)
+
                 lifecycleScope.launch {
                     try {
-                        val fileUri = Uri.parse(imageUriString)
-                        val compressedFile = compressImage(this@OtpActivity, fileUri)
-
-                        val filePart =
-                            compressedFile?.asRequestBody("image/jpeg".toMediaTypeOrNull())?.let { body ->
-                                MultipartBody.Part.createFormData(
-                                    "image", // Ensure this matches the server's expected field name
-                                    compressedFile.name,
-                                    body
-                                )
-                            }
-
-                        val params = mapOf(
-                            "full_name" to fullName,
-                            "email" to email,
-                            "class" to className,
-                            "password" to password,
-                            "age" to age,
-                            "standard" to standard,
-                            "year" to year,
-                            "father_name" to fatherName,
-                            "father_number" to fatherPhone,
-                            "mother_name" to motherName,
-                            "mother_number" to motherPhone
-                        ).mapValues { it.value?.toRequestBody("text/plain".toMediaTypeOrNull()) }
-
-                        if (filePart != null) {
-                            registerUserViewModel.registerUser(
-                                params["full_name"]!!,
-                                params["email"]!!,
-                                params["class"]!!,
-                                params["age"]!!,
-                                params["standard"]!!,
-                                params["year"]!!,
-                                params["father_name"]!!,
-                                params["father_number"]!!,
-                                params["mother_name"]!!,
-                                params["mother_number"]!!,
-                                params["password"]!!,
-                                filePart
-                            )
+                        val imageFile: File? = imageUriString?.let {
+                            compressImage(this@OtpActivity, Uri.parse(it))
                         }
+
+                        registerUserViewModel.registerUser(
+                            fullName, email, className, age, standard, year,
+                            fatherName, fatherPhone, motherName, motherPhone, password, imageFile
+                        )
+
                     } catch (e: Exception) {
                         Log.e("OtpActivity", "Registration failed: ${e.message}")
                         isLoading(false)
@@ -146,8 +114,7 @@ class OtpActivity : AppCompatActivity() {
                 val inputStream: InputStream? = context.contentResolver.openInputStream(uri)
                 val bitmap = BitmapFactory.decodeStream(inputStream) ?: return@withContext null
 
-                val compressedFile =
-                    File(context.cacheDir, "compressed_${System.currentTimeMillis()}.jpg")
+                val compressedFile = File(context.cacheDir, "compressed_${System.currentTimeMillis()}.jpg")
                 val outputStream = FileOutputStream(compressedFile)
 
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 50, outputStream)

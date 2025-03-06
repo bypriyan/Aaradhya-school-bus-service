@@ -7,7 +7,7 @@ import retrofit2.http.Header
 import retrofit2.http.POST
 
 interface ApiServiceUserDetails {
-    @POST("getuser")
+    @POST("api/v1/getuser")
     suspend fun getUserDetails(
         @Header("Authorization") token: String,
         @Body request: UserRequest
