@@ -93,6 +93,7 @@
                 android:layout_marginTop="@dimen/_15sdp"
                 android:textSize="@dimen/_10ssp"
                 android:textStyle="bold"
+                android:inputType="text"
                 android:layout_below="@+id/username"
                 android:textColor="@color/bg"/>
 
@@ -230,7 +231,7 @@
                 app:boxStrokeColor="@color/black">
 
 
-                <com.google.android.material.textfield.TextInputEditText
+                <EditText
                     android:id="@+id/yearEt"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

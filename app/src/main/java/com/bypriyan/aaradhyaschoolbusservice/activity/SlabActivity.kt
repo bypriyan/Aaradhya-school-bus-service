@@ -23,6 +23,7 @@ class SlabActivity : AppCompatActivity() {
         }
         btn.setOnClickListener(){
             startActivity(Intent(this, TermsAndConditionActivity::class.java))
+            finish()
 
         }
 

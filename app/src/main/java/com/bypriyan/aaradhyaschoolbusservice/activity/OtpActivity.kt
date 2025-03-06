@@ -138,6 +138,7 @@ class OtpActivity : AppCompatActivity() {
             isLoading(false)
             response?.let {
                 showToast("Registration Successful")
+                finish()
             } ?: showToast("Error: Registration failed.")
         }
     }
