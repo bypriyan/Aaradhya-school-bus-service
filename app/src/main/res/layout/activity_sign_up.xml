@@ -7,7 +7,6 @@
     android:background="@color/white"
     tools:context=".activity.SignUpActivity">
 
-
     <RelativeLayout
         android:id="@+id/rel"
         android:layout_width="match_parent"
@@ -129,7 +128,7 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/standerdTi"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+               style="@style/Widget.Material3.TextInputLayout.FilledBox.ExposedDropdownMenu"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
@@ -138,13 +137,16 @@
                 android:textColor="@color/black"
                 app:boxStrokeColor="@color/black">
 
-                <com.google.android.material.textfield.TextInputEditText
+               <AutoCompleteTextView
                     android:id="@+id/standerdEt"
                     android:layout_width="match_parent"
+                   android:text="select standard"
                     android:layout_height="wrap_content"
                     android:background="@drawable/bg_gradient_edit_text"
                     android:textColor="@color/black"
                     android:inputType="text" />
+
+
             </com.google.android.material.textfield.TextInputLayout>
 
             <TextView
@@ -159,7 +161,7 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/classs"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                style="@style/Widget.Material3.TextInputLayout.FilledBox.ExposedDropdownMenu"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
@@ -168,15 +170,14 @@
                 android:textColor="@color/black"
                 app:boxStrokeColor="@color/black">
 
-                <com.google.android.material.textfield.TextInputEditText
+         <AutoCompleteTextView
                     android:id="@+id/classEt"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:text="select class"
                     android:background="@drawable/bg_gradient_edit_text"
-                    android:textColor="@color/black"
-                    android:inputType="number" />
+                    android:textColor="@color/black" />
             </com.google.android.material.textfield.TextInputLayout>
-
             <TextView
                 android:text="Age"
                 android:layout_width="wrap_content"
@@ -227,6 +228,7 @@
                 app:hintTextColor="@color/black"
                 android:textColor="@color/black"
                 app:boxStrokeColor="@color/black">
+
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/yearEt"

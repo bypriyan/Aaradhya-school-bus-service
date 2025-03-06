@@ -7,6 +7,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.view.View
+import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -17,8 +18,18 @@ import com.bypriyan.aaradhyaschoolbusservice.databinding.ActivitySignUpBinding
 import com.bypriyan.aaradhyaschoolbusservice.viewModel.OTPViewModel
 import com.bypriyan.bustrackingsystem.utility.Constants
 import dagger.hilt.android.AndroidEntryPoint
+private lateinit var standardAdapter: ArrayAdapter<String>
+private lateinit var classAdapter: ArrayAdapter<String>
 
-
+// Define the data for Class and StandardJasmin
+//Lilly
+//Orchid
+//Rose
+//IriS
+//Tulip
+//Lotus
+val standards = arrayOf("Nursery", "LKG", "UKG", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10")
+val classes = arrayOf("Orchid ", "Lilly", "Rose", "IriS","Tulip","Lotus")
 
 @AndroidEntryPoint
 class SignUpActivity : AppCompatActivity() {
@@ -32,6 +43,13 @@ class SignUpActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding= ActivitySignUpBinding.inflate(layoutInflater)
         setContentView(binding.root)
+// Set up Standard dropdown
+        standardAdapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, standards)
+        binding.standerdEt.setAdapter(standardAdapter)
+
+        // Set up Class dropdown
+        classAdapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, classes)
+        binding.classEt.setAdapter(classAdapter)
 
 
         //selected image
@@ -68,44 +86,11 @@ otpViewModel.sendOtp(binding.emailEt.text.toString())
             }
         })
 
-        setInputFieldData()
+
 
     }
 
-    private fun setInputFieldData() {
-        // Set full name
-        binding.fullNameEt.setText("John Doe")
 
-        // Set standard
-        binding.standerdEt.setText("10th")
-
-        // Set class
-        binding.classEt.setText("A")
-
-        // Set age
-        binding.ageEt.setText("16")
-
-        // Set year
-        binding.yearEt.setText("2023")
-
-        // Set father's name
-        binding.fatherNameEt.setText("John Doe Sr.")
-
-        // Set father's phone number
-        binding.fPhoneNumEt.setText("1234567890")
-
-        // Set mother's name
-        binding.mothersName.setText("Jane Doe")
-
-        // Set mother's phone number
-        binding.mPhoneEt.setText("0987654321")
-
-        // Set email
-        binding.emailEt.setText("104abcdabcd104@gmail.com")
-
-        // Set password
-        binding.passwordEt.setText("123456")
-    }
 
     private fun validateInputFields(): Boolean {
         return when {
