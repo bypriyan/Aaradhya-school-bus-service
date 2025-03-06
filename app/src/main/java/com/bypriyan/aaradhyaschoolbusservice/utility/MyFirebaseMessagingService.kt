@@ -11,6 +11,7 @@ import androidx.core.app.NotificationCompat
 import com.bypriyan.aaradhyaschoolbusservice.activity.MainActivity
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
+import com.bypriyan.aaradhyaschoolbusservice.R
 
 class MyFirebaseMessagingService : FirebaseMessagingService() {
 
@@ -22,8 +23,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
         super.onMessageReceived(remoteMessage)
-        // Handle FCM messages here
-        // Check if message contains a notification payload
+
         remoteMessage.notification?.let {
             showNotification(it.title ?: "New Message", it.body ?: "")
         }
@@ -33,18 +33,25 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         val channelId = "device_to_device_notifications"
 
+        // Create Notification Channel for Android 8+ (API 26+)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(channelId, "FCM Notifications", NotificationManager.IMPORTANCE_HIGH)
             notificationManager.createNotificationChannel(channel)
         }
 
+        // Intent to open MainActivity when notification is clicked
         val intent = Intent(this, MainActivity::class.java)
-        val pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+        val pendingIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE)
+        } else {
+            PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+        }
 
+        // Build Notification
         val notification = NotificationCompat.Builder(this, channelId)
             .setContentTitle(title)
             .setContentText(message)
-            .setSmallIcon(android.R.drawable.ic_dialog_info)
+            .setSmallIcon(R.drawable.ic_launcher_foreground) // Use a custom notification icon
             .setAutoCancel(true)
             .setContentIntent(pendingIntent)
             .build()

@@ -19,6 +19,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 import android.Manifest
 import android.content.pm.PackageManager
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -97,6 +98,24 @@ class LoginActivity : AppCompatActivity() {
                     Log.d("login", "onCreate: ${it.message}")
                 }
             }
+        }
+
+        // Request notification permission on Android 13+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            requestNotificationPermission()
+        }
+
+    }
+
+    private fun requestNotificationPermission() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+        }
+    }
+
+    private val requestPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
+        if (!isGranted) {
+            // Handle case where user denies permission (show a message if needed)
         }
     }
 
