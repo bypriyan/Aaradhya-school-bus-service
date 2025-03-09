@@ -30,6 +30,7 @@ class PaymentOptionActivity : AppCompatActivity(), PaymentResultListener {
     lateinit var binding: ActivityPaymentOptionBinding
     private val viewModel: ReservationViewModel by viewModels()
     lateinit var userId: String
+
     lateinit var pickupLocation: String
     lateinit var dropLocation: String
     lateinit var pickupLatitude: String
@@ -89,6 +90,10 @@ class PaymentOptionActivity : AppCompatActivity(), PaymentResultListener {
             finish()
             return
         }
+
+        Log.d("PaymentOptionActivity", "userId: $userId")
+        Log.d("PaymentOptionActivity", "preferenceManager: $preferenceManager")
+
 
         // Handle ONLY_DROP mode
         if (mode == "ONLY_DROP") {
@@ -285,7 +290,7 @@ class PaymentOptionActivity : AppCompatActivity(), PaymentResultListener {
                 return
             }
 
-            if (userId.isEmpty() || token.isEmpty()) {
+            if (userId.isEmpty()) {
                 Log.e("PaymentOptionActivity", "User ID or Token is missing!")
                 return
             }
@@ -304,7 +309,7 @@ class PaymentOptionActivity : AppCompatActivity(), PaymentResultListener {
                 "pickup_longitude" to finalPickupLongitude,
                 "drop_latitude" to dropLatitude,
                 "drop_longitude" to dropLongitude,
-                "paid" to firstInstallmentPrice.toString(),
+                "paid" to paidAmount.toString(),
                 "total_amount" to totalPrice.toString(),
                 "installment_paid" to (installmentStatus + 1).toString(),
                 "plan" to mode,
