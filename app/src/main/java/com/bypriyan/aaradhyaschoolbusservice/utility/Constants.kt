@@ -53,4 +53,19 @@ object Constants{
     const val KEY_USER_TYPE = "user_type"
     const val KEY_OTP_VERIFIED = "otp_verified"
 
+    //
+    const val KEY_RESERVATION_ID = "reservation_id"
+    const val KEY_AMOUNT_PAID = "amount_paid"
+    const val KEY_PLAN = "plan"
+    const val KEY_INSTALLMENT_PAID = "installment_paid"
+    const val KEY_TOTAL_AMOUNT = "total_amount"
+
+    const val KEY_PICKUP_LOCATION = "pickup_location"
+    const val KEY_PICKUP_LATITUDE = "pickup_latitude"
+    const val KEY_PICKUP_LONGITUDE = "pickup_longitude"
+
+    const val KEY_DROP_LOCATION = "drop_location"
+    const val KEY_DROP_LATITUDE = "drop_latitude"
+    const val KEY_DROP_LONGITUDE = "drop_longitude"
+
 }

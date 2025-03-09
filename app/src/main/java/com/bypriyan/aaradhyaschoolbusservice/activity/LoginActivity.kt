@@ -45,7 +45,7 @@ class LoginActivity : AppCompatActivity() {
             startActivity(Intent(this, SignUpActivity::class.java))
         }
 
-        binding.usernameET.setText("czstar81094@gmail.com")
+        binding.usernameET.setText("lallu11@gmail.com")
         binding.passwordEt.setText("123456")
 
         // Handle login button click
@@ -60,12 +60,43 @@ class LoginActivity : AppCompatActivity() {
 
         loginViewModel.loginResponse.observe(this) { response ->
             isLoading(false)
+            Log.d("logrepo", "onCreate: $response")
             response?.let {
                 if (it.status == "success") {
                     preferenceManager.putString(Constants.KEY_USER_ID,it.id.toString())
-                    var intent = Intent(this, CheckOut1::class.java)
+                    preferenceManager.putBoolean(Constants.KEY_IS_LOGGED_IN,true)
+                    it.reservations?.let {
+                        if(it.size > 0){
+                            preferenceManager.apply {
+                                putString(Constants.KEY_RESERVATION_ID,it[0].reservationId.toString())
+                                putString(Constants.KEY_CREATED_AT, it[0].createdAt)
+                                putString(Constants.KEY_AMOUNT_PAID, it[0].amountPaid)
+                                putString(Constants.KEY_PLAN, it[0].plan)
+                                putString(Constants.KEY_INSTALLMENT_PAID, it[0].installmentPaid)
+                                putString(Constants.KEY_TOTAL_AMOUNT, it[0].totalAmount)
+                                putString(Constants.KEY_PICKUP_LOCATION, it[0].pickupLocation)
+                                putString(Constants.KEY_PICKUP_LATITUDE, it[0].pickupLatitude)
+                                putString(Constants.KEY_PICKUP_LONGITUDE, it[0].pickupLongitude)
+                                putString(Constants.KEY_DROP_LOCATION, it[0].dropLocation)
+                                putString(Constants.KEY_DROP_LATITUDE, it[0].dropLatitude)
+                                putString(Constants.KEY_DROP_LONGITUDE, it[0].dropLongitude)
+
+                            }
+                        }
+                    }
+                    if(it.reservations.isNullOrEmpty()){
+                        val intent = Intent(this, CheckOut1::class.java)
+                        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                        startActivity(intent)
+                        finish()
+                    }else{
+                        val intent = Intent(this, DashBoard1Activity::class.java)
+                        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                        startActivity(intent)
+                        finish()
+                    }
                 } else {
-                    Log.d("login", "onCreate: ${it.message}")
+                    Toast.makeText(this, it.message, Toast.LENGTH_SHORT).show()
                 }
             }
         }

@@ -30,9 +30,6 @@ class PaymentOptionActivity : AppCompatActivity(), PaymentResultListener {
     lateinit var binding: ActivityPaymentOptionBinding
     private val viewModel: ReservationViewModel by viewModels()
     lateinit var userId: String
-    lateinit var token: String
-    lateinit var token_type: String
-
     lateinit var pickupLocation: String
     lateinit var dropLocation: String
     lateinit var pickupLatitude: String
@@ -72,7 +69,7 @@ class PaymentOptionActivity : AppCompatActivity(), PaymentResultListener {
 
 
         mode = intent.getStringExtra("MODE") ?: ""
-        isFullPaymentDone = preferenceManager.getBoolean(Constants.KEY_FULL_PAYMENT_DONE, false)
+        isFullPaymentDone = preferenceManager.getBoolean(Constants.KEY_FULL_PAYMENT_DONE)
         // Fetch saved installment status
         installmentStatus = preferenceManager.getString("installment_status")?.toInt() ?: 0
 
@@ -84,19 +81,14 @@ class PaymentOptionActivity : AppCompatActivity(), PaymentResultListener {
 
         val distanceText = "Total Distance: %.2f km".format(totalDistance)
         userId = preferenceManager.getString(Constants.KEY_USER_ID) ?: ""
-        token = preferenceManager.getString(Constants.KEY_TOKEN) ?: ""
         preferenceManager.putString(Constants.KEY_TOTAL_FEES, totalPrice.toString())
 
-        if (userId.isEmpty() || token.isEmpty()) {
+        if (userId.isEmpty()) {
             Log.e("PaymentOptionActivity", "User ID or Token is missing!")
             Toast.makeText(this, "User authentication failed!", Toast.LENGTH_SHORT).show()
             finish()
             return
         }
-
-        Log.d("PaymentOptionActivity", "userId: $userId")
-        Log.d("PaymentOptionActivity", "preferenceManager: $preferenceManager")
-
 
         // Handle ONLY_DROP mode
         if (mode == "ONLY_DROP") {

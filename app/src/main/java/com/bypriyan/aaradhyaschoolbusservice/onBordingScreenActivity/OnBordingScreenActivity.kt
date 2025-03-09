@@ -6,6 +6,8 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.viewpager2.widget.ViewPager2
+import com.bypriyan.aaradhyaschoolbusservice.activity.CheckOut1
+import com.bypriyan.aaradhyaschoolbusservice.activity.DashBoard1Activity
 import com.bypriyan.aaradhyaschoolbusservice.activity.LoginActivity
 import com.bypriyan.aaradhyaschoolbusservice.activity.SlabActivity
 import com.bypriyan.aaradhyaschoolbusservice.databinding.ActivityOnBordingScreenBinding
@@ -111,12 +113,22 @@ class OnBordingScreenActivity : AppCompatActivity() {
             preferenceManager = PreferenceManager(this)
         }
         // Check if the onboarding screen was seen
-        val hasSeenOnboarding = preferenceManager.getBoolean(Constants.KEY_IS_ONBORDING_SCREEN_SEEN, false)
+        val hasSeenOnboarding = preferenceManager.getBoolean(Constants.KEY_IS_ONBORDING_SCREEN_SEEN)
 
         if (hasSeenOnboarding) {
             // If onboarding is already completed, go to LoginActivity
-            startActivity(Intent(this, LoginActivity::class.java))
-            finish()
+            if(preferenceManager.getBoolean(Constants.KEY_IS_LOGGED_IN)){
+                if(!(preferenceManager.getString(Constants.KEY_RESERVATION_ID).isNullOrEmpty())){
+                    startActivity(Intent(this, DashBoard1Activity::class.java))
+                    finish()
+                }else{
+                    startActivity(Intent(this, CheckOut1::class.java))
+                    finish()
+                }
+            }else{
+                startActivity(Intent(this, LoginActivity::class.java))
+                finish()
+            }
         }
     }
 

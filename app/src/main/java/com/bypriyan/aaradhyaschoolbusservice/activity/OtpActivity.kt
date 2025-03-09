@@ -136,15 +136,19 @@ class OtpActivity : AppCompatActivity() {
 
         registerUserViewModel.registerResponse.observe(this) { response ->
             isLoading(false)
+
             response?.let {
-                showToast("Registration Successful")
-                val intent = Intent(this, LoginActivity::class.java)
-                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                startActivity(intent)
-                finish()
-            } ?:run {
-                showToast("Error: Registration failed.")
-                isLoading(false)
+                if(it.status=="success"){
+                    showToast("Registration Successful")
+                    val intent = Intent(this, LoginActivity::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    startActivity(intent)
+                    finish()
+                }else{
+                    showToast(it.message)
+                    isLoading(false)
+                }
+
             }
         }
     }

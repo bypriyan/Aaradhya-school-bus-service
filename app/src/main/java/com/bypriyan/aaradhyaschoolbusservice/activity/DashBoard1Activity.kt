@@ -38,8 +38,6 @@ class DashBoard1Activity : AppCompatActivity() {
     private val userViewModel: UserViewModel by viewModels()
     private val getUserReservationViewModel: GetUserReservationViewModel by viewModels()
     lateinit var userId: String
-    lateinit var token: String
-    lateinit var token_type: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,10 +50,6 @@ class DashBoard1Activity : AppCompatActivity() {
         binding.paidNextAmount.text = " Payment Status:"
 
        userId =  preferenceManager.getString(Constants.KEY_USER_ID)!!
-       token= preferenceManager.getString(Constants.KEY_TOKEN)!!
-        token_type = preferenceManager.getString(Constants.KEY_TOKEN_TYPE)!!
-        Log.d("aaaa", "onCreate: $userId $token $token_type")
-
         getUserReservationViewModel.fetchReservations(userId = 1)
 
         // Observe LiveData
@@ -67,6 +61,15 @@ class DashBoard1Activity : AppCompatActivity() {
                 Toast.makeText(this, "Error: ${error.message}", Toast.LENGTH_LONG).show()
             }
         })
+
+        binding.signOut.setOnClickListener {
+            preferenceManager.clear()
+            preferenceManager.putBoolean(Constants.KEY_IS_ONBORDING_SCREEN_SEEN, true)
+            val intent = Intent(this, LoginActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            startActivity(intent)
+            finish()
+        }
 
 //        userViewModel.getUserDetails(userId, token)
 
@@ -100,6 +103,8 @@ class DashBoard1Activity : AppCompatActivity() {
         }
 
         binding.signOut.setOnClickListener {
+            preferenceManager.clear()
+            preferenceManager.putBoolean(Constants.KEY_IS_ONBORDING_SCREEN_SEEN, true)
             val intent = Intent(this, LoginActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             startActivity(intent)

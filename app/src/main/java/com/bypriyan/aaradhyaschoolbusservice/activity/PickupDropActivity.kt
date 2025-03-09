@@ -29,6 +29,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import java.io.IOException
 import java.util.*
+import kotlinx.coroutines.async
+import kotlinx.coroutines.withContext
 
 class PickupDropActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var binding: ActivityPickupDropBinding
@@ -66,9 +68,6 @@ class PickupDropActivity : AppCompatActivity(), OnMapReadyCallback {
         binding.btnClearPickup.setOnClickListener { clearPickupLocation() }
         binding.btnClearDrop.setOnClickListener { clearDropLocation() }
         binding.btnClearOnlyDrop.setOnClickListener { clearOnlyDropLocation() }
-
-
-
 
 
         binding.etPickup.setOnEditorActionListener { _, actionId, _ ->
@@ -132,6 +131,7 @@ class PickupDropActivity : AppCompatActivity(), OnMapReadyCallback {
                             putExtra("MODE", mode)
                         }
                         startActivity(intent)
+                        finish()
                     } else {
                         // Proceed if distance is greater than or equal to 1.0
                         val intent = Intent(this, PaymentOptionActivity::class.java).apply {
@@ -165,6 +165,7 @@ class PickupDropActivity : AppCompatActivity(), OnMapReadyCallback {
                             putExtra("MODE", mode)
                         }
                         startActivity(intent)
+                        finish()
                     } else {
                         // Proceed if distance is greater than or equal to 1.0
                         val intent = Intent(this, PaymentOptionActivity::class.java).apply {
@@ -202,6 +203,7 @@ class PickupDropActivity : AppCompatActivity(), OnMapReadyCallback {
                             putExtra("MODE", mode)
                         }
                         startActivity(intent)
+                        finish()
                     } else {
                         // Proceed if distance is greater than or equal to 1.0
                         val intent = Intent(this, PaymentOptionActivity::class.java).apply {
@@ -490,17 +492,21 @@ class PickupDropActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
 
+
     private fun updateUIForSameLocation() {
+
         // Show pickup and drop fields
 //        binding.txtPLocation.visibility = View.VISIBLE
 //        binding.etPickup.visibility = View.VISIBLE
 //        binding.btnClearPickup.visibility = View.VISIBLE
+
         binding.txtDLocation.visibility = View.VISIBLE
         binding.etDrop.visibility = View.VISIBLE
         binding.btnClearDrop.visibility = View.VISIBLE
         binding.txtDLocation.setText("Same Pickup And Drop")
         binding.etPickup.requestFocus()
         binding.etPickup.isEnabled= false
+
 
 
 //        // Hide only drop-related views
@@ -517,6 +523,7 @@ class PickupDropActivity : AppCompatActivity(), OnMapReadyCallback {
             } else false
         }
     }
+
 
     private fun clearPickupLocation() {
         pickupLocation = null
@@ -543,8 +550,8 @@ class PickupDropActivity : AppCompatActivity(), OnMapReadyCallback {
         binding.etOnlyDrop.text.clear()
         binding.btnClearOnlyDrop.visibility = View.GONE
 
-
     }
+
     private var totalDistance: Float = 0f
 
     private fun calculateDistance() {
@@ -556,48 +563,43 @@ class PickupDropActivity : AppCompatActivity(), OnMapReadyCallback {
 
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                var gguToPickupDistance = 0f
-                var gguToDropDistance = 0f
-                var gguToOnlyDropDistance = 0f
-
-                if (pickupLocation != null) {
-                    val result = DirectionsApi.newRequest(context)
-                        .origin("${rklGalaxySchool.latitude},${rklGalaxySchool.longitude}")
-                        .destination("${pickupLocation!!.latitude},${pickupLocation!!.longitude}")
-                        .mode(TravelMode.DRIVING)
-                        .await()
-                    gguToPickupDistance = result.routes[0].legs[0].distance.inMeters / 1000f
+                val pickupDeferred = async {
+                    pickupLocation?.let { getDistance(context, rklGalaxySchool, it) } ?: 0f
                 }
 
-                if (dropLocation != null) {
-                    val result = DirectionsApi.newRequest(context)
-                        .origin("${rklGalaxySchool.latitude},${rklGalaxySchool.longitude}")
-                        .destination("${dropLocation!!.latitude},${dropLocation!!.longitude}")
-                        .mode(TravelMode.DRIVING)
-                        .await()
-                    gguToDropDistance = result.routes[0].legs[0].distance.inMeters / 1000f
+                val dropDeferred = async {
+                    dropLocation?.let { getDistance(context, rklGalaxySchool, it) } ?: 0f
                 }
 
-                if (onlyDropLocation != null) {
-                    val result = DirectionsApi.newRequest(context)
-                        .origin("${rklGalaxySchool.latitude},${rklGalaxySchool.longitude}")
-                        .destination("${onlyDropLocation!!.latitude},${onlyDropLocation!!.longitude}")
-                        .mode(TravelMode.DRIVING)
-                        .await()
-                    gguToOnlyDropDistance = result.routes[0].legs[0].distance.inMeters / 1000f
+                val onlyDropDeferred = async {
+                    onlyDropLocation?.let { getDistance(context, rklGalaxySchool, it) } ?: 0f
                 }
+
+                val gguToPickupDistance = pickupDeferred.await()
+                val gguToDropDistance = dropDeferred.await()
+                val gguToOnlyDropDistance = onlyDropDeferred.await()
 
                 // Calculate total distance based on mode
                 totalDistance = when (mode) {
                     "SAME_LOCATION" -> gguToDropDistance
                     "ONLY_DROP" -> gguToOnlyDropDistance
-                    "DIFFERENT_LOCATION" -> gguToPickupDistance + gguToDropDistance
+                    "DIFFERENT_LOCATION" -> (maxOf(gguToPickupDistance, gguToDropDistance))
                     else -> 0f
                 }
 
                 runOnUiThread {
-                    val distanceText = "Total Distance: %.2f km".format(totalDistance)
-                    binding.tvDistance.text = distanceText
+
+                    binding.tvDistance.text = "Total Distance: ${"%.2f".format(totalDistance)} km"
+
+                    // Check if the mode is ONLY_DROP and the distance is greater than 2 km
+                    if (mode == "ONLY_DROP" && totalDistance > 2f) {
+                        Toast.makeText(this@PickupDropActivity, "Distance exceeds 2 km. You cannot proceed.", Toast.LENGTH_SHORT).show()
+                        // Optionally, disable the proceed button or any other UI element to prevent the user from proceeding
+                        binding.btnConfirm.isEnabled = false
+                    } else {
+                        // Allow the user to proceed
+                        binding.btnConfirm.isEnabled = true
+                    }
                 }
 
             } catch (e: Exception) {
@@ -608,6 +610,24 @@ class PickupDropActivity : AppCompatActivity(), OnMapReadyCallback {
             }
         }
     }
+
+    // Helper function to get distance
+    private suspend fun getDistance(context: GeoApiContext, origin: LatLng, destination: LatLng): Float {
+        return withContext(Dispatchers.IO) {
+            try {
+                val result = DirectionsApi.newRequest(context)
+                    .origin("${origin.latitude},${origin.longitude}")
+                    .destination("${destination.latitude},${destination.longitude}")
+                    .mode(TravelMode.DRIVING)
+                    .await()
+
+                result.routes.firstOrNull()?.legs?.firstOrNull()?.distance?.inMeters?.div(1000f) ?: 0f
+            } catch (e: Exception) {
+                0f
+            }
+        }
+    }
+
 
 
 }

@@ -46,8 +46,10 @@ class RegisterViewModel @Inject constructor(
                     _registerResponse.value = response
                 } else {
                     Log.e("RegisterViewModel", "Registration failed: ${response.message}")
+                    _registerResponse.value = ApiResponceRegisterUser("error", response.message ?: "Unknown error", null)
                 }
             } catch (e: Exception) {
+                _registerResponse.value = ApiResponceRegisterUser("error", e.message ?: "Unknown error", null)
                 Log.e("RegisterViewModel", "Registration failed: ${e.message}")
             }
         }

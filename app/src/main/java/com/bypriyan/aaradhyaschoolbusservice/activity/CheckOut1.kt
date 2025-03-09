@@ -22,8 +22,6 @@ class CheckOut1 : AppCompatActivity() {
 
     lateinit var  binding: ActivityDasboardBinding
     lateinit var userId: String
-    lateinit var token: String
-    lateinit var token_type: String
     private val userViewModel: UserViewModel by viewModels()
     @Inject
     lateinit var preferenceManager: PreferenceManager
@@ -35,26 +33,20 @@ class CheckOut1 : AppCompatActivity() {
         binding = ActivityDasboardBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        userId = getIntent().getStringExtra(Constants.KEY_USER_ID).toString()
-        token = getIntent().getStringExtra(Constants.KEY_TOKEN).toString()
-        token_type = getIntent().getStringExtra(Constants.KEY_TOKEN_TYPE).toString()
-
-        preferenceManager.putString(Constants.KEY_USER_ID, userId)
-        preferenceManager.putString(Constants.KEY_TOKEN, token)
-        preferenceManager.putString(Constants.KEY_TOKEN_TYPE, token_type)
-
-        Log.d("dashss", "onCreate: $userId, $token, $token_type")
-        userViewModel.fetchUser(userId)
+        userId = preferenceManager.getString(Constants.KEY_USER_ID)!!
+        Log.d("TAGss", "onCreate: userId $userId")
 
         binding.profileImage.setOnClickListener(){
             startActivity(Intent(this, ProfileActivity::class.java))
         }
 
+        userViewModel.fetchUser(userId)
          // data getting
         userViewModel.user.observe(this) { userDetails ->
             userDetails?.data?.let { data ->
                 Log.d("TAGss", "onCreate: $data")
                 loadImageWithGlide(Constants.KEY_IMAGE_PATH+data.image_url)
+                binding.name.text = data.full_name
                 uploadToken(data.id.toString())
                 preferenceManager.apply {
                     putString(Constants.KEY_FULL_NAME, data.full_name ?: "")
@@ -98,6 +90,8 @@ class CheckOut1 : AppCompatActivity() {
         }
 
         binding.signOut.setOnClickListener {
+            preferenceManager.clear()
+            preferenceManager.putBoolean(Constants.KEY_IS_ONBORDING_SCREEN_SEEN, true)
             val intent = Intent(this, LoginActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             startActivity(intent)
