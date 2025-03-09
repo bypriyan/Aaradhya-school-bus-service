@@ -27,6 +27,7 @@ import kotlin.times
 @AndroidEntryPoint
 class PaymentOptionActivity : AppCompatActivity(), PaymentResultListener {
 
+    //lulli lulli
     lateinit var binding: ActivityPaymentOptionBinding
     private val viewModel: ReservationViewModel by viewModels()
     lateinit var userId: String
