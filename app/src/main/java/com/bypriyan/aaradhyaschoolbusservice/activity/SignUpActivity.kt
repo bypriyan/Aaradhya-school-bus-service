@@ -44,20 +44,17 @@ class SignUpActivity : AppCompatActivity() {
                 displayImage(it)
             }
         }
-
+        var adapterClass  = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, classes)
+        var adapterStanderd = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, standards)
         // Set up the AutoCompleteTextView
-        binding.autoCompleteTextViewClass.setAdapter(
-            ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, classes)
-        )
+        binding.autoCompleteTextViewClass.setAdapter(adapterClass)
         // Handle click event to show dropdown
         binding.autoCompleteTextViewClass.setOnClickListener {
             binding.autoCompleteTextViewClass.showDropDown()
         }
 
         // Set up the AutoCompleteTextView
-        binding.autoCompleteTextViewstanderd.setAdapter(
-            ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, standards)
-        )
+        binding.autoCompleteTextViewstanderd.setAdapter(adapterStanderd)
         // Handle click event to show dropdown
         binding.autoCompleteTextViewstanderd.setOnClickListener {
             binding.autoCompleteTextViewstanderd.showDropDown()
