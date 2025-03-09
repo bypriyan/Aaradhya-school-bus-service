@@ -5,197 +5,140 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingTop="?attr/actionBarSize"
+    android:background="@color/white"
     tools:context=".activity.PaymentDoneActivity">
-    <ScrollView
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/lottieAnimationView"
+        android:layout_width="@dimen/_120sdp"
+        android:layout_height="@dimen/_120sdp"
+        app:lottie_rawRes="@raw/success_animation"
+        app:lottie_loop="true"
+        app:lottie_autoPlay="true"
+        android:layout_marginTop="@dimen/_40sdp"
+        android:layout_centerHorizontal="true"/>
+
+    <TextView
+        android:id="@+id/doneTv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Payment successful"
+        android:layout_below="@id/lottieAnimationView"
+        android:layout_centerHorizontal="true"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        android:fontFamily="@font/black"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:textSize="@dimen/_12ssp"/>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnDone"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="@dimen/_48sdp"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="@dimen/_15sdp"
+        android:backgroundTint="@color/appColor"
+        android:text="Done"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        app:cornerRadius="@dimen/_10sdp" />
+
+<!--    Successfully paid 15000-->
+
+    <TextView
+        android:id="@+id/successfulAmount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Successfully paid 15000"
+        android:layout_below="@id/doneTv"
+        android:layout_centerHorizontal="true"
+        android:textColor="@color/dark_greay"
+        android:fontFamily="@font/semibold"
+        android:layout_marginTop="@dimen/_8sdp"
+        android:textSize="@dimen/_12ssp"/>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:paddingTop="?attr/actionBarSize"
-        android:orientation="vertical"
-        android:padding="16dp"
-        android:background="#FFFFFF">
-
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/_50sdp"
-            android:src="@drawable/baseline_cloud_done_24"
-            android:layout_gravity="center" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Payment successful"
-            android:textSize="24sp"
-            android:textColor="#000000"
-            android:layout_gravity="center"
-            android:layout_marginTop="16dp" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Successfully paid 15000"
-            android:textSize="16sp"
-            android:textColor="#666666"
-            android:layout_gravity="center"
-            android:layout_marginTop="8dp" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:layout_marginBottom="8dp"
-            android:text="Payment methods"
-            android:textStyle="bold"
-            android:textColor="#000000"
-            android:textSize="18sp" />
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:background="#F5F5F5"
-            android:padding="16dp"
-            android:layout_marginBottom="16dp">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Transaction ID:"
-                    android:textSize="16sp"
-                    android:textColor="#000000" />
-
-                <TextView
-                    android:id="@+id/txtTransactionNumber"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="4352 2748 3920"
-                    android:textSize="16sp"
-                    android:textColor="#000000" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginTop="8dp">
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Date:"
-                    android:textSize="16sp"
-                    android:textColor="#000000" />
-
-                <TextView
-                    android:id="@+id/txtdate"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="28 Febuary 2025"
-                    android:textSize="16sp"
-                    android:textColor="#000000" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="350dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:orientation="horizontal"/>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginTop="8dp">
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Status:"
-                    android:textSize="16sp"
-                    android:textColor="#000000" />
-
-                <TextView
-                    android:id="@+id/successBtn"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Success"
-                    android:textSize="16sp"
-                    android:padding="@dimen/_5sdp"
-                    android:background="@drawable/custom_background"
-                    android:drawableEnd="@drawable/baseline_done_24"
-                    android:textColor="#00C853" />
-            </LinearLayout>
-
-        </LinearLayout>
-
+        android:layout_height="wrap_content"
+        android:padding="@dimen/_15sdp"
+        android:layout_below="@id/successfulAmount"
+        android:layout_marginTop="@dimen/_20sdp"
+        android:orientation="vertical">
 
         <LinearLayout
-            android:visibility="gone"
-            android:id="@+id/linearLyoutOfDownloadInvoice"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-             android:background="@drawable/custom_background"
-            android:padding="16dp">
+            android:layout_marginTop="8dp">
 
             <TextView
-android:id="@+id/btnDownload"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:padding="@dimen/_12sdp"
-                android:background="@drawable/custom_design"
-                android:drawableEnd="@drawable/baseline_download_24"
-                android:text="Download invoice"
-                android:textSize="18sp"
-                android:textColor="#FFFFFF" />
+                android:text="Amount:"
+                android:textSize="@dimen/_12ssp"
+                android:textStyle="bold"
+                android:textColor="@color/dark_greay"/>
 
             <TextView
-android:id="@+id/btnShare"
-                android:layout_width="0dp"
-                android:layout_height="77dp"
-                android:layout_weight="1"
-                android:layout_gravity="center"
-                android:gravity="center"
-                android:background="@drawable/custom_design"
-                android:drawableEnd="@drawable/baseline_share_24"
-                android:padding="@dimen/_12sdp"
-                android:text="share"
+                android:id="@+id/amount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="28 Febuary 2025"
+                android:textSize="@dimen/_12ssp"
                 android:textStyle="bold"
-                android:textColor="#FFFFFF"
-                android:textSize="18sp" />
-
-
+                android:textColor="@color/black" />
         </LinearLayout>
 
-        <TextView
-            android:id="@+id/btnDone"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Done"
-            android:layout_marginTop="@dimen/_12sdp"
-            android:textStyle="bold"
-            android:padding="@dimen/_12sdp"
-            android:textColor="@color/white"
-            android:textSize="@dimen/_15sdp"
-            android:layout_marginBottom="@dimen/_42sdp"
-            android:drawableEnd="@drawable/baseline_done_24"
-            android:background="@drawable/custom_design"
-            android:gravity="center"/>
+            android:layout_marginTop="@dimen/_8sdp"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Transaction ID:"
+                android:textSize="@dimen/_12ssp"
+                android:textStyle="bold"
+                android:textColor="@color/dark_greay" />
+            <TextView
+                android:id="@+id/txtTransactionNumber"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="4352 2748 3920"
+                android:textSize="@dimen/_12ssp"
+                android:textColor="@color/black"
+                android:textStyle="bold"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="8dp">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Date:"
+                android:textSize="@dimen/_12ssp"
+                android:textStyle="bold"
+                android:textColor="@color/dark_greay"/>
+
+            <TextView
+                android:id="@+id/txtdate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="28 Febuary 2025"
+                android:textSize="@dimen/_12ssp"
+                android:textStyle="bold"
+                android:textColor="@color/black" />
+        </LinearLayout>
+
 
     </LinearLayout>
 
-
-    </ScrollView>
 </RelativeLayout>

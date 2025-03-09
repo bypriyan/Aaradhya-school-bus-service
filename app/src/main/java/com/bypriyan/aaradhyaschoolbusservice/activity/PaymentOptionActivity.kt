@@ -92,10 +92,6 @@ class PaymentOptionActivity : AppCompatActivity(), PaymentResultListener {
             return
         }
 
-        Log.d("PaymentOptionActivity", "userId: $userId")
-        Log.d("PaymentOptionActivity", "preferenceManager: $preferenceManager")
-
-
         // Handle ONLY_DROP mode
         if (mode == "ONLY_DROP") {
             dropLocation = intent.getStringExtra("DROP_LOCATION") ?: ""
@@ -116,7 +112,9 @@ class PaymentOptionActivity : AppCompatActivity(), PaymentResultListener {
         viewModel.responseMessage.observe(this, Observer { response ->
             Log.d("payss", "onCreate: $response")
             var intent = Intent(this, PaymentDoneActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             intent.putExtra("id", paymentId)
+            intent.putExtra("paid", paidAmount)
             startActivity(intent)
             finish()
         })
@@ -212,21 +210,9 @@ class PaymentOptionActivity : AppCompatActivity(), PaymentResultListener {
 
         // EMI first installment button
         binding.continueBtn.setOnClickListener {
-            if (installmentStatus == 0) {
-                paidAmount = firstInstallmentPrice
-                startPayment(firstInstallmentPrice) // Pay only first installment
-            } else if (installmentStatus == 1) {
-                paidAmount = secondInstallmentPrice
-                startPayment(secondInstallmentPrice) // Pay second installment
-            } else if (installmentStatus == 2) {
-                paidAmount = thirdInstallmentPrice
-                startPayment(thirdInstallmentPrice) // Pay third installment
-            }  else
-            {
-                binding.continueBtn.text= "Installment Completed"
-                binding.continueBtn.isEnabled= false
-                binding.continueBtn.alpha = 0.5f // To indicate the button is disabled
-            }
+            paidAmount = firstInstallmentPrice
+            installmentStatus=1
+            startPayment(firstInstallmentPrice) // Pay only first installment
         }
     }
 
@@ -302,37 +288,20 @@ class PaymentOptionActivity : AppCompatActivity(), PaymentResultListener {
             val finalPickupLatitude = if (::pickupLatitude.isInitialized) pickupLatitude else "0.0"
             val finalPickupLongitude = if (::pickupLongitude.isInitialized) pickupLongitude else "0.0"
 
-            val reservation = mapOf(
-                "user_id" to userId,
-                "pickup_location" to finalPickupLocation,
-                "drop_location" to dropLocation,
-                "pickup_latitude" to finalPickupLatitude,
-                "pickup_longitude" to finalPickupLongitude,
-                "drop_latitude" to dropLatitude,
-                "drop_longitude" to dropLongitude,
-                "paid" to paidAmount.toString(),
-                "total_amount" to totalPrice.toString(),
-                "installment_paid" to (installmentStatus + 1).toString(),
-                "plan" to mode,
-                "payment_id" to paymentId
-            )
-
-            Log.d("PaymentOptionActivity", "Storing reservation: $reservation")
 
             viewModel.createReservation(
                 userId, finalPickupLocation, dropLocation, finalPickupLatitude, finalPickupLongitude,
-                dropLatitude, dropLongitude, firstInstallmentPrice.toString(), totalPrice.toString(),
-                (installmentStatus + 1).toString(), mode
+                dropLatitude, dropLongitude, paidAmount.toString(), totalPrice.toString(),
+                (installmentStatus).toString(), mode
             )
 
             // Update the installment status and payment status in PreferenceManager
-            preferenceManager.putString("installment_status", (installmentStatus + 1).toString())
+            preferenceManager.putString("installment_status", (installmentStatus).toString())
             preferenceManager.putString(Constants.PAYMENT_STATUS, "true")
 
             //recipt
             preferenceManager.putString(Constants.KEY_RECEIPT_NO, paymentId)
             preferenceManager.putString(Constants.KEY_DATE, getCurrentDate())
-
 
             // Update the UI for paid installment
             if (installmentStatus == 0) {
@@ -342,14 +311,6 @@ class PaymentOptionActivity : AppCompatActivity(), PaymentResultListener {
             } else if (installmentStatus == 2) {
                 binding.thirdInstallmentTv.text = "Paid ₹$thirdInstallmentPrice"
             }
-
-
-
-
-            // After payment is successful, navigate to the Dashboard
-            val dashboardIntent = Intent(this@PaymentOptionActivity, DashBoard1Activity::class.java)
-            startActivity(dashboardIntent)
-            finish()
         } catch (e: Exception) {
             Log.e("PaymentOptionActivity", "Error in onPaymentSuccess: ${e.message}")
         }

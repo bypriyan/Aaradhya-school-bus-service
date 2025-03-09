@@ -6,6 +6,9 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import com.bypriyan.aaradhyaschoolbusservice.databinding.ActivityPaymentDoneBinding
 import dagger.hilt.android.AndroidEntryPoint
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 
 @AndroidEntryPoint
@@ -21,17 +24,22 @@ class PaymentDoneActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         binding.txtTransactionNumber.text = intent.getStringExtra("id")!!
+        val amount = intent.getStringExtra("paid")!!
+        binding.successfulAmount.text = "Successfully paid $amount"
+        binding.amount.text = "₹"+amount
+        binding.txtdate.text = getCurrentDateTime()
 
         binding.btnDone.setOnClickListener(){
             startActivity(Intent(this, DashBoard1Activity::class.java))
             finish()
         }
 
-        binding.btnDownload.setOnClickListener{
-
-        }
 
     }
 
+    fun getCurrentDateTime(): String {
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+        return dateFormat.format(Date())
+    }
 
 }
