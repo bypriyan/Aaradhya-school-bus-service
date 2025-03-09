@@ -127,25 +127,20 @@
                 android:layout_below="@+id/username"
                 android:textColor="@color/bg"/>
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/standerdTi"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            <AutoCompleteTextView
+                android:id="@+id/autoCompleteTextViewstanderd"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:textColorHint="@color/greay"
+                android:hint="Standard"
+                android:padding="@dimen/_12sdp"
+                android:focusable="false"
+                android:clickable="true"
+                android:layout_marginTop="@dimen/_5sdp"
                 app:hintTextColor="@color/black"
                 android:textColor="@color/black"
-                app:boxStrokeColor="@color/black">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/standerdEt"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/bg_gradient_edit_text"
-                    android:textColor="@color/black"
-                    android:inputType="text" />
-            </com.google.android.material.textfield.TextInputLayout>
+                app:boxStrokeColor="@color/black"
+                android:background="@drawable/bg_gradient_edit_text"
+                android:textSize="@dimen/_13ssp" />
 
             <TextView
                 android:text="Class"
@@ -157,25 +152,20 @@
                 android:layout_below="@+id/username"
                 android:textColor="@color/bg"/>
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/classs"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            <AutoCompleteTextView
+                android:id="@+id/autoCompleteTextViewClass"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:textColorHint="@color/greay"
+                android:hint="Class"
+                android:padding="@dimen/_12sdp"
+                android:focusable="false"
+                android:clickable="true"
                 app:hintTextColor="@color/black"
                 android:textColor="@color/black"
-                app:boxStrokeColor="@color/black">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/classEt"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/bg_gradient_edit_text"
-                    android:textColor="@color/black"
-                    android:inputType="number" />
-            </com.google.android.material.textfield.TextInputLayout>
+                android:layout_marginTop="@dimen/_5sdp"
+                app:boxStrokeColor="@color/black"
+                android:background="@drawable/bg_gradient_edit_text"
+                android:textSize="@dimen/_13ssp" />
 
             <TextView
                 android:text="Age"

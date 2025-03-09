@@ -34,7 +34,6 @@ class LoginActivity : AppCompatActivity() {
     private val loginViewModel: LoginViewModel by viewModels()
     @Inject
     lateinit var preferenceManager: PreferenceManager
-    private val pdfViewModel: PdfViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,54 +52,25 @@ class LoginActivity : AppCompatActivity() {
         binding.loginBtn.setOnClickListener {
             val email = binding.usernameET.text.toString()
             val password = binding.passwordEt.text.toString()
-
             if (validateInputFields(email, password)) {
                 isLoading(true)
                 loginViewModel.loginUser(email,password)
             }
         }
 
-        // Observe the login response using LiveData
         loginViewModel.loginResponse.observe(this) { response ->
             isLoading(false)
             response?.let {
                 if (it.status == "success") {
-                    // Save token and navigate to the next screen
-                    Log.d("loginss", "onCreate: $it")
-                 //   saveToken(it.token, it.token_type, it.id)
-
-                    val paymentStatus = preferenceManager.getString(Constants.PAYMENT_STATUS)?.toBoolean() ?: false
-                    if (paymentStatus) {
-                        // If the user has made a payment, redirect to DashboardActivity
-                        val dashboardIntent = Intent(this@LoginActivity, DashBoard1Activity::class.java)
-                        Log.d("lls", "onCreate: $it")
-////                        intent.putExtra(Constants.KEY_TOKEN, it.token)
-//                        intent.putExtra(Constants.KEY_TOKEN_TYPE, it.token_type)
-                        intent.putExtra(Constants.KEY_USER_ID, it.id)
-                        preferenceManager.putString(Constants.KEY_USER_ID, it.id)
-//                        preferenceManager.putString(Constants.KEY_TOKEN, it.token)
-//                        preferenceManager.putString(Constants.KEY_TOKEN_TYPE, it.token_type)
-                        startActivity(dashboardIntent)
-                        finish()
-                    } else {
-                        // Otherwise, go to CheckOut1 (payment screen)
-                        var intent = Intent(this@LoginActivity, CheckOut1::class.java)
-//                        intent.putExtra(Constants.KEY_TOKEN, it.token)
-//                        intent.putExtra(Constants.KEY_TOKEN_TYPE, it.token_type)
-                        intent.putExtra(Constants.KEY_USER_ID, it.id.toString())
-                        preferenceManager.putString(Constants.KEY_USER_ID, it.id.toString())
-//                        preferenceManager.putString(Constants.KEY_TOKEN, it.token)
-//                        preferenceManager.putString(Constants.KEY_TOKEN_TYPE, it.token_type)
-                        startActivity(intent)
-                        finish()
-                    }
+                    preferenceManager.putString(Constants.KEY_USER_ID,it.id.toString())
+                    var intent = Intent(this, CheckOut1::class.java)
                 } else {
                     Log.d("login", "onCreate: ${it.message}")
                 }
             }
         }
 
-        // Request notification permission on Android 13+
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             requestNotificationPermission()
         }
@@ -142,16 +112,6 @@ class LoginActivity : AppCompatActivity() {
             binding.loginBtn.visibility = View.VISIBLE
         }
     }
-
-    private fun saveToken(token: String?, tokenType: String?, userId: String?) {
-        token?.let {
-            preferenceManager.putString(Constants.KEY_TOKEN, token)
-            preferenceManager.putString(Constants.KEY_TOKEN_TYPE, tokenType)
-            preferenceManager.putString(Constants.KEY_USER_ID, userId)
-        }
-    }
-
-
 }
 
 

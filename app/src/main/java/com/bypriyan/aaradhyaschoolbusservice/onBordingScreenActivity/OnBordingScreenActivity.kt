@@ -110,12 +110,8 @@ class OnBordingScreenActivity : AppCompatActivity() {
         if (!::preferenceManager.isInitialized) {
             preferenceManager = PreferenceManager(this)
         }
-
         // Check if the onboarding screen was seen
-        val hasSeenOnboarding = preferenceManager.getBoolean(
-            Constants.KEY_IS_ONBORDING_SCREEN_SEEN,
-            false
-        )
+        val hasSeenOnboarding = preferenceManager.getBoolean(Constants.KEY_IS_ONBORDING_SCREEN_SEEN, false)
 
         if (hasSeenOnboarding) {
             // If onboarding is already completed, go to LoginActivity

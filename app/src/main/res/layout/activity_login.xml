@@ -133,6 +133,7 @@
                 android:textSize="@dimen/_10ssp"
                 android:textStyle="bold"
                 android:layout_gravity="end"
+                android:visibility="gone"
                 android:layout_alignParentEnd="true"
                 android:textColor="@color/appColor"
                 android:layout_marginLeft="@dimen/_8sdp"

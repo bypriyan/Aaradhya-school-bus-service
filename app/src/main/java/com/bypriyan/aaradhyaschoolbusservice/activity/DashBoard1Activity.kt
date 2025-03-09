@@ -13,11 +13,13 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.bumptech.glide.Glide
 import com.bypriyan.aaradhyaschoolbusservice.activity.PaymentDoneActivity
 import com.bypriyan.aaradhyaschoolbusservice.databinding.ActivityCheckOutBinding
+import com.bypriyan.aaradhyaschoolbusservice.viewModel.GetUserReservationViewModel
 import com.bypriyan.aaradhyaschoolbusservice.viewModel.PdfViewModel
 import com.bypriyan.aaradhyaschoolbusservice.viewModel.UserViewModel
 import com.bypriyan.bustrackingsystem.utility.Constants
@@ -34,6 +36,7 @@ class DashBoard1Activity : AppCompatActivity() {
     lateinit var preferenceManager: PreferenceManager
     private val pdfViewModel: PdfViewModel by viewModels()
     private val userViewModel: UserViewModel by viewModels()
+    private val getUserReservationViewModel: GetUserReservationViewModel by viewModels()
     lateinit var userId: String
     lateinit var token: String
     lateinit var token_type: String
@@ -53,6 +56,18 @@ class DashBoard1Activity : AppCompatActivity() {
         token_type = preferenceManager.getString(Constants.KEY_TOKEN_TYPE)!!
         Log.d("aaaa", "onCreate: $userId $token $token_type")
 
+        getUserReservationViewModel.fetchReservations(userId = 1)
+
+        // Observe LiveData
+        getUserReservationViewModel.reservations.observe(this, Observer { result ->
+            result.onSuccess { response ->
+                Log.d("rpro", "onCreate: ")
+                Toast.makeText(this, "Success: ${response.reservations?.size} items", Toast.LENGTH_LONG).show()
+            }.onFailure { error ->
+                Toast.makeText(this, "Error: ${error.message}", Toast.LENGTH_LONG).show()
+            }
+        })
+
 //        userViewModel.getUserDetails(userId, token)
 
         binding.SlabStructureBtn.setOnClickListener {
@@ -61,39 +76,15 @@ class DashBoard1Activity : AppCompatActivity() {
             startActivity(intent)
         }
 
+        binding.name.text = preferenceManager.getString(Constants.KEY_FULL_NAME)
+        loadImageWithGlide(Constants.KEY_IMAGE_PATH+preferenceManager.getString(Constants.KEY_IMAGE))
+
         binding.profileImage.setOnClickListener {
 //            userViewModel.userDetails.value?.let { userDetails ->
-//                val intent = Intent(this, ProfileActivity::class.java)
-//                startActivity(intent)
+                val intent = Intent(this, ProfileActivity::class.java)
+                startActivity(intent)
 //            }
         }
-
-//        userViewModel.userDetails.observe(this) { userDetails ->
-//            // Update UI with user details
-//            Log.d("checks", "onCreate: $resources")
-//            binding.name.text = "Hi, ${userDetails.fullName}"
-//            loadImageWithGlide(Constants.KEY_IMAGE_PATH+userDetails.image)
-//            preferenceManager.putString(Constants.KEY_STANDARD, userDetails.standard)
-//            preferenceManager.putString(Constants.KEY_FULL_NAME, userDetails.fullName)
-//            // Save user details in SharedPreferences
-//            preferenceManager.putString(Constants.KEY_USER_ID, userDetails.id.toString())
-//            preferenceManager.putString(Constants.KEY_EMAIL, userDetails.email)
-//            preferenceManager.putString(Constants.KEY_USER_CLASS, userDetails.userClass)
-//            preferenceManager.putString(Constants.KEY_IMAGE, userDetails.image)
-//            preferenceManager.putString(Constants.KEY_YEAR, userDetails.year)
-//            preferenceManager.putString(Constants.KEY_FATHER_NAME, userDetails.fatherName)
-//            preferenceManager.putString(Constants.KEY_FATHER_NUMBER, userDetails.fatherNumber)
-//            preferenceManager.putString(Constants.KEY_MOTHER_NAME, userDetails.motherName)
-//            preferenceManager.putString(Constants.KEY_MOTHER_NUMBER, userDetails.motherNumber)
-//            preferenceManager.putString(Constants.KEY_EMAIL_VERIFIED_AT, userDetails.emailVerifiedAt)
-//            preferenceManager.putString(Constants.KEY_CREATED_AT, userDetails.createdAt)
-//            preferenceManager.putString(Constants.KEY_UPDATED_AT, userDetails.updatedAt)
-//            preferenceManager.putString(Constants.KEY_AGE, userDetails.age.toString())
-//            preferenceManager.putString(Constants.KEY_IS_APPROVED, userDetails.isApproved.toString())
-//            preferenceManager.putString(Constants.KEY_USER_TYPE, userDetails.userType)
-//            preferenceManager.putString(Constants.KEY_OTP, userDetails.otp)
-//            preferenceManager.putString(Constants.KEY_OTP_VERIFIED, userDetails.otpVerified.toString())
-//        }
 
         binding.CheckOutAct.setOnClickListener {
             startActivity(Intent(this, CheckOut1::class.java))
@@ -106,6 +97,14 @@ class DashBoard1Activity : AppCompatActivity() {
 
         binding.paidNextAmount.setOnClickListener {
             startActivity(Intent(this, PaymentOptionActivity::class.java))
+        }
+
+        binding.signOut.setOnClickListener {
+            val intent = Intent(this, LoginActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            startActivity(intent)
+            finish() // Finish current activity
+
         }
         observePdfGeneration()
     }

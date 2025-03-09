@@ -35,6 +35,7 @@
 
 
         <ImageView
+            android:id="@+id/signOut"
             android:layout_width="@dimen/_27sdp"
             android:layout_height="@dimen/_27sdp"
             android:src="@drawable/sign_out_icon"

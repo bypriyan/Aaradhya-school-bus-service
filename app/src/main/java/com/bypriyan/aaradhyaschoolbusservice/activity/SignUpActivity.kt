@@ -7,6 +7,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.view.View
+import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -22,17 +23,19 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class SignUpActivity : AppCompatActivity() {
+
     private lateinit var binding : ActivitySignUpBinding
     //viewModel
     private val otpViewModel: OTPViewModel by viewModels()
     private lateinit var pickImageLauncher: ActivityResultLauncher<String>
     private var selectedImageUri: Uri? = null // Store the selected image URI
+    val classes = arrayOf("Jasmin", "Lilly", "Orchid", "Rose", "IriS", "Tulip", "Lotus")
+    val standards = arrayOf("Nursery", "LKG", "UKG", "1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding= ActivitySignUpBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
 
         //selected image
         pickImageLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
@@ -42,12 +45,29 @@ class SignUpActivity : AppCompatActivity() {
             }
         }
 
+        // Set up the AutoCompleteTextView
+        binding.autoCompleteTextViewClass.setAdapter(
+            ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, classes)
+        )
+        // Handle click event to show dropdown
+        binding.autoCompleteTextViewClass.setOnClickListener {
+            binding.autoCompleteTextViewClass.showDropDown()
+        }
+
+        // Set up the AutoCompleteTextView
+        binding.autoCompleteTextViewstanderd.setAdapter(
+            ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, standards)
+        )
+        // Handle click event to show dropdown
+        binding.autoCompleteTextViewstanderd.setOnClickListener {
+            binding.autoCompleteTextViewstanderd.showDropDown()
+        }
+
 
         binding.sendOTPBtn.setOnClickListener {
             if(validateInputFields()){
                 isLoading(true)
-//                startOtpActivity("123")
-otpViewModel.sendOtp(binding.emailEt.text.toString())
+                otpViewModel.sendOtp(binding.emailEt.text.toString())
             }
         }
 
@@ -58,11 +78,10 @@ otpViewModel.sendOtp(binding.emailEt.text.toString())
 
         otpViewModel.otpResponse.observe(this, Observer { result ->
             result?.let {
+                isLoading(false)
                 it.onSuccess { response ->
                     startOtpActivity(response.otp.toString())
-                    isLoading(false)
                 }.onFailure { error ->
-                    isLoading(false)
                     Toast.makeText(this, error.message, Toast.LENGTH_SHORT).show()
                 }
             }
@@ -73,52 +92,34 @@ otpViewModel.sendOtp(binding.emailEt.text.toString())
     }
 
     private fun setInputFieldData() {
-        // Set full name
         binding.fullNameEt.setText("John Doe")
-
-        // Set standard
-        binding.standerdEt.setText("10th")
-
-        // Set class
-        binding.classEt.setText("A")
-
-        // Set age
         binding.ageEt.setText("16")
-
-        // Set year
         binding.yearEt.setText("2023")
-
-        // Set father's name
         binding.fatherNameEt.setText("John Doe Sr.")
-
-        // Set father's phone number
         binding.fPhoneNumEt.setText("1234567890")
-
-        // Set mother's name
         binding.mothersName.setText("Jane Doe")
-
-        // Set mother's phone number
         binding.mPhoneEt.setText("0987654321")
-
-        // Set email
         binding.emailEt.setText("104abcdabcd104@gmail.com")
-
-        // Set password
         binding.passwordEt.setText("123456")
     }
 
     private fun validateInputFields(): Boolean {
         return when {
+            // Check if an image is selected
+            selectedImageUri == null -> {
+                Toast.makeText(this, "Please select an image", Toast.LENGTH_SHORT).show()
+                false
+            }
             binding.fullNameEt.text.isNullOrBlank() -> {
                 binding.fullName.error = "Full Name is required"
                 false
             }
-            binding.standerdEt.text.isNullOrBlank() -> {
-                binding.standerdTi.error = "Standard is required"
+            binding.autoCompleteTextViewstanderd.text.isNullOrBlank() -> {
+                binding.autoCompleteTextViewstanderd.error = "Standard is required"
                 false
             }
-            binding.classEt.text.isNullOrBlank() -> {
-                binding.classs.error = "Class is required"
+            binding.autoCompleteTextViewClass.text.isNullOrBlank() -> {
+                binding.autoCompleteTextViewClass.error = "Class is required"
                 false
             }
             binding.ageEt.text.isNullOrBlank() || binding.ageEt.text.toString().toInt() <= 0 -> {
@@ -155,14 +156,13 @@ otpViewModel.sendOtp(binding.emailEt.text.toString())
             }
             else -> true
         }
-
     }
 
     private fun startOtpActivity(otp: String) {
 
         val fullName = binding.fullNameEt.text.toString()
-        val standard = binding.standerdEt.text.toString()
-        val className = binding.classEt.text.toString()
+        val standard = binding.autoCompleteTextViewstanderd.text.toString()
+        val className = binding.autoCompleteTextViewClass.text.toString()
         val age = binding.ageEt.text.toString()
         val year = binding.yearEt.text.toString()
         val fatherName = binding.fatherNameEt.text.toString()
@@ -223,8 +223,8 @@ otpViewModel.sendOtp(binding.emailEt.text.toString())
     }
     private fun startStudentDetailsActivity() {
         val fullName = binding.fullNameEt.text.toString()
-        val standard = binding.standerdEt.text.toString()
-        val className = binding.classEt.text.toString()
+        val standard = binding.autoCompleteTextViewstanderd.text.toString()
+        val className = binding.autoCompleteTextViewClass.text.toString()
         val age = binding.ageEt.text.toString()
         val year = binding.yearEt.text.toString()
         val fatherName = binding.fatherNameEt.text.toString()
@@ -232,12 +232,6 @@ otpViewModel.sendOtp(binding.emailEt.text.toString())
         val motherName = binding.mothersName.text.toString()
         val motherPhone = binding.mPhoneEt.text.toString()
         val email = binding.emailEt.text.toString()
-        val profileImageUri = selectedImageUri?.toString()
-
-        // Debugging: Print values in Logcat
-        android.util.Log.d("SignUpActivity", "Full Name: $fullName")
-        android.util.Log.d("SignUpActivity", "Email: $email")
-        android.util.Log.d("SignUpActivity", "Profile Image URI: $profileImageUri")
 
         val intent = Intent(this, StudentDetailActivity::class.java)
         intent.putExtra(Constants.KEY_FULL_NAME, fullName)
@@ -250,10 +244,9 @@ otpViewModel.sendOtp(binding.emailEt.text.toString())
         intent.putExtra(Constants.KEY_MOTHER_NAME, motherName)
         intent.putExtra(Constants.KEY_MOTHER_PHONE, motherPhone)
         intent.putExtra(Constants.KEY_EMAIL, email)
-        profileImageUri?.let {
+        selectedImageUri?.let {
             intent.putExtra(Constants.KEY_PROFILE_IMAGE_URI, it)
         }
-
         startActivity(intent)
     }
 

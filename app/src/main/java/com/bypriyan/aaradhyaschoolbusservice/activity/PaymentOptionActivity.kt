@@ -3,6 +3,7 @@ package com.bypriyan.aaradhyaschoolbusservice.activity
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -137,7 +138,7 @@ class PaymentOptionActivity : AppCompatActivity(), PaymentResultListener {
             }
             // Check installment status and update UI
             if (installmentStatus ==0) {
-            binding.showtxt.text="Pay First Installment"
+                binding.showtxt.text="Pay First Installment"
             }
             if (installmentStatus >= 1) {
                 binding.firstInstallmentTv.text = "Paid ₹$firstInstallmentPrice"
@@ -374,5 +375,3 @@ data class Slab(
     val thirdInstallment: Int,
     val yearly: Int
 )
-
-

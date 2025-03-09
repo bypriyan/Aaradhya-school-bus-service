@@ -96,6 +96,14 @@ class CheckOut1 : AppCompatActivity() {
         tokenViewModel.tokenResponse.observe(this) { response ->
             Log.d("token", "onCreate: $response")
         }
+
+        binding.signOut.setOnClickListener {
+            val intent = Intent(this, LoginActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            startActivity(intent)
+            finish() // Finish current activity
+        }
+
     }
 
     private fun loadImageWithGlide(imageUrl: String) {

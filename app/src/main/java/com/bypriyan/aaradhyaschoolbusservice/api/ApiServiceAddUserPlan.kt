@@ -1,13 +1,9 @@
 package com.bypriyan.aaradhyaschoolbusservice.api
 
-import com.android.volley.Response
-import com.bypriyan.aaradhyaschoolbusservice.apiResponce.ReservationResponse
-import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
-import retrofit2.http.Header
 import retrofit2.http.POST
 import retrofit2.http.PUT
 
@@ -51,7 +47,7 @@ interface ApiServiceAddUserPlan {
 data class ApiResponse(
     val status: String,
     val message: String? = null,
-    val reservations: List<Reservation>? = null
+    val reservations: List<Reservation1>? = null
 )
 
 data class Reservation(

@@ -11,7 +11,6 @@ class SlabActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
         setContentView(R.layout.activity_slab)
         val btn = findViewById<Button>(R.id.btn_Continue)
 

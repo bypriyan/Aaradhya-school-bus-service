@@ -9,6 +9,7 @@ import com.bypriyan.aaradhyaschoolbusservice.api.ApiServiceOTP
 import com.bypriyan.aaradhyaschoolbusservice.api.ApiServiceRegisterUser
 import com.bypriyan.aaradhyaschoolbusservice.api.ApiServiceToken
 import com.bypriyan.aaradhyaschoolbusservice.api.ApiServiceUserDetails
+import com.bypriyan.aaradhyaschoolbusservice.api.ApiServicesgetUserReservation
 import com.bypriyan.aaradhyaschoolbusservice.repo.PdfRepository
 import com.bypriyan.bustrackingsystem.utility.PreferenceManager
 import dagger.Module
@@ -68,6 +69,12 @@ object AppModule {
     @Singleton
     fun provideApiServiceAddUserPlan(retrofit: Retrofit): ApiServiceAddUserPlan {
         return retrofit.create(ApiServiceAddUserPlan::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideApiServicesgetUserReservation(retrofit: Retrofit): ApiServicesgetUserReservation {
+        return retrofit.create(ApiServicesgetUserReservation::class.java)
     }
 
     @Provides
