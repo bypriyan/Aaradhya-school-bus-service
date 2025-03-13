@@ -22,6 +22,8 @@ data class Reservation1(
     val amount_paid: String,
     val total_amount: String,
     val plan: String,
+    val payment_date: String,
+    val payment_id: String,
     val installment_paid: String,
     val pickup_location: String,
     val pickup_latitude: String,

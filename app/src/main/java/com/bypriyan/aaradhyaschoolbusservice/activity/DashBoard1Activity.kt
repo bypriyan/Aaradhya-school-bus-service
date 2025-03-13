@@ -55,6 +55,9 @@ class DashBoard1Activity : AppCompatActivity() {
     lateinit var mobileNum1: String
     lateinit var mobileNum2: String
 
+    lateinit var paymentDate: String
+    lateinit var paymentId: String
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityCheckOutBinding.inflate(layoutInflater)
@@ -78,6 +81,15 @@ class DashBoard1Activity : AppCompatActivity() {
                     putString(Constants.KEY_YEAR, data.year ?: "")
                     putString(Constants.KEY_STANDARD, data.standard ?: "")
                     putString(Constants.KEY_AGE, data.age.toString() ?: "")
+
+                    putString(Constants.KEY_FATHER_NAME, data.guardians[0].name)
+                    putString(Constants.KEY_FATHER_NUMBER, data.guardians[0].phone_number)
+
+                    putString(Constants.KEY_MOTHER_NAME, data.guardians[1].name)
+                    putString(Constants.KEY_MOTHER_NUMBER, data.guardians[1].phone_number)
+
+                    putString(Constants.KEY_GUARDIAN_NAME, data.guardians[2].name)
+                    putString(Constants.KEY_GUARDIAN_PHONE, data.guardians[2].phone_number)
                 }
             } ?: run {
                 Log.e("UserDetails", "userDetails or data is null")
@@ -303,10 +315,21 @@ class DashBoard1Activity : AppCompatActivity() {
         mobileNum1 = response.reservations?.get(0)?.mobileNum1.toString()
         mobileNum2 = response.reservations?.get(0)?.mobileNum2.toString()
 
+        paymentDate = response.reservations?.get(0)?.payment_date.toString()
+        paymentId = response.reservations?.get(0)?.payment_id.toString()
+
         binding.PickupRouteTv.text = pickupRoute?:"waiting..."
         binding.DropRouteTv.text = dropRoute?:"waiting..."
         binding.mob1Tv.text = mobileNum1
         binding.mob2Tv.text = mobileNum2
+
+        if(totalAmount==amountPaid){
+            preferenceManager.putString(Constants.KEY_MONTH_FROM, "April")
+            preferenceManager.putString(Constants.KEY_MONTH_TO, "March")
+        }else{
+            preferenceManager.putString(Constants.KEY_MONTH_FROM, "April")
+            preferenceManager.putString(Constants.KEY_MONTH_TO, "August")
+        }
 
         preferenceManager.apply {
             putString(Constants.KEY_TOTAL_AMOUNT, totalAmount)
@@ -319,6 +342,8 @@ class DashBoard1Activity : AppCompatActivity() {
             putString(Constants.KEY_DROP_ROUTE, dropRoute)
             putString(Constants.KEY_MOBILE_NUM1, mobileNum1)
             putString(Constants.KEY_MOBILE_NUM2, mobileNum2)
+            putString(Constants.KEY_DATE, paymentDate)
+            putString(Constants.KEY_RECEIPT_NO, paymentId)
         }
     }
 }
