@@ -13,7 +13,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.bypriyan.aaradhyaschoolbusservice.databinding.ActivityOtpBinding
-import com.bypriyan.aaradhyaschoolbusservice.viewModel.RegisterViewModel
+import com.bypriyan.aaradhyaschoolbusservice.viewModel.RegisterUserViewModel
 import com.bypriyan.bustrackingsystem.utility.Constants
 import com.bypriyan.bustrackingsystem.utility.PreferenceManager
 import dagger.hilt.android.AndroidEntryPoint
@@ -36,7 +36,7 @@ class OtpActivity : AppCompatActivity() {
 
     @Inject
     lateinit var preferenceManager: PreferenceManager
-    private val registerUserViewModel: RegisterViewModel by viewModels()
+    private val registerUserViewModel: RegisterUserViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,6 +57,9 @@ class OtpActivity : AppCompatActivity() {
         val password = intent.getStringExtra(Constants.KEY_PASSWORD)
         val otp = intent.getStringExtra(Constants.KEY_OTP)
         val imageUriString = intent.getStringExtra(Constants.KEY_PROFILE_IMAGE_URI)
+
+        val guardianName = intent.getStringExtra(Constants.KEY_GUARDIAN_NAME)
+        val guardianPhone = intent.getStringExtra(Constants.KEY_GUARDIAN_PHONE)
 
         binding.continueBtn.setOnClickListener {
             if (binding.firstPinView.text.toString().isNotEmpty()) {
@@ -97,7 +100,9 @@ class OtpActivity : AppCompatActivity() {
                             "father_name" to fatherName,
                             "father_number" to fatherPhone,
                             "mother_name" to motherName,
-                            "mother_number" to motherPhone
+                            "mother_number" to motherPhone,
+                            "guardian_name" to guardianName,
+                            "guardian_number" to guardianPhone
                         ).mapValues {
                             it.value?.toRequestBody("text/plain".toMediaTypeOrNull())
                         }
@@ -120,6 +125,8 @@ class OtpActivity : AppCompatActivity() {
                             params["father_number"]!!,
                             params["mother_name"]!!,
                             params["mother_number"]!!,
+                            params["guardian_name"]!!,
+                            params["guardian_number"]!!,
                             params["password"]!!,
                             filePart
                         )
@@ -134,7 +141,7 @@ class OtpActivity : AppCompatActivity() {
             }
         }
 
-        registerUserViewModel.registerResponse.observe(this) { response ->
+        registerUserViewModel.responseMessage.observe(this) { response ->
             isLoading(false)
 
             response?.let {

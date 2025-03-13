@@ -56,6 +56,19 @@ class CheckOut1 : AppCompatActivity() {
                     putString(Constants.KEY_YEAR, data.year ?: "")
                     putString(Constants.KEY_STANDARD, data.standard ?: "")
                     putString(Constants.KEY_AGE, data.age.toString() ?: "")
+
+                    Log.d("lull", "onCreate: ${data.guardians[0]}")
+                    Log.d("lull", "onCreate: ${data.guardians[1]}")
+                    Log.d("lull", "onCreate: ${data.guardians[2]}")
+
+                    putString(Constants.KEY_FATHER_NAME, data.guardians[0].name)
+                    putString(Constants.KEY_FATHER_NUMBER, data.guardians[0].phone_number)
+
+                    putString(Constants.KEY_MOTHER_NAME, data.guardians[1].name)
+                    putString(Constants.KEY_MOTHER_NUMBER, data.guardians[1].phone_number)
+
+                    putString(Constants.KEY_GUARDIAN_NAME, data.guardians[2].name)
+                    putString(Constants.KEY_GUARDIAN_PHONE, data.guardians[2].phone_number)
                 }
             } ?: run {
                 Log.e("UserDetails", "userDetails or data is null")

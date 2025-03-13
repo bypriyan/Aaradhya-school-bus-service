@@ -16,7 +16,7 @@ class GetUserReservationViewModel @Inject constructor(private val repository: Ge
     private val _reservations = MutableLiveData<Result<ReservationResponse>>()
     val reservations: LiveData<Result<ReservationResponse>> get() = _reservations
 
-    fun fetchReservations(userId: Int) {
+    fun fetchReservations(userId: String) {
         viewModelScope.launch {
             try {
                 val response = repository.getReservations(userId)

@@ -8,7 +8,7 @@ import kotlin.math.log
 
 class GetUserReservationRepositry @Inject constructor(private val apiService: ApiServicesgetUserReservation) {
 
-    suspend fun getReservations(userId: Int): ReservationResponse {
+    suspend fun getReservations(userId: String): ReservationResponse {
         return apiService.getReservations(userId)
     }
 }

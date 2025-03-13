@@ -77,11 +77,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_2sdp"
-            android:background="@drawable/custom_design"
+            android:background="@drawable/dd"
             android:gravity="center"
-            android:padding="@dimen/_5sdp"
+            android:padding="@dimen/_15sdp"
             android:text="Notice"
-            android:textColor="@color/white"
+            android:textColor="@color/appColor"
             android:textSize="@dimen/_16sdp"
             android:textStyle="bold" />
 
@@ -128,10 +128,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/_10sdp"
-                    android:text="The transpoter will put up a travel desk from 1st April to 10 April to register for the bus services to the availed.
-"
+                    android:text="The transpoter will put up a travel desk from 13th March to 25th March to register for the bus services to the availed."
                     android:textColor="@color/black"
-
                     android:textSize="@dimen/_8sdp" />
 
                 <TextView
@@ -224,6 +222,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_10sdp"
             android:background="@drawable/dd"
+            android:padding="@dimen/_10sdp"
             android:layout_below="@+id/linearLayout">
 
             <TextView
@@ -235,13 +234,14 @@
                 android:text="Pickup Route" />
 
             <TextView
-                android:id="@+id/PickupTv"
+                android:id="@+id/PickupRouteTv"
                 android:textColor="@color/black"
-
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="6dp"
-                android:text="r1" />
+                android:maxLength="10"
+                android:maxLines="1"
+                android:text="waiting ... " />
 
 
 
@@ -256,12 +256,64 @@
                 android:text="Drop Route" />
 
             <TextView
-                android:id="@+id/DropTv"
+                android:id="@+id/DropRouteTv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="6dp"
                 android:textColor="@color/black"
-                android:text="r2" />
+                android:maxLength="10"
+                android:maxLines="1"
+                android:text="waiting ..." />
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/relativeLayout1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:background="@drawable/dd"
+            android:padding="@dimen/_10sdp"
+            android:layout_below="@+id/relativeLayout">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/_5sdp"
+                android:textColor="@color/black"
+                android:text="Mobile No." />
+
+            <TextView
+                android:id="@+id/mob1Tv"
+                android:textColor="@color/black"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="6dp"
+                android:maxLength="10"
+                android:maxLines="1"
+                android:text="waiting ... " />
+
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:layout_marginLeft="@dimen/_30sdp"
+                android:layout_below="@+id/PickupRNumber"
+                android:padding="@dimen/_5sdp"
+                android:text="Mobile No." />
+
+            <TextView
+                android:id="@+id/mob2Tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="6dp"
+                android:textColor="@color/black"
+                android:maxLength="10"
+                android:maxLines="1"
+                android:text="waiting ..." />
 
 
         </LinearLayout>
@@ -271,7 +323,7 @@
             android:id="@+id/DownloadRecieptBtn"
             android:layout_width="167dp"
             android:layout_height="60dp"
-            android:layout_below="@+id/relativeLayout"
+            android:layout_below="@+id/relativeLayout1"
             android:layout_gravity="center"
             android:layout_marginStart="@dimen/_5sdp"
             android:layout_marginLeft="@dimen/_5sdp"
@@ -281,7 +333,6 @@
             android:layout_marginBottom="@dimen/_5sdp"
             android:layout_weight="1"
             android:backgroundTint="@color/appColor"
-            android:drawableEnd="@drawable/baseline_download_24"
             android:text="Download Fee Reciept"
             android:textColor="@color/white"
             app:cornerRadius="@dimen/_10sdp" />
@@ -290,7 +341,7 @@
             android:id="@+id/SlabStructureBtn"
             android:layout_width="194dp"
             android:layout_height="60dp"
-            android:layout_below="@+id/relativeLayout"
+            android:layout_below="@+id/relativeLayout1"
             android:layout_gravity="center"
             android:layout_marginStart="@dimen/_5sdp"
             android:layout_marginLeft="@dimen/_5sdp"
@@ -301,7 +352,6 @@
             android:layout_toRightOf="@id/DownloadRecieptBtn"
             android:layout_weight="1"
             android:backgroundTint="@color/appColor"
-            android:drawableEnd="@drawable/baseline_arrow_forward_24"
             android:text="Slab Structure"
             android:textColor="@color/white"
             app:cornerRadius="@dimen/_10sdp" />
@@ -312,14 +362,15 @@
             android:layout_gravity="center"
             android:layout_margin="@dimen/_5sdp"
             android:layout_weight="1"
+            android:layout_marginBottom="@dimen/_30sdp"
             android:layout_below="@+id/SlabStructureBtn"
             android:backgroundTint="@color/appColor"
             android:text="Pay Next full payment / Installment"
-            android:drawableEnd="@drawable/baseline_arrow_forward_24"
             android:textColor="@color/white"
             app:cornerRadius="@dimen/_10sdp" />
         <com.google.android.material.button.MaterialButton
             android:id="@+id/CheckOutAct"
+            android:visibility="gone"
             android:layout_width="match_parent"
             android:layout_height="@dimen/_50sdp"
             android:layout_gravity="center"
@@ -328,7 +379,6 @@
             android:layout_below="@+id/paidNextAmount"
             android:backgroundTint="@color/appColor"
             android:text="Go to checkout screen"
-            android:drawableEnd="@drawable/baseline_arrow_forward_24"
             android:textColor="@color/white"
             app:cornerRadius="@dimen/_10sdp" />
     </RelativeLayout>

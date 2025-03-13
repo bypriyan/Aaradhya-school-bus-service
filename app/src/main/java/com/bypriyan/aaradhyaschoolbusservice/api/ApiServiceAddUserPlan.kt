@@ -22,25 +22,10 @@ interface ApiServiceAddUserPlan {
         @Field("paid") paid: String,
         @Field("total_amount") totalAmount: String,
         @Field("installment_paid") installmentPaid: String,
-        @Field("plan") plan: String
+        @Field("plan") plan: String,
+        @Field("payment_id") payment_id: String
     ): ApiResponse
 
-    @GET("payment.php")
-    suspend fun getReservations(): ApiResponse
-
-    @FormUrlEncoded
-    @PUT("payment.php")
-    suspend fun updateReservation(
-        @Field("reservation_id") reservationId: Int,
-        @Field("pickup_route_id") pickupRouteId: Int,
-        @Field("drop_route_id") dropRouteId: Int
-    ): ApiResponse
-
-    @FormUrlEncoded
-    @DELETE("payment.php")
-    suspend fun deleteReservation(
-        @Field("reservation_id") reservationId: Int
-    ): ApiResponse
 }
 
 

@@ -5,7 +5,7 @@ import retrofit2.http.Query
 
 interface ApiServicesgetUserReservation {
     @GET("getUserDetails.php")
-    suspend fun getReservations(@Query("user_id") userId: Int): ReservationResponse
+    suspend fun getReservations(@Query("user_id") userId: String): ReservationResponse
 }
 
 data class ReservationResponse(
@@ -31,7 +31,9 @@ data class Reservation1(
     val drop_longitude: String,
     val pickup_route: String,
     val drop_route: String,
-    val pickup_route_id: Int,
-    val drop_route_id: Int,
+    val mobileNum1: String,
+    val mobileNum2: String,
+    val pickup_route_id: String,
+    val drop_route_id: String,
     val created_at: String
 )

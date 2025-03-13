@@ -19,7 +19,6 @@ class PaymentDoneActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
         binding= ActivityPaymentDoneBinding.inflate(layoutInflater)
         setContentView(binding.root)
 

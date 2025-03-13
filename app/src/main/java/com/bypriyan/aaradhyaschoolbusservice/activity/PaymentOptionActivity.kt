@@ -78,9 +78,6 @@ class PaymentOptionActivity : AppCompatActivity(), PaymentResultListener {
         val totalDistance = intent.getFloatExtra("TOTAL_DISTANCE", 0f)
         val prices = calculatePrices(totalDistance.toDouble(), mode)
 
-
-
-
         val distanceText = "Total Distance: %.2f km".format(totalDistance)
         userId = preferenceManager.getString(Constants.KEY_USER_ID) ?: ""
         preferenceManager.putString(Constants.KEY_TOTAL_FEES, totalPrice.toString())
@@ -113,13 +110,13 @@ class PaymentOptionActivity : AppCompatActivity(), PaymentResultListener {
             Log.d("payss", "onCreate: $response")
             var intent = Intent(this, PaymentDoneActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-            intent.putExtra("id", paymentId)
-            intent.putExtra("paid", paidAmount)
+            intent.putExtra("id", paymentId.toString())
+            intent.putExtra("paid", paidAmount.toString())
             startActivity(intent)
             finish()
         })
 
-        prices?.let {
+        prices?.let{
             firstInstallmentPrice = it[0].split(": ")[1].toInt()
             secondInstallmentPrice = it[1].split(": ")[1].toInt()
             thirdInstallmentPrice = it[2].split(": ")[1].toInt()
@@ -143,7 +140,6 @@ class PaymentOptionActivity : AppCompatActivity(), PaymentResultListener {
             } else {
                 binding.firstInstallmentTv.text = "₹$firstInstallmentPrice"
 
-
             }
 
             if (installmentStatus >= 2) {
@@ -161,10 +157,7 @@ class PaymentOptionActivity : AppCompatActivity(), PaymentResultListener {
             } else {
                 binding.thirdInstallmentTv.text = "₹$thirdInstallmentPrice"
 
-
             }
-
-
             // Disable the full payment option if installments have been paid
             if (installmentStatus > 0) {
                 binding.totalCostTv.isEnabled = false
@@ -175,6 +168,7 @@ class PaymentOptionActivity : AppCompatActivity(), PaymentResultListener {
                 binding.continueBtn.alpha = 0.5f // To indicate the button is disabled
             }
         }
+
         if(installmentStatus==4){
             binding.totalCostTv.isEnabled = false
             binding.totalCostTv.alpha = 0.5f
@@ -292,7 +286,7 @@ class PaymentOptionActivity : AppCompatActivity(), PaymentResultListener {
             viewModel.createReservation(
                 userId, finalPickupLocation, dropLocation, finalPickupLatitude, finalPickupLongitude,
                 dropLatitude, dropLongitude, paidAmount.toString(), totalPrice.toString(),
-                (installmentStatus).toString(), mode
+                (installmentStatus).toString(), mode, razorpayPaymentID
             )
 
             // Update the installment status and payment status in PreferenceManager

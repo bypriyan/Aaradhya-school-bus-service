@@ -16,12 +16,10 @@ import retrofit2.Response
 import javax.inject.Inject
 
 @HiltViewModel
-class RegisterViewModel @Inject constructor(
-    private val registerUserRepository: RegisterUserRepository
-) : ViewModel() {
+class RegisterUserViewModel @Inject constructor(private val repository: RegisterUserRepository) : ViewModel() {
 
-    private val _registerResponse = MutableLiveData<ApiResponceRegisterUser>()
-    val registerResponse: LiveData<ApiResponceRegisterUser> get() = _registerResponse
+    private val _responseMessage = MutableLiveData<ApiResponceRegisterUser>()
+    val responseMessage: LiveData<ApiResponceRegisterUser> = _responseMessage
 
     fun registerUser(
         fullName: RequestBody,
@@ -34,23 +32,21 @@ class RegisterViewModel @Inject constructor(
         fatherNumber: RequestBody,
         motherName: RequestBody,
         motherNumber: RequestBody,
+        guardianName: RequestBody,
+        guardianNumber: RequestBody,
         password: RequestBody,
         image: MultipartBody.Part
     ) {
         viewModelScope.launch {
             try {
-                val response = registerUserRepository.registerUser(
-                    fullName, email, userClass, age, standard, year, fatherName, fatherNumber, motherName, motherNumber, password, image
+                val response = repository.registerUser(
+                    fullName, email, userClass, age, standard, year,
+                    fatherName, fatherNumber, motherName, motherNumber,
+                    guardianName, guardianNumber, password, image
                 )
-                if (response.status == "success") {
-                    _registerResponse.value = response
-                } else {
-                    Log.e("RegisterViewModel", "Registration failed: ${response.message}")
-                    _registerResponse.value = ApiResponceRegisterUser("error", response.message ?: "Unknown error", null)
-                }
+                _responseMessage.postValue(response)
             } catch (e: Exception) {
-                _registerResponse.value = ApiResponceRegisterUser("error", e.message ?: "Unknown error", null)
-                Log.e("RegisterViewModel", "Registration failed: ${e.message}")
+                _responseMessage.postValue(ApiResponceRegisterUser("error", e.message ?: "Unknown error",null))
             }
         }
     }

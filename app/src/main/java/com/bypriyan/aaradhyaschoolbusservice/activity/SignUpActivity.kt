@@ -143,6 +143,14 @@ class SignUpActivity : AppCompatActivity() {
                 binding.mPhoneNumber.error = "Invalid Mother's Phone Number"
                 false
             }
+            binding.guardianName.text.isNullOrBlank() -> {
+                binding.guardianName.error = "Guardian's Name is required"
+                false
+            }
+            binding.guardianPhoneEt.text.isNullOrBlank() || binding.mPhoneEt.text.toString().length != 10 || !binding.mPhoneEt.text.toString().all { it.isDigit() } -> {
+                binding.mPhoneNumber.error = "Guardian's Phone Number"
+                false
+            }
             binding.emailEt.text.isNullOrBlank() || !android.util.Patterns.EMAIL_ADDRESS.matcher(binding.emailEt.text.toString()).matches() -> {
                 binding.email.error = "Invalid email address"
                 false
@@ -166,6 +174,8 @@ class SignUpActivity : AppCompatActivity() {
         val fatherPhone = binding.fPhoneNumEt.text.toString()
         val motherName = binding.mothersName.text.toString()
         val motherPhone = binding.mPhoneEt.text.toString()
+        val guardianName = binding.guardianName.text.toString()
+        val guardianPhone = binding.guardianPhoneEt.text.toString()
         val email = binding.emailEt.text.toString()
         val password = binding.passwordEt.text.toString()
 
@@ -182,6 +192,8 @@ class SignUpActivity : AppCompatActivity() {
         intent.putExtra(Constants.KEY_EMAIL, email)
         intent.putExtra(Constants.KEY_PASSWORD, password)
         intent.putExtra(Constants.KEY_OTP,otp)
+        intent.putExtra(Constants.KEY_GUARDIAN_NAME,guardianName)
+        intent.putExtra(Constants.KEY_GUARDIAN_PHONE,guardianPhone)
         // Pass the selected image URI
         selectedImageUri?.let {
             intent.putExtra(Constants.KEY_PROFILE_IMAGE_URI, it.toString())

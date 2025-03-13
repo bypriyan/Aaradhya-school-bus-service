@@ -18,12 +18,15 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.bumptech.glide.Glide
 import com.bypriyan.aaradhyaschoolbusservice.activity.PaymentDoneActivity
+import com.bypriyan.aaradhyaschoolbusservice.api.ReservationResponse
 import com.bypriyan.aaradhyaschoolbusservice.databinding.ActivityCheckOutBinding
 import com.bypriyan.aaradhyaschoolbusservice.viewModel.GetUserReservationViewModel
 import com.bypriyan.aaradhyaschoolbusservice.viewModel.PdfViewModel
+import com.bypriyan.aaradhyaschoolbusservice.viewModel.TokenViewModel
 import com.bypriyan.aaradhyaschoolbusservice.viewModel.UserViewModel
 import com.bypriyan.bustrackingsystem.utility.Constants
 import com.bypriyan.bustrackingsystem.utility.PreferenceManager
+import com.google.firebase.messaging.FirebaseMessaging
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -38,25 +41,54 @@ class DashBoard1Activity : AppCompatActivity() {
     private val userViewModel: UserViewModel by viewModels()
     private val getUserReservationViewModel: GetUserReservationViewModel by viewModels()
     lateinit var userId: String
+    private val tokenViewModel: TokenViewModel by viewModels()
+
+    // Global variables
+    lateinit var totalAmount: String
+    lateinit var amountPaid: String
+    lateinit var plan: String
+    lateinit var installmentPaid: String
+    lateinit var pickupLocation: String
+    lateinit var dropLocation: String
+    lateinit var pickupRoute: String
+    lateinit var dropRoute: String
+    lateinit var mobileNum1: String
+    lateinit var mobileNum2: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityCheckOutBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-
-        val paidAmount = preferenceManager.getString("paid_amount") ?: "0"
-        val installmentStatus = preferenceManager.getString("installment_status") ?: "0"
-        binding.paidNextAmount.text = " Payment Status:"
-
        userId =  preferenceManager.getString(Constants.KEY_USER_ID)!!
-        getUserReservationViewModel.fetchReservations(userId = 1)
+        userViewModel.fetchUser(userId)
+        getUserReservationViewModel.fetchReservations(userId)
+
+        userViewModel.user.observe(this) { userDetails ->
+            userDetails?.data?.let { data ->
+                Log.d("TAGss", "onCreate: $data")
+                loadImageWithGlide(Constants.KEY_IMAGE_PATH+data.image_url)
+                binding.name.text = data.full_name
+                uploadToken(data.id.toString())
+                preferenceManager.apply {
+                    putString(Constants.KEY_FULL_NAME, data.full_name ?: "")
+                    putString(Constants.KEY_EMAIL, data.email ?: "")
+                    putString(Constants.KEY_USER_CLASS, data.`class`?: "")
+                    putString(Constants.KEY_IMAGE, data.image_url ?: "")
+                    putString(Constants.KEY_YEAR, data.year ?: "")
+                    putString(Constants.KEY_STANDARD, data.standard ?: "")
+                    putString(Constants.KEY_AGE, data.age.toString() ?: "")
+                }
+            } ?: run {
+                Log.e("UserDetails", "userDetails or data is null")
+            }
+        }
+
 
         // Observe LiveData
         getUserReservationViewModel.reservations.observe(this, Observer { result ->
             result.onSuccess { response ->
-                Log.d("rpro", "onCreate: ")
-                Toast.makeText(this, "Success: ${response.reservations?.size} items", Toast.LENGTH_LONG).show()
+                saveReservationDetails(response)
             }.onFailure { error ->
                 Toast.makeText(this, "Error: ${error.message}", Toast.LENGTH_LONG).show()
             }
@@ -98,8 +130,20 @@ class DashBoard1Activity : AppCompatActivity() {
             logReceiptDetails(preferenceManager)
         }
 
+        pdfViewModel.pdfState.observe(this, Observer { result ->
+            result?.onSuccess { filePath ->
+                Toast.makeText(this@DashBoard1Activity, "PDF Saved at: $filePath", Toast.LENGTH_LONG).show()
+            }?.onFailure {
+                Toast.makeText(this@DashBoard1Activity, "Error", Toast.LENGTH_LONG).show()
+            }
+        })
+
+
         binding.paidNextAmount.setOnClickListener {
-            startActivity(Intent(this, PaymentOptionActivity::class.java))
+            var intent = Intent(this, PaymentNextTimeActivity::class.java)
+            intent.putExtra(Constants.KEY_TOTAL_AMOUNT, totalAmount)
+            intent.putExtra(Constants.KEY_AMOUNT_PAID, amountPaid)
+            startActivity(intent)
         }
 
         binding.signOut.setOnClickListener {
@@ -111,20 +155,20 @@ class DashBoard1Activity : AppCompatActivity() {
             finish() // Finish current activity
 
         }
-        observePdfGeneration()
     }
 
     fun logReceiptDetails(preferenceManager: PreferenceManager) {
-        val receiptNo = preferenceManager.getString(Constants.KEY_RECEIPT_NO)
         val date = preferenceManager.getString(Constants.KEY_DATE)
         val studentName = preferenceManager.getString(Constants.KEY_FULL_NAME)
         val address = "Pimpri Chinchwad, Oppo. to Alankapuram Society, Alandi Rd, Wadmukhwadi, Pune"
         val mobileNo = "+91 9766987118"
-        val amount = preferenceManager.getString(Constants.KEY_AMOUNT)
+        val amount = preferenceManager.getString(Constants.KEY_AMOUNT_PAID)
         val std = preferenceManager.getString(Constants.KEY_STANDARD)
-        val totalFees = preferenceManager.getString(Constants.KEY_TOTAL_FEES)
+        val totalFees = preferenceManager.getString(Constants.KEY_TOTAL_AMOUNT)
+
         val monthFrom = preferenceManager.getString(Constants.KEY_MONTH_FROM)
         val monthTo = preferenceManager.getString(Constants.KEY_MONTH_TO)
+        val receiptNo = preferenceManager.getString(Constants.KEY_RECEIPT_NO)
 
         Log.d("ReceiptDetails", """
         receiptNo: $receiptNo
@@ -223,19 +267,7 @@ class DashBoard1Activity : AppCompatActivity() {
         )
     }
 
-    private fun observePdfGeneration() {
-        lifecycleScope.launch {
-            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                pdfViewModel.pdfState.collect { result ->
-                    result?.onSuccess { filePath ->
-                        Toast.makeText(this@DashBoard1Activity, "PDF Saved at: $filePath", Toast.LENGTH_LONG).show()
-                    }?.onFailure { error ->
-                        Toast.makeText(this@DashBoard1Activity, "Error: ${error.localizedMessage}", Toast.LENGTH_LONG).show()
-                    }
-                }
-            }
-        }
-    }
+
 
     companion object {
         private const val REQUEST_CODE_STORAGE_PERMISSION = 1001
@@ -246,4 +278,49 @@ class DashBoard1Activity : AppCompatActivity() {
             .load(imageUrl) // Load the image URL
             .into(binding.profileImage) // Set the image to the ImageView
     }
+
+    private fun uploadToken(userId: String){
+        FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                val token = task.result
+                Log.d("FCM_TOKEN", "FCM Token: $token")
+                tokenViewModel.insertOrUpdateToken(userId, token)
+            } else {
+                Log.e("FCM_TOKEN", "Failed to get FCM token", task.exception)
+            }
+        }
+    }
+
+    private fun saveReservationDetails(response: ReservationResponse) {
+        totalAmount = response.reservations?.get(0)?.total_amount.toString()
+        amountPaid = response.reservations?.get(0)?.amount_paid.toString()
+        plan = response.reservations?.get(0)?.plan.toString()
+        installmentPaid = response.reservations?.get(0)?.installment_paid.toString()
+        pickupLocation = response.reservations?.get(0)?.pickup_location.toString()
+        dropLocation = response.reservations?.get(0)?.drop_location.toString()
+        pickupRoute = response.reservations?.get(0)?.pickup_route.toString()
+        dropRoute = response.reservations?.get(0)?.drop_route.toString()
+        mobileNum1 = response.reservations?.get(0)?.mobileNum1.toString()
+        mobileNum2 = response.reservations?.get(0)?.mobileNum2.toString()
+
+        binding.PickupRouteTv.text = pickupRoute?:"waiting..."
+        binding.DropRouteTv.text = dropRoute?:"waiting..."
+        binding.mob1Tv.text = mobileNum1
+        binding.mob2Tv.text = mobileNum2
+
+        preferenceManager.apply {
+            putString(Constants.KEY_TOTAL_AMOUNT, totalAmount)
+            putString(Constants.KEY_AMOUNT_PAID, amountPaid)
+            putString(Constants.KEY_PLAN, plan)
+            putString(Constants.KEY_INSTALLMENT_PAID, installmentPaid)
+            putString(Constants.KEY_PICKUP_LOCATION, pickupLocation)
+            putString(Constants.KEY_DROP_LOCATION, dropLocation)
+            putString(Constants.KEY_PICKUP_ROUTE, pickupRoute)
+            putString(Constants.KEY_DROP_ROUTE, dropRoute)
+            putString(Constants.KEY_MOBILE_NUM1, mobileNum1)
+            putString(Constants.KEY_MOBILE_NUM2, mobileNum2)
+        }
+    }
 }
+
+

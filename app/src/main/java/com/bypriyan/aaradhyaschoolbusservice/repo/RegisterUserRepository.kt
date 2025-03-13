@@ -28,11 +28,15 @@ class RegisterUserRepository @Inject constructor(private val apiService: ApiServ
         fatherNumber: RequestBody,
         motherName: RequestBody,
         motherNumber: RequestBody,
+        guardianName: RequestBody,
+        guardianNumber: RequestBody,
         password: RequestBody,
         image: MultipartBody.Part
     ) = withContext(Dispatchers.IO) {
-        apiService.registerUser(fullName, email, userClass, age, standard, year, fatherName, fatherNumber, motherName, motherNumber, password, image)
+        apiService.registerUser(
+            fullName, email, userClass, age, standard, year,
+            fatherName, fatherNumber, motherName, motherNumber,
+            guardianName, guardianNumber, password, image
+        )
     }
-
-
 }
