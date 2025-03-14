@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.bypriyan.aaradhyaschoolbusservice.api.ApiResponseReset
 import com.bypriyan.aaradhyaschoolbusservice.apiResponce.ApiLoginResponse
 import com.bypriyan.aaradhyaschoolbusservice.model.LoginUser
 import com.bypriyan.aaradhyaschoolbusservice.repo.LoginUserRepository
@@ -22,6 +23,9 @@ class LoginViewModel @Inject constructor(
     private val _loginResponse = MutableLiveData<ApiLoginResponse?>()
     val loginResponse: LiveData<ApiLoginResponse?> get() = _loginResponse
 
+    private val _resetPasswordResponse = MutableLiveData<ApiResponseReset?>()
+    val resetPasswordResponse: LiveData<ApiResponseReset?> get() = _resetPasswordResponse
+
     fun loginUser(email:String,password:String) {
         viewModelScope.launch {
             try {
@@ -35,4 +39,16 @@ class LoginViewModel @Inject constructor(
             }
         }
     }
+
+    fun resetPassword(email: String, newPassword: String) {
+        viewModelScope.launch {
+            try {
+                val response = loginUserRepository.resetPassword(email, newPassword)
+                _resetPasswordResponse.value = response
+            } catch (e: Exception) {
+                _resetPasswordResponse.value = null // Optionally, you can set an error state
+            }
+        }
+    }
+
 }

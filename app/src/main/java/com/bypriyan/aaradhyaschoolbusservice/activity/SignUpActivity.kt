@@ -84,21 +84,9 @@ class SignUpActivity : AppCompatActivity() {
             }
         })
 
-        setInputFieldData()
 
     }
 
-    private fun setInputFieldData() {
-        binding.fullNameEt.setText("John Doe")
-        binding.ageEt.setText("16")
-        binding.yearEt.setText("2023")
-        binding.fatherNameEt.setText("John Doe Sr.")
-        binding.fPhoneNumEt.setText("1234567890")
-        binding.mothersName.setText("Jane Doe")
-        binding.mPhoneEt.setText("0987654321")
-        binding.emailEt.setText("104abcdabcd104@gmail.com")
-        binding.passwordEt.setText("123456")
-    }
 
     private fun validateInputFields(): Boolean {
         return when {

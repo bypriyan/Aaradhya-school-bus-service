@@ -22,9 +22,9 @@ class ForgotOTPActivity : AppCompatActivity() {
         setContentView(binding.root)
         var otp = intent.getStringExtra(Constants.KEY_OTP)
         var email = intent.getStringExtra(Constants.KEY_EMAIL)
-
+//|| !(binding.firstPinView.text.toString() == otp)
         binding.continueBtn.setOnClickListener {
-            if (binding.firstPinView.text.toString().isNotEmpty() || email != null || otp != null || !(binding.firstPinView.text.toString() == otp)) {
+            if (binding.firstPinView.text.toString().isNotEmpty() || email != null || otp != null ) {
                 var intent = Intent(this, ResetPasswordActivity::class.java).apply {
                     putExtra(Constants.KEY_EMAIL, email)
                 }

@@ -11,4 +11,14 @@ interface ApiServiceLogin {
     @FormUrlEncoded
     @POST("login.php")
     suspend fun loginUser(@Field("email") email: String, @Field("password") password: String): ApiLoginResponse
+
+    @FormUrlEncoded
+    @POST("resetPass.php") // Change to your API endpoint
+    suspend fun resetPassword(@Field("email") email: String, @Field("new_password") new_password: String): ApiResponseReset
+
 }
+
+data class ApiResponseReset(
+    val status: String,
+    val message: String
+)

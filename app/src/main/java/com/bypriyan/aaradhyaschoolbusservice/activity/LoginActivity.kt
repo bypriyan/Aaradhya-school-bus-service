@@ -46,9 +46,6 @@ class LoginActivity : AppCompatActivity() {
             startActivity(Intent(this, SignUpActivity::class.java))
         }
 
-        binding.usernameET.setText("pp@gmail.com")
-        binding.passwordEt.setText("123456")
-
         // Handle login button click
         binding.loginBtn.setOnClickListener {
             val email = binding.usernameET.text.toString()
@@ -150,6 +147,8 @@ class LoginActivity : AppCompatActivity() {
             binding.loginBtn.visibility = View.VISIBLE
         }
     }
+
+
 }
 
 

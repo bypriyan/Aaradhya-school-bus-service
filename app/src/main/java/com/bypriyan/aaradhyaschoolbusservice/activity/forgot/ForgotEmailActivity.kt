@@ -31,7 +31,7 @@ class ForgotEmailActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         binding.sendOTPBtn.setOnClickListener {
-            if(binding.usernameET.text.isNullOrBlank() || !android.util.Patterns.EMAIL_ADDRESS.matcher(binding.usernameET.text.toString()).matches()){
+            if(binding.usernameET.text.toString().isNotEmpty()){
                 isLoading(true)
                 otpViewModel.sendOtp(binding.usernameET.text.toString())
             }
