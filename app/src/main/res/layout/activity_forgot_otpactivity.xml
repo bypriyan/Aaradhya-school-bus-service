@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:padding="@dimen/_15sdp"
+    tools:context=".activity.forgot.ForgotOTPActivity">
+
+    <ImageView
+        android:id="@+id/logo"
+        android:layout_width="@dimen/_90sdp"
+        android:layout_height="@dimen/_50sdp"
+        android:src="@drawable/forgot_password"
+        app:tint="@color/appColor"
+        android:layout_centerHorizontal="true"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:layout_marginBottom="@dimen/_20sdp"/>
+
+    <TextView
+        android:id="@+id/tv1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Email OTP Verification"
+        android:layout_below="@id/logo"
+        android:textColor="@color/black"
+        android:layout_marginTop="@dimen/_8sdp"
+        android:textSize="@dimen/_20ssp"
+        android:fontFamily="@font/black"/>
+
+    <TextView
+        android:id="@+id/tv2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Enter the verification code we just sent on your Email."
+        android:textSize="@dimen/_12ssp"
+        android:textColor="@color/dark_greay"
+        android:layout_marginTop="@dimen/_4sdp"
+        android:layout_below="@id/tv1"
+        android:layout_centerHorizontal="true"
+        android:fontFamily="@font/medium"/>
+
+    <com.chaos.view.PinView
+        android:layout_below="@id/tv2"
+        android:layout_marginTop="@dimen/_20sdp"
+        android:id="@+id/firstPinView"
+        style="@style/PinWidget.PinView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:cursorVisible="true"
+        android:inputType="number"
+        android:layout_gravity="center_horizontal"
+        android:itemBackground="@color/white"
+        android:padding="@dimen/_6sdp"
+        android:textColor="@color/black"
+        android:textSize="@dimen/_14ssp"
+        android:textStyle="bold"
+        app:cursorColor="@color/green"
+        app:cursorWidth="2dp"
+        app:hideLineWhenFilled="false"
+        app:itemCount="6"
+        app:itemHeight="48dp"
+        app:itemRadius="4dp"
+        app:itemSpacing="@dimen/_10sdp"
+        app:itemWidth="48dp"
+        android:layout_centerHorizontal="true"
+        app:lineColor="@color/dark_greay"
+        app:lineWidth="2dp"
+        app:viewType="rectangle" />
+
+    <FrameLayout
+        android:id="@+id/btnFrame"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginTop="@dimen/_10sdp">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/continueBtn"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_48sdp"
+            android:layout_alignParentBottom="true"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:layout_marginBottom="@dimen/_10sdp"
+            android:backgroundTint="@color/appColor"
+            android:text="Continue"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            app:cornerRadius="@dimen/_10sdp" />
+
+        <ProgressBar
+            android:id="@+id/progressbar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:indeterminateTint="@color/appColor"
+            android:visibility="invisible"/>
+
+    </FrameLayout>
+
+</RelativeLayout>

@@ -24,6 +24,7 @@ import androidx.core.app.ActivityCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import com.bypriyan.aaradhyaschoolbusservice.activity.forgot.ForgotEmailActivity
 import kotlinx.coroutines.launch
 
 
@@ -67,6 +68,7 @@ class LoginActivity : AppCompatActivity() {
                     preferenceManager.putBoolean(Constants.KEY_IS_LOGGED_IN,true)
                     it.reservations?.let {
                         if(it.size > 0){
+                            preferenceManager.putBoolean(Constants.PAYMENT_STATUS, false)
                             preferenceManager.apply {
                                 putString(Constants.KEY_RESERVATION_ID,it[0].reservationId.toString())
                                 putString(Constants.KEY_CREATED_AT, it[0].createdAt)
@@ -90,6 +92,7 @@ class LoginActivity : AppCompatActivity() {
                         startActivity(intent)
                         finish()
                     }else{
+                        preferenceManager.putBoolean(Constants.PAYMENT_STATUS, true)
                         val intent = Intent(this, DashBoard1Activity::class.java)
                         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                         startActivity(intent)
@@ -104,6 +107,10 @@ class LoginActivity : AppCompatActivity() {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             requestNotificationPermission()
+        }
+
+        binding.forgotPass.setOnClickListener {
+            startActivity(Intent(this, ForgotEmailActivity::class.java))
         }
 
     }

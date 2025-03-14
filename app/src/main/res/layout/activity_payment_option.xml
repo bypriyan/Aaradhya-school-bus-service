@@ -7,6 +7,7 @@
     android:background="@color/white"
     tools:context=".activity.PaymentOptionActivity">
 
+
     <RelativeLayout
         android:id="@+id/rel"
         android:layout_width="match_parent"
@@ -250,6 +251,25 @@ android:id="@+id/fullAmtTxt"
 
 
     </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/paymentLoading"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/black"
+        android:alpha="0.5"
+        android:visibility="gone"
+        android:orientation="vertical">
+
+        <ProgressBar
+            android:id="@+id/progressbar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:indeterminateTint="@color/appColor"
+            android:visibility="visible"/>
+
+    </RelativeLayout>
 
 
 </RelativeLayout>

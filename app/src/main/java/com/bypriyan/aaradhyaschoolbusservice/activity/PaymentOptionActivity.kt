@@ -114,6 +114,7 @@ class PaymentOptionActivity : AppCompatActivity(), PaymentResultListener {
             intent.putExtra("paid", paidAmount.toString())
             startActivity(intent)
             finish()
+            isPaymentLoading(false)
         })
 
         prices?.let{
@@ -211,6 +212,7 @@ class PaymentOptionActivity : AppCompatActivity(), PaymentResultListener {
     }
 
     private fun startPayment(amount: Int) {
+        isPaymentLoading(true)
         val checkout = Checkout()
         checkout.setKeyID("rzp_test_NECKQH8SMMRhJ6")
 
@@ -291,7 +293,7 @@ class PaymentOptionActivity : AppCompatActivity(), PaymentResultListener {
 
             // Update the installment status and payment status in PreferenceManager
             preferenceManager.putString("installment_status", (installmentStatus).toString())
-            preferenceManager.putString(Constants.PAYMENT_STATUS, "true")
+            preferenceManager.putBoolean(Constants.PAYMENT_STATUS, true)
 
             //recipt
             preferenceManager.putString(Constants.KEY_RECEIPT_NO, paymentId)
@@ -307,12 +309,23 @@ class PaymentOptionActivity : AppCompatActivity(), PaymentResultListener {
             }
         } catch (e: Exception) {
             Log.e("PaymentOptionActivity", "Error in onPaymentSuccess: ${e.message}")
+            isPaymentLoading(false)
+
+        }
+    }
+
+    private fun isPaymentLoading(loading: Boolean){
+        if(loading){
+            binding.paymentLoading.visibility = View.VISIBLE
+        }else{
+            binding.paymentLoading.visibility = View.GONE
         }
     }
 
 
     override fun onPaymentError(code: Int, response: String?) {
         Toast.makeText(this, "Payment Failed: $response", Toast.LENGTH_SHORT).show()
+        isPaymentLoading(false)
     }
 
     fun getCurrentDate(): String {

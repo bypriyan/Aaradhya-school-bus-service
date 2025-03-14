@@ -118,7 +118,7 @@ class OnBordingScreenActivity : AppCompatActivity() {
         if (hasSeenOnboarding) {
             // If onboarding is already completed, go to LoginActivity
             if(preferenceManager.getBoolean(Constants.KEY_IS_LOGGED_IN)){
-                if(!(preferenceManager.getString(Constants.KEY_RESERVATION_ID).isNullOrEmpty())){
+                if(preferenceManager.getBoolean(Constants.PAYMENT_STATUS)){
                     startActivity(Intent(this, DashBoard1Activity::class.java))
                     finish()
                 }else{

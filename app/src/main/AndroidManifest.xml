@@ -20,6 +20,15 @@
         android:theme="@style/Base.Theme.AaradhyaSchoolBusService"
         tools:targetApi="31">
         <activity
+            android:name=".activity.forgot.ResetPasswordActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.forgot.ForgotOTPActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.forgot.ForgotEmailActivity"
+            android:exported="false" />
+        <activity
             android:name=".activity.PaymentNextTimeActivity"
             android:exported="false" />
         <activity
