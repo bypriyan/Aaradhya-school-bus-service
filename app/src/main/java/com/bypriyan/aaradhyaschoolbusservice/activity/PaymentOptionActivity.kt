@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
@@ -77,6 +78,8 @@ class PaymentOptionActivity : AppCompatActivity(), PaymentResultListener {
 
         val totalDistance = intent.getFloatExtra("TOTAL_DISTANCE", 0f)
         val prices = calculatePrices(totalDistance.toDouble(), mode)
+
+        Log.d("juhu", "onCreate: $prices")
 
         val distanceText = "Total Distance: %.2f km".format(totalDistance)
         userId = preferenceManager.getString(Constants.KEY_USER_ID) ?: ""
@@ -209,17 +212,27 @@ class PaymentOptionActivity : AppCompatActivity(), PaymentResultListener {
             installmentStatus=1
             startPayment(firstInstallmentPrice) // Pay only first installment
         }
+
+        binding.backBtn.setOnClickListener{
+            onBackPressedDispatcher.onBackPressed()
+        }
+        //back pressed
+        onBackPressedDispatcher.addCallback(this, object: OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                finish()
+            }
+        })
     }
 
     private fun startPayment(amount: Int) {
         isPaymentLoading(true)
         val checkout = Checkout()
-        checkout.setKeyID("rzp_test_NECKQH8SMMRhJ6")
-
+        checkout.setKeyID("rzp_live_aK2ZZ0IwvS5LCe")
+//rzp_test_NECKQH8SMMRhJ6      rzp_live_aK2ZZ0IwvS5LCe
         try {
             val options = JSONObject()
-            options.put("name", "Your App Name")
-            options.put("description", "Test Payment")
+            options.put("name", "Aaradhya school bus service")
+            options.put("description", "Bus FEE")
             options.put("currency", "INR")
             options.put("amount", amount * 100) // Convert to paise
             options.put("prefill.email", "user@example.com")

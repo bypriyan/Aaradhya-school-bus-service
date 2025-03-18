@@ -144,7 +144,7 @@
                 android:textSize="@dimen/_13ssp" />
 
             <TextView
-                android:text="Class"
+                android:text="Div"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/_15sdp"
@@ -157,7 +157,7 @@
                 android:id="@+id/autoCompleteTextViewClass"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Class"
+                android:hint="Div"
                 android:padding="@dimen/_12sdp"
                 android:focusable="false"
                 android:clickable="true"
@@ -229,7 +229,7 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <TextView
-                android:text="Father's Name"
+                android:text="Father's Name(optional)"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/_15sdp"
@@ -288,7 +288,7 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <TextView
-                android:text="Mother's Name"
+                android:text="Mother's Name(optional)"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/_15sdp"
@@ -350,7 +350,7 @@
 
 
             <TextView
-                android:text="Guardian's Name"
+                android:text="Guardian's Name(optional)"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/_15sdp"
@@ -380,7 +380,7 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <TextView
-                android:text="Guardian's Phone Number"
+                android:text="Guardian's Phone Number(optional)"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/_15sdp"
@@ -440,7 +440,7 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <TextView
-                android:text="Password"
+                android:text="Password(create new)"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/_15sdp"

@@ -1,6 +1,7 @@
 package com.bypriyan.aaradhyaschoolbusservice.activity
 
 import android.os.Bundle
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.bypriyan.aaradhyaschoolbusservice.databinding.ActivityProfileBinding
@@ -71,6 +72,16 @@ class ProfileActivity : AppCompatActivity() {
 
         // Load image using Glide
         loadImageWithGlide(image)
+
+        binding.back.setOnClickListener{
+            onBackPressedDispatcher.onBackPressed()
+        }
+        //back pressed
+        onBackPressedDispatcher.addCallback(this, object: OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                finish()
+            }
+        })
     }
 
     private fun loadImageWithGlide(imageUrl: String) {

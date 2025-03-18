@@ -155,6 +155,7 @@ class DashBoard1Activity : AppCompatActivity() {
             var intent = Intent(this, PaymentNextTimeActivity::class.java)
             intent.putExtra(Constants.KEY_TOTAL_AMOUNT, totalAmount)
             intent.putExtra(Constants.KEY_AMOUNT_PAID, amountPaid)
+            intent.putExtra(Constants.KEY_PLAN, plan)
             startActivity(intent)
         }
 
@@ -317,6 +318,8 @@ class DashBoard1Activity : AppCompatActivity() {
 
         paymentDate = response.reservations?.get(0)?.payment_date.toString()
         paymentId = response.reservations?.get(0)?.payment_id.toString()
+
+
 
         binding.PickupRouteTv.text = pickupRoute?:"waiting..."
         binding.DropRouteTv.text = dropRoute?:"waiting..."

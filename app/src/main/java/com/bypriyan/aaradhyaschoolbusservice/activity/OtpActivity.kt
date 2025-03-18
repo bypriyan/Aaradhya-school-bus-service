@@ -61,8 +61,10 @@ class OtpActivity : AppCompatActivity() {
         val guardianName = intent.getStringExtra(Constants.KEY_GUARDIAN_NAME)
         val guardianPhone = intent.getStringExtra(Constants.KEY_GUARDIAN_PHONE)
 
+        Log.d("nullcheck", "onCreate: $fatherName $fatherPhone $motherName $motherPhone $guardianName $guardianPhone")
+// || binding.firstPinView.text.toString() != otp
         binding.continueBtn.setOnClickListener {
-            if (binding.firstPinView.text.toString().isNotEmpty()) {
+            if (binding.firstPinView.text.toString().isNotEmpty()  || binding.firstPinView.text.toString() != otp) {
                 isLoading(true)
                 lifecycleScope.launch {
                     try {

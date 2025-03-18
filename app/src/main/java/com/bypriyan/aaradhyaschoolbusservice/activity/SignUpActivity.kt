@@ -9,6 +9,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
@@ -52,6 +53,16 @@ class SignUpActivity : AppCompatActivity() {
         binding.autoCompleteTextViewClass.setOnClickListener {
             binding.autoCompleteTextViewClass.showDropDown()
         }
+
+        binding.back.setOnClickListener{
+            onBackPressedDispatcher.onBackPressed()
+        }
+        //back pressed
+        onBackPressedDispatcher.addCallback(this, object: OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                finish()
+            }
+        })
 
         // Set up the AutoCompleteTextView
         binding.autoCompleteTextViewstanderd.setAdapter(adapterStanderd)
@@ -115,30 +126,30 @@ class SignUpActivity : AppCompatActivity() {
                 binding.year.error = "Year is required"
                 false
             }
-            binding.fatherNameEt.text.isNullOrBlank() -> {
-                binding.fatherName.error = "Father's Name is required"
-                false
-            }
+//            binding.fatherNameEt.text.isNullOrBlank() -> {
+//                binding.fatherName.error = "Father's Name is required"
+//                false
+//            }
             binding.fPhoneNumEt.text.isNullOrBlank() || binding.fPhoneNumEt.text.toString().length != 10 || !binding.fPhoneNumEt.text.toString().all { it.isDigit() } -> {
                 binding.fPhoneNum.error = "Invalid Father's Phone Number"
                 false
             }
-            binding.mothersName.text.isNullOrBlank() -> {
-                binding.motherNAME.error = "Mother's Name is required"
-                false
-            }
+//            binding.mothersName.text.isNullOrBlank() -> {
+//                binding.motherNAME.error = "Mother's Name is required"
+//                false
+//            }
             binding.mPhoneEt.text.isNullOrBlank() || binding.mPhoneEt.text.toString().length != 10 || !binding.mPhoneEt.text.toString().all { it.isDigit() } -> {
                 binding.mPhoneNumber.error = "Invalid Mother's Phone Number"
                 false
             }
-            binding.guardianName.text.isNullOrBlank() -> {
-                binding.guardianName.error = "Guardian's Name is required"
-                false
-            }
-            binding.guardianPhoneEt.text.isNullOrBlank() || binding.mPhoneEt.text.toString().length != 10 || !binding.mPhoneEt.text.toString().all { it.isDigit() } -> {
-                binding.mPhoneNumber.error = "Guardian's Phone Number"
-                false
-            }
+//            binding.guardianName.text.isNullOrBlank() -> {
+//                binding.guardianName.error = "Guardian's Name is required"
+//                false
+//            }
+//            binding.guardianPhoneEt.text.isNullOrBlank() || binding.mPhoneEt.text.toString().length != 10 || !binding.mPhoneEt.text.toString().all { it.isDigit() } -> {
+//                binding.mPhoneNumber.error = "Guardian's Phone Number"
+//                false
+//            }
             binding.emailEt.text.isNullOrBlank() || !android.util.Patterns.EMAIL_ADDRESS.matcher(binding.emailEt.text.toString()).matches() -> {
                 binding.email.error = "Invalid email address"
                 false
@@ -158,12 +169,12 @@ class SignUpActivity : AppCompatActivity() {
         val className = binding.autoCompleteTextViewClass.text.toString()
         val age = binding.ageEt.text.toString()
         val year = binding.yearEt.text.toString()
-        val fatherName = binding.fatherNameEt.text.toString()
-        val fatherPhone = binding.fPhoneNumEt.text.toString()
-        val motherName = binding.mothersName.text.toString()
-        val motherPhone = binding.mPhoneEt.text.toString()
-        val guardianName = binding.guardianName.text.toString()
-        val guardianPhone = binding.guardianPhoneEt.text.toString()
+        val fatherName = if (binding.fatherNameEt.text.toString().isNotEmpty()) binding.fatherNameEt.text.toString() else "00"
+        val fatherPhone = if (binding.fPhoneNumEt.text.toString().isNotEmpty()) binding.fPhoneNumEt.text.toString() else "00"
+        val motherName = if (binding.mothersName.text.toString().isNotEmpty()) binding.mothersName.text.toString() else "00"
+        val motherPhone = if (binding.mPhoneEt.text.toString().isNotEmpty()) binding.mPhoneEt.text.toString() else "00"
+        val guardianName = if (binding.guardianName.text.toString().isNotEmpty()) binding.guardianName.text.toString() else "00"
+        val guardianPhone = if (binding.guardianPhoneEt.text.toString().isNotEmpty()) binding.guardianPhoneEt.text.toString() else "00"
         val email = binding.emailEt.text.toString()
         val password = binding.passwordEt.text.toString()
 
