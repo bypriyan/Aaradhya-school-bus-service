@@ -223,6 +223,7 @@
             android:layout_marginTop="@dimen/_10sdp"
             android:background="@drawable/dd"
             android:padding="@dimen/_10sdp"
+            android:orientation="vertical"
             android:layout_below="@+id/linearLayout">
 
             <TextView
@@ -231,6 +232,7 @@
                 android:layout_height="wrap_content"
                 android:padding="@dimen/_5sdp"
                 android:textColor="@color/black"
+                android:textStyle="bold"
                 android:text="Pickup Route" />
 
             <TextView
@@ -250,9 +252,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/black"
-                android:layout_marginLeft="@dimen/_30sdp"
                 android:layout_below="@+id/PickupRNumber"
                 android:padding="@dimen/_5sdp"
+                android:textStyle="bold"
                 android:text="Drop Route" />
 
             <TextView
@@ -275,6 +277,7 @@
             android:layout_marginTop="@dimen/_10sdp"
             android:background="@drawable/dd"
             android:padding="@dimen/_10sdp"
+            android:orientation="vertical"
             android:layout_below="@+id/relativeLayout">
 
             <TextView
@@ -282,6 +285,7 @@
                 android:layout_height="wrap_content"
                 android:padding="@dimen/_5sdp"
                 android:textColor="@color/black"
+                android:textStyle="bold"
                 android:text="Mobile No." />
 
             <TextView
@@ -295,14 +299,13 @@
                 android:text="waiting ... " />
 
 
-
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/black"
-                android:layout_marginLeft="@dimen/_30sdp"
                 android:layout_below="@+id/PickupRNumber"
                 android:padding="@dimen/_5sdp"
+                android:textStyle="bold"
                 android:text="Mobile No." />
 
             <TextView
@@ -362,28 +365,18 @@
             android:layout_gravity="center"
             android:layout_margin="@dimen/_5sdp"
             android:layout_weight="1"
-            android:layout_marginBottom="@dimen/_30sdp"
+            android:layout_marginBottom="@dimen/_50sdp"
             android:layout_below="@+id/SlabStructureBtn"
             android:backgroundTint="@color/appColor"
             android:text="Pay Next full payment / Installment"
             android:textColor="@color/white"
             app:cornerRadius="@dimen/_10sdp" />
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/CheckOutAct"
-            android:visibility="gone"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/_50sdp"
-            android:layout_gravity="center"
-            android:layout_margin="@dimen/_5sdp"
-            android:layout_weight="1"
-            android:layout_below="@+id/paidNextAmount"
-            android:backgroundTint="@color/appColor"
-            android:text="Go to checkout screen"
-            android:textColor="@color/white"
-            app:cornerRadius="@dimen/_10sdp" />
+
     </RelativeLayout>
         </ScrollView>
-    </RelativeLayout>
+
+
+</RelativeLayout>
 
 
 

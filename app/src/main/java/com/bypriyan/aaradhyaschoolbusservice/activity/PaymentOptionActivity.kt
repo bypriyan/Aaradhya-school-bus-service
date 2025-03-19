@@ -9,6 +9,9 @@ import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
+import com.android.volley.Request
+import com.android.volley.toolbox.JsonObjectRequest
+import com.android.volley.toolbox.Volley
 import com.bypriyan.aaradhyaschoolbusservice.databinding.ActivityPaymentOptionBinding
 import com.bypriyan.aaradhyaschoolbusservice.viewModel.ReservationViewModel
 import com.bypriyan.bustrackingsystem.utility.Constants
@@ -224,24 +227,63 @@ class PaymentOptionActivity : AppCompatActivity(), PaymentResultListener {
         })
     }
 
+//    private fun startPayment(amount: Int) {
+//        isPaymentLoading(true)
+//        val checkout = Checkout()
+//        checkout.setKeyID("rzp_live_aK2ZZ0IwvS5LCe")
+////rzp_test_NECKQH8SMMRhJ6      rzp_live_aK2ZZ0IwvS5LCe
+//        try {
+//            val options = JSONObject()
+//            options.put("name", "Aaradhya school bus service")
+//            options.put("description", "Bus FEE")
+//            options.put("currency", "INR")
+//            options.put("amount", amount * 100) // Convert to paise
+//            options.put("prefill.email", "user@example.com")
+//            options.put("prefill.contact", "9876543210")
+//            checkout.open(this, options)
+//        } catch (e: Exception) {
+//            Toast.makeText(this, "Error in Payment: ${e.message}", Toast.LENGTH_SHORT).show()
+//            e.printStackTrace()
+//        }
+//    }
+
     private fun startPayment(amount: Int) {
         isPaymentLoading(true)
-        val checkout = Checkout()
-        checkout.setKeyID("rzp_live_aK2ZZ0IwvS5LCe")
-//rzp_test_NECKQH8SMMRhJ6      rzp_live_aK2ZZ0IwvS5LCe
-        try {
-            val options = JSONObject()
-            options.put("name", "Aaradhya school bus service")
-            options.put("description", "Bus FEE")
-            options.put("currency", "INR")
-            options.put("amount", amount * 100) // Convert to paise
-            options.put("prefill.email", "user@example.com")
-            options.put("prefill.contact", "9876543210")
-            checkout.open(this, options)
-        } catch (e: Exception) {
-            Toast.makeText(this, "Error in Payment: ${e.message}", Toast.LENGTH_SHORT).show()
-            e.printStackTrace()
+
+        val url = "https://bypriyan.com/busApi/create_order.php"
+        val jsonObject = JSONObject().apply {
+            put("amount", amount)
+            put("currency", "INR")
         }
+
+        val request = JsonObjectRequest(Request.Method.POST, url, jsonObject,
+            { response ->
+                try {
+                    val orderId = response.getString("id") // ✅ Extracting the Order ID from API response
+                    Log.d("payment", "startPayment: $response")
+                    val checkout = Checkout()
+                    checkout.setKeyID("rzp_live_aK2ZZ0IwvS5LCe")
+
+                    val options = JSONObject().apply {
+                        put("name", "Aaradhya school bus service")
+                        put("description", "Bus FEE")
+                        put("currency", "INR")
+                        put("amount", amount * 100) // Convert to paise
+                        put("order_id", orderId) // ✅ Passing the order ID to Razorpay
+                        put("prefill.email", preferenceManager.getString(Constants.KEY_EMAIL))
+                        put("prefill.contact", preferenceManager.getString(Constants.KEY_FATHER_NUMBER))
+                    }
+
+                    checkout.open(this, options)
+                } catch (e: Exception) {
+                    Toast.makeText(this, "Error in Payment: ${e.message}", Toast.LENGTH_SHORT).show()
+                }
+            },
+            { error ->
+                Toast.makeText(this, "Error creating order: ${error.message}", Toast.LENGTH_SHORT).show()
+            })
+
+        Volley.newRequestQueue(this).add(request)
     }
 
 

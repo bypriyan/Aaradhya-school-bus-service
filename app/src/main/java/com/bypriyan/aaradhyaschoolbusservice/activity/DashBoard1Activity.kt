@@ -133,10 +133,6 @@ class DashBoard1Activity : AppCompatActivity() {
 //            }
         }
 
-        binding.CheckOutAct.setOnClickListener {
-            startActivity(Intent(this, CheckOut1::class.java))
-        }
-
         binding.DownloadRecieptBtn.setOnClickListener {
             // Implement receipt download logic
             logReceiptDetails(preferenceManager)
