@@ -16,6 +16,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import com.bypriyan.aaradhyaschoolbusservice.databinding.ActivitySignUpBinding
+import com.bypriyan.aaradhyaschoolbusservice.viewModel.EmailViewModel
 import com.bypriyan.aaradhyaschoolbusservice.viewModel.OTPViewModel
 import com.bypriyan.bustrackingsystem.utility.Constants
 import dagger.hilt.android.AndroidEntryPoint
@@ -28,6 +29,7 @@ class SignUpActivity : AppCompatActivity() {
     private lateinit var binding : ActivitySignUpBinding
     //viewModel
     private val otpViewModel: OTPViewModel by viewModels()
+    private val emailViewModel: EmailViewModel by viewModels()
     private lateinit var pickImageLauncher: ActivityResultLauncher<String>
     private var selectedImageUri: Uri? = null // Store the selected image URI
     val classes = arrayOf("Jasmin", "Lilly", "Orchid", "Rose", "IriS", "Tulip", "Lotus")
@@ -37,6 +39,14 @@ class SignUpActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding= ActivitySignUpBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        emailViewModel.otpLiveData.observe(this) { result ->
+            result.onSuccess { otp ->
+                startOtpActivity(otp)
+            }.onFailure {
+                Toast.makeText(this, "Error: ${it.message}", Toast.LENGTH_LONG).show()
+            }
+        }
 
         //selected image
         pickImageLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
@@ -75,7 +85,7 @@ class SignUpActivity : AppCompatActivity() {
         binding.sendOTPBtn.setOnClickListener {
             if(validateInputFields()){
                 isLoading(true)
-                otpViewModel.sendOtp(binding.emailEt.text.toString())
+                emailViewModel.sendOtp(binding.emailEt.text.toString())
             }
         }
 
@@ -84,16 +94,17 @@ class SignUpActivity : AppCompatActivity() {
         }
 
 
-        otpViewModel.otpResponse.observe(this, Observer { result ->
-            result?.let {
-                isLoading(false)
-                it.onSuccess { response ->
-                    startOtpActivity(response.otp.toString())
-                }.onFailure { error ->
-                    Toast.makeText(this, error.message, Toast.LENGTH_SHORT).show()
-                }
-            }
-        })
+//        otpViewModel.otpResponse.observe(this, Observer { result ->
+//            result?.let {
+//                isLoading(false)
+////                it.onSuccess { response ->
+////                    startOtpActivity(response.otp.toString())
+////                }.onFailure { error ->
+////                    Toast.makeText(this, error.message, Toast.LENGTH_SHORT).show()
+////                }
+//
+//            }
+//        })
 
 
     }

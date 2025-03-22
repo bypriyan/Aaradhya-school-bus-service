@@ -44,6 +44,7 @@ class RegisterUserViewModel @Inject constructor(private val repository: Register
                     fatherName, fatherNumber, motherName, motherNumber,
                     guardianName, guardianNumber, password, image
                 )
+                Log.d("ara", "registerUser: $response")
                 _responseMessage.postValue(response)
             } catch (e: Exception) {
                 _responseMessage.postValue(ApiResponceRegisterUser("error", e.message ?: "Unknown error",null))

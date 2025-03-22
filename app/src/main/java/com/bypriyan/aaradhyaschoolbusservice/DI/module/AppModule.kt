@@ -10,7 +10,9 @@ import com.bypriyan.aaradhyaschoolbusservice.api.ApiServiceRegisterUser
 import com.bypriyan.aaradhyaschoolbusservice.api.ApiServiceToken
 import com.bypriyan.aaradhyaschoolbusservice.api.ApiServiceUserDetails
 import com.bypriyan.aaradhyaschoolbusservice.api.ApiServicesgetUserReservation
+import com.bypriyan.aaradhyaschoolbusservice.repo.EmailRepository
 import com.bypriyan.aaradhyaschoolbusservice.repo.PdfRepository
+import com.bypriyan.aaradhyaschoolbusservice.utility.SmtpSender
 import com.bypriyan.bustrackingsystem.utility.PreferenceManager
 import dagger.Module
 import dagger.Provides
@@ -87,6 +89,12 @@ object AppModule {
     @Singleton
     fun providePdfRepository(@ApplicationContext context: Context): PdfRepository {
         return PdfRepository(context)
+    }
+
+    @Provides
+    @Singleton
+    fun provideEmailRepository(smtpSender: SmtpSender): EmailRepository {
+        return EmailRepository(smtpSender)
     }
 
 }

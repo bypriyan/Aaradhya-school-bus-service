@@ -112,6 +112,9 @@ dependencies {
     implementation ("com.razorpay:checkout:1.6.40")
     implementation ("com.squareup.okhttp3:okhttp:4.9.3")
 
+    implementation ("com.sun.mail:android-mail:1.6.2")
+    implementation ("com.sun.mail:android-activation:1.6.2")
+
 }
 
 kapt {
