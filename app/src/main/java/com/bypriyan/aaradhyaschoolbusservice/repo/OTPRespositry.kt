@@ -1,5 +1,6 @@
 package com.bypriyan.aaradhyaschoolbusservice.repo
 
+import android.util.Log
 import com.bypriyan.aaradhyaschoolbusservice.api.ApiServiceOTP
 import com.bypriyan.aaradhyaschoolbusservice.apiResponce.ApiResponceSendOTP
 import kotlinx.coroutines.Dispatchers
@@ -12,6 +13,7 @@ class OTPRespositry @Inject constructor(private val apiService: ApiServiceOTP) {
         return withContext(Dispatchers.IO) {
             try {
                 val response = apiService.sendOtp(mapOf("email" to email))
+                Log.d("otpchecking", "sendOtp: $response")
                 if (response.isSuccessful && response.body() != null && response.body()?.status == "success") {
                     Result.success(response.body()!!)
                 } else {

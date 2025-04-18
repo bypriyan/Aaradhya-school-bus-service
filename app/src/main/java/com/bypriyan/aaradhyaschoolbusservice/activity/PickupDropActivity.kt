@@ -10,6 +10,7 @@ import android.location.Location
 import android.os.Bundle
 import android.view.View
 import android.view.inputmethod.EditorInfo
+import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -29,12 +30,15 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import java.io.IOException
 import java.util.*
+import kotlinx.coroutines.async
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.withContext
 
 class PickupDropActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var binding: ActivityPickupDropBinding
     private lateinit var googleMap: GoogleMap
     private lateinit var fusedLocationClient: FusedLocationProviderClient
-
+    private lateinit var progressBar: ProgressBar
     private var pickupMarker: Marker? = null
     private var pickupLocation: LatLng? = null
     private var dropLocation: LatLng? = null
@@ -44,6 +48,8 @@ class PickupDropActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var dropAddress: String
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+
         binding = ActivityPickupDropBinding.inflate(layoutInflater)
         setContentView(binding.root)
         // Get the mode from the intent
@@ -66,9 +72,6 @@ class PickupDropActivity : AppCompatActivity(), OnMapReadyCallback {
         binding.btnClearPickup.setOnClickListener { clearPickupLocation() }
         binding.btnClearDrop.setOnClickListener { clearDropLocation() }
         binding.btnClearOnlyDrop.setOnClickListener { clearOnlyDropLocation() }
-
-
-
 
 
         binding.etPickup.setOnEditorActionListener { _, actionId, _ ->
@@ -222,6 +225,17 @@ class PickupDropActivity : AppCompatActivity(), OnMapReadyCallback {
                 }
             }
         }
+    }
+    private var backPressedTime: Long = 0
+    private val backPressThreshold: Long = 2000 // 2 seconds
+    override fun onBackPressed() {
+        if (backPressedTime + backPressThreshold > System.currentTimeMillis()) {
+            super.onBackPressed()
+            finish()
+        } else {
+            Toast.makeText(this, "Press back again to go previous screen", Toast.LENGTH_SHORT).show()
+        }
+        backPressedTime = System.currentTimeMillis()
     }
     override fun onMapReady(map: GoogleMap) {
         googleMap = map
@@ -493,17 +507,21 @@ class PickupDropActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
 
+
     private fun updateUIForSameLocation() {
+
         // Show pickup and drop fields
 //        binding.txtPLocation.visibility = View.VISIBLE
 //        binding.etPickup.visibility = View.VISIBLE
 //        binding.btnClearPickup.visibility = View.VISIBLE
+
         binding.txtDLocation.visibility = View.VISIBLE
         binding.etDrop.visibility = View.VISIBLE
         binding.btnClearDrop.visibility = View.VISIBLE
         binding.txtDLocation.setText("Same Pickup And Drop")
         binding.etPickup.requestFocus()
         binding.etPickup.isEnabled= false
+
 
 
 //        // Hide only drop-related views
@@ -520,6 +538,7 @@ class PickupDropActivity : AppCompatActivity(), OnMapReadyCallback {
             } else false
         }
     }
+
 
     private fun clearPickupLocation() {
         pickupLocation = null
@@ -546,9 +565,10 @@ class PickupDropActivity : AppCompatActivity(), OnMapReadyCallback {
         binding.etOnlyDrop.text.clear()
         binding.btnClearOnlyDrop.visibility = View.GONE
 
-
     }
+
     private var totalDistance: Float = 0f
+    private val epsilon = 0.001f // Small tolerance for floating-point comparisons
 
     private fun calculateDistance() {
         val rklGalaxySchool = LatLng(18.65355422287287, 73.88056008151783) // GGU Coordinates
@@ -559,48 +579,43 @@ class PickupDropActivity : AppCompatActivity(), OnMapReadyCallback {
 
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                var gguToPickupDistance = 0f
-                var gguToDropDistance = 0f
-                var gguToOnlyDropDistance = 0f
-
-                if (pickupLocation != null) {
-                    val result = DirectionsApi.newRequest(context)
-                        .origin("${rklGalaxySchool.latitude},${rklGalaxySchool.longitude}")
-                        .destination("${pickupLocation!!.latitude},${pickupLocation!!.longitude}")
-                        .mode(TravelMode.DRIVING)
-                        .await()
-                    gguToPickupDistance = result.routes[0].legs[0].distance.inMeters / 1000f
+                val pickupDeferred = async {
+                    pickupLocation?.let { getDistance(context, rklGalaxySchool, it) } ?: 0f
                 }
 
-                if (dropLocation != null) {
-                    val result = DirectionsApi.newRequest(context)
-                        .origin("${rklGalaxySchool.latitude},${rklGalaxySchool.longitude}")
-                        .destination("${dropLocation!!.latitude},${dropLocation!!.longitude}")
-                        .mode(TravelMode.DRIVING)
-                        .await()
-                    gguToDropDistance = result.routes[0].legs[0].distance.inMeters / 1000f
+                val dropDeferred = async {
+                    dropLocation?.let { getDistance(context, rklGalaxySchool, it) } ?: 0f
                 }
 
-                if (onlyDropLocation != null) {
-                    val result = DirectionsApi.newRequest(context)
-                        .origin("${rklGalaxySchool.latitude},${rklGalaxySchool.longitude}")
-                        .destination("${onlyDropLocation!!.latitude},${onlyDropLocation!!.longitude}")
-                        .mode(TravelMode.DRIVING)
-                        .await()
-                    gguToOnlyDropDistance = result.routes[0].legs[0].distance.inMeters / 1000f
+                val onlyDropDeferred = async {
+                    onlyDropLocation?.let { getDistance(context, rklGalaxySchool, it) } ?: 0f
                 }
+
+                val gguToPickupDistance = pickupDeferred.await()
+                val gguToDropDistance = dropDeferred.await()
+                val gguToOnlyDropDistance = onlyDropDeferred.await()
 
                 // Calculate total distance based on mode
                 totalDistance = when (mode) {
                     "SAME_LOCATION" -> gguToDropDistance
                     "ONLY_DROP" -> gguToOnlyDropDistance
-                    "DIFFERENT_LOCATION" -> gguToPickupDistance + gguToDropDistance
+                    "DIFFERENT_LOCATION" -> maxOf(gguToPickupDistance, gguToDropDistance)
                     else -> 0f
                 }
 
                 runOnUiThread {
-                    val distanceText = "Total Distance: %.2f km".format(totalDistance)
-                    binding.tvDistance.text = distanceText
+                    // Display the total distance with two decimal places
+                    binding.tvDistance.text = "Total Distance: ${"%.2f".format(totalDistance)} km"
+
+                    // Check if the mode is ONLY_DROP and the distance is greater than 2 km
+                    if (mode == "ONLY_DROP" && totalDistance > 2f + epsilon) {
+                        Toast.makeText(this@PickupDropActivity, "Distance exceeds 2 km. You cannot proceed.", Toast.LENGTH_SHORT).show()
+                        // Disable the proceed button
+                        binding.btnConfirm.isEnabled = false
+                    } else {
+                        // Allow the user to proceed
+                        binding.btnConfirm.isEnabled = true
+                    }
                 }
 
             } catch (e: Exception) {
@@ -611,6 +626,24 @@ class PickupDropActivity : AppCompatActivity(), OnMapReadyCallback {
             }
         }
     }
+
+    // Helper function to get distance
+    private suspend fun getDistance(context: GeoApiContext, origin: LatLng, destination: LatLng): Float {
+        return withContext(Dispatchers.IO) {
+            try {
+                val result = DirectionsApi.newRequest(context)
+                    .origin("${origin.latitude},${origin.longitude}")
+                    .destination("${destination.latitude},${destination.longitude}")
+                    .mode(TravelMode.DRIVING)
+                    .await()
+
+                result.routes.firstOrNull()?.legs?.firstOrNull()?.distance?.inMeters?.div(1000f) ?: 0f
+            } catch (e: Exception) {
+                0f
+            }
+        }
+    }
+
 
 
 }

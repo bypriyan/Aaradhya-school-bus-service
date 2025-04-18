@@ -12,11 +12,11 @@ class ReservationRepository @Inject constructor(private val apiService: ApiServi
         userId: String, pickupLocation: String, dropLocation: String,
         pickupLatitude: String, pickupLongitude: String, dropLatitude: String,
         dropLongitude: String, paid: String, totalAmount: String,
-        installmentPaid: String, plan: String
+        installmentPaid: String, plan: String, payment_id: String
     ): ApiResponse {
         return apiService.createReservation(
             userId, pickupLocation, dropLocation, pickupLatitude, pickupLongitude,
-            dropLatitude, dropLongitude, paid, totalAmount, installmentPaid, plan
+            dropLatitude, dropLongitude, paid, totalAmount, installmentPaid, plan, payment_id
         )
     }
 }

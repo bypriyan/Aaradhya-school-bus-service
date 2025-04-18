@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
+    android:fitsSystemWindows="true"
     tools:context=".activity.ProfileActivity">
 
     <RelativeLayout
@@ -251,7 +252,6 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <TextView
-                android:visibility="gone"
                 android:text="Father's Name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -261,7 +261,6 @@
                 android:layout_below="@+id/username"
                 android:textColor="@color/bg"/>
             <com.google.android.material.textfield.TextInputLayout
-                android:visibility="gone"
                 android:id="@+id/fatherName"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
@@ -286,7 +285,6 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <TextView
-                android:visibility="gone"
                 android:text="Father's Phone Number"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -298,7 +296,6 @@
                 android:textColor="@color/bg"/>
 
             <com.google.android.material.textfield.TextInputLayout
-                android:visibility="gone"
                 android:id="@+id/fPhoneNum"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
@@ -323,7 +320,6 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <TextView
-                android:visibility="gone"
                 android:text="Mother's Name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -336,7 +332,6 @@
                 android:textColor="@color/bg"/>
 
             <com.google.android.material.textfield.TextInputLayout
-                android:visibility="gone"
                 android:id="@+id/motherNAME"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
@@ -367,7 +362,6 @@
                 android:layout_marginTop="@dimen/_15sdp"
                 android:textSize="@dimen/_10ssp"
                 android:textStyle="bold"
-                android:visibility="gone"
                 android:layout_below="@+id/username"
                 android:textColor="@color/bg"/>
 
@@ -376,7 +370,6 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:visibility="gone"
                 android:layout_centerHorizontal="true"
                 android:textColorHint="@color/greay"
                 app:hintTextColor="@color/black"
@@ -399,7 +392,6 @@
 
 
             <TextView
-                android:visibility="gone"
                 android:text="Guardian's Name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -410,7 +402,6 @@
                 android:textColor="@color/bg"/>
 
             <com.google.android.material.textfield.TextInputLayout
-                android:visibility="gone"
                 android:id="@+id/guardianNAME"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
@@ -435,7 +426,6 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <TextView
-                android:visibility="gone"
                 android:text="Guardian's Phone Number"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -446,7 +436,6 @@
                 android:textColor="@color/bg"/>
 
             <com.google.android.material.textfield.TextInputLayout
-                android:visibility="gone"
                 android:id="@+id/guardianNumber"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"

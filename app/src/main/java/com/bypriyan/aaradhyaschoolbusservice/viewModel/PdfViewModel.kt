@@ -1,7 +1,10 @@
 package com.bypriyan.aaradhyaschoolbusservice.viewModel
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.bypriyan.aaradhyaschoolbusservice.apiResponce.ApiLoginResponse
 import com.bypriyan.aaradhyaschoolbusservice.repo.PdfRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -14,8 +17,8 @@ class PdfViewModel @Inject constructor(
     private val pdfRepository: PdfRepository
 ) : ViewModel() {
 
-    private val _pdfState = MutableStateFlow<Result<String>?>(null)
-    val pdfState: StateFlow<Result<String>?> = _pdfState
+    private val _pdfState = MutableLiveData<Result<String>?>()
+    val pdfState: LiveData<Result<String>?> = _pdfState
 
     fun generatePdf(
         receiptNo: String,

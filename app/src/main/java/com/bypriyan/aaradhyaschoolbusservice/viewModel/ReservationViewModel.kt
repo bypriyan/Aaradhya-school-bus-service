@@ -1,13 +1,9 @@
 package com.bypriyan.aaradhyaschoolbusservice.viewModel
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.bypriyan.aaradhyaschoolbusservice.api.Reservation
-import com.bypriyan.aaradhyaschoolbusservice.apiResponce.ReservationBody
-import com.bypriyan.aaradhyaschoolbusservice.apiResponce.ReservationResponse
 import com.bypriyan.aaradhyaschoolbusservice.repo.ReservationRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -23,13 +19,13 @@ class ReservationViewModel @Inject constructor(private val repository: Reservati
         userId: String, pickupLocation: String, dropLocation: String,
         pickupLatitude: String, pickupLongitude: String, dropLatitude: String,
         dropLongitude: String, paid: String, totalAmount: String,
-        installmentPaid: String, plan: String
+        installmentPaid: String, plan: String, payment_id: String
     ) {
         viewModelScope.launch {
             try {
                 val response = repository.createReservation(
                     userId, pickupLocation, dropLocation, pickupLatitude, pickupLongitude,
-                    dropLatitude, dropLongitude, paid, totalAmount, installmentPaid, plan
+                    dropLatitude, dropLongitude, paid, totalAmount, installmentPaid, plan, payment_id
                 )
                 _responseMessage.postValue(response.message ?: "Reservation created successfully")
             } catch (e: Exception) {

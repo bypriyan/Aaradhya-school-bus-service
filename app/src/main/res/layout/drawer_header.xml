@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
-
-    xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:android="http://schemas.android.com/apk/res/android"
              android:layout_width="wrap_content"
+    android:fitsSystemWindows="true"
              android:layout_height="wrap_content">
 
     <LinearLayout
@@ -14,8 +14,10 @@
         >
 
         <ImageView
-            android:layout_width="94dp"
-            android:layout_height="76dp"
+            android:id="@+id/profileImageCard"
+            android:layout_width="@dimen/_100sdp"
+            android:scaleType="centerCrop"
+            android:layout_height="@dimen/_90sdp"
             android:layout_marginTop="@dimen/_10sdp"
             android:layout_gravity="start"
             android:background="@drawable/custom_design"
@@ -27,36 +29,26 @@
             android:layout_height="wrap_content"
             >
             <TextView
+                android:id="@+id/studentName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textStyle="bold"
                 android:textColor="@color/white"
-                android:text="Student Id "/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textStyle="bold"
-                android:textColor="@color/bg"
+                android:text="Student Name  "/>
 
-                android:text="123456" />
         </LinearLayout>
         <LinearLayout
             android:layout_width="wrap_content"
             android:orientation="horizontal"
             android:layout_height="wrap_content"
             >
+
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textStyle="bold"
-                android:textColor="@color/white"
-                android:text="email "/>
-            <TextView
+                android:id="@+id/StudentEmailTv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textStyle="bold"
                 android:textColor="@color/bg"
-
                 android:text="abc@gmail.com" />
         </LinearLayout>
 

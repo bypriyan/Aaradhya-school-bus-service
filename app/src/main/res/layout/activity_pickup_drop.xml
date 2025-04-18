@@ -6,9 +6,18 @@
     android:id="@+id/main" android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
+    android:fitsSystemWindows="true"
     android:padding="5dp"
     tools:context=".activity.PickupDropActivity">
 
+
+    <!-- ProgressBar -->
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="gone" /> <!-- Initially hidden -->
     <RelativeLayout
         android:id="@+id/rr1"
         android:layout_margin="@dimen/_5sdp"
@@ -68,20 +77,8 @@
             android:layout_height="match_parent"
             android:layout_margin="@dimen/_5sdp">
 
-            <TextView
-                android:id="@+id/txtTDL"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_weight="1"
-                android:text="Total Distance Cover"
-
-                android:textColor="@color/black"
-                android:textSize="@dimen/_12sdp"
-                android:textStyle="bold" />
 
             <TextView
-                android:layout_below="@+id/txtTDL"
                 android:id="@+id/tvDistance"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

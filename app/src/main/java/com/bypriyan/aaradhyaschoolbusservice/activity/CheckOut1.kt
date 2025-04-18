@@ -3,8 +3,10 @@ package com.bypriyan.aaradhyaschoolbusservice.activity
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.annotation.IdRes
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.ui.unit.Constraints
 import com.bumptech.glide.Glide
@@ -19,11 +21,10 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 class CheckOut1 : AppCompatActivity() {
-
+    private var backPressedTime: Long = 0
+    private val backPressThreshold: Long = 2000 // 2 seconds
     lateinit var  binding: ActivityDasboardBinding
     lateinit var userId: String
-    lateinit var token: String
-    lateinit var token_type: String
     private val userViewModel: UserViewModel by viewModels()
     @Inject
     lateinit var preferenceManager: PreferenceManager
@@ -35,26 +36,20 @@ class CheckOut1 : AppCompatActivity() {
         binding = ActivityDasboardBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        userId = getIntent().getStringExtra(Constants.KEY_USER_ID).toString()
-        token = getIntent().getStringExtra(Constants.KEY_TOKEN).toString()
-        token_type = getIntent().getStringExtra(Constants.KEY_TOKEN_TYPE).toString()
-
-        preferenceManager.putString(Constants.KEY_USER_ID, userId)
-        preferenceManager.putString(Constants.KEY_TOKEN, token)
-        preferenceManager.putString(Constants.KEY_TOKEN_TYPE, token_type)
-
-        Log.d("dashss", "onCreate: $userId, $token, $token_type")
-        userViewModel.fetchUser(userId)
+        userId = preferenceManager.getString(Constants.KEY_USER_ID)!!
+        Log.d("TAGss", "onCreate: userId $userId")
 
         binding.profileImage.setOnClickListener(){
             startActivity(Intent(this, ProfileActivity::class.java))
         }
 
+        userViewModel.fetchUser(userId)
          // data getting
         userViewModel.user.observe(this) { userDetails ->
             userDetails?.data?.let { data ->
                 Log.d("TAGss", "onCreate: $data")
                 loadImageWithGlide(Constants.KEY_IMAGE_PATH+data.image_url)
+                binding.name.text = data.full_name
                 uploadToken(data.id.toString())
                 preferenceManager.apply {
                     putString(Constants.KEY_FULL_NAME, data.full_name ?: "")
@@ -64,6 +59,19 @@ class CheckOut1 : AppCompatActivity() {
                     putString(Constants.KEY_YEAR, data.year ?: "")
                     putString(Constants.KEY_STANDARD, data.standard ?: "")
                     putString(Constants.KEY_AGE, data.age.toString() ?: "")
+
+                    Log.d("lull", "onCreate: ${data.guardians[0]}")
+                    Log.d("lull", "onCreate: ${data.guardians[1]}")
+                    Log.d("lull", "onCreate: ${data.guardians[2]}")
+
+                    putString(Constants.KEY_FATHER_NAME, data.guardians[0].name)
+                    putString(Constants.KEY_FATHER_NUMBER, data.guardians[0].phone_number)
+
+                    putString(Constants.KEY_MOTHER_NAME, data.guardians[1].name)
+                    putString(Constants.KEY_MOTHER_NUMBER, data.guardians[1].phone_number)
+
+                    putString(Constants.KEY_GUARDIAN_NAME, data.guardians[2].name)
+                    putString(Constants.KEY_GUARDIAN_PHONE, data.guardians[2].phone_number)
                 }
             } ?: run {
                 Log.e("UserDetails", "userDetails or data is null")
@@ -96,6 +104,37 @@ class CheckOut1 : AppCompatActivity() {
         tokenViewModel.tokenResponse.observe(this) { response ->
             Log.d("token", "onCreate: $response")
         }
+
+        binding.signOut.setOnClickListener {
+            showLogoutDialog()
+        }
+
+    }
+    private fun showLogoutDialog() {
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("Logout Confirmation")
+        builder.setMessage("Are you sure you want to log out?")
+
+        builder.setPositiveButton("Yes") { dialog, _ ->
+            dialog.dismiss()
+            signOutUser()
+        }
+
+        builder.setNegativeButton("Cancel") { dialog, _ ->
+            dialog.dismiss()
+        }
+
+        val dialog = builder.create()
+        dialog.show()
+    }
+
+    private fun signOutUser() {
+        preferenceManager.clear()
+        preferenceManager.putBoolean(Constants.KEY_IS_ONBORDING_SCREEN_SEEN, true)
+        val intent = Intent(this, LoginActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        startActivity(intent)
+        finish()
     }
 
     private fun loadImageWithGlide(imageUrl: String) {
@@ -114,6 +153,17 @@ class CheckOut1 : AppCompatActivity() {
                 Log.e("FCM_TOKEN", "Failed to get FCM token", task.exception)
             }
         }
+    }
+
+
+    override fun onBackPressed() {
+        if (backPressedTime + backPressThreshold > System.currentTimeMillis()) {
+            super.onBackPressed()
+            finish()
+        } else {
+            Toast.makeText(this, "Press back again to exit", Toast.LENGTH_SHORT).show()
+        }
+        backPressedTime = System.currentTimeMillis()
     }
 }
 

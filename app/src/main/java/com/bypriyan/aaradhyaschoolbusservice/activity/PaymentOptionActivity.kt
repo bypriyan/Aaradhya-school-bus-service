@@ -3,10 +3,15 @@ package com.bypriyan.aaradhyaschoolbusservice.activity
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
+import com.android.volley.Request
+import com.android.volley.toolbox.JsonObjectRequest
+import com.android.volley.toolbox.Volley
 import com.bypriyan.aaradhyaschoolbusservice.databinding.ActivityPaymentOptionBinding
 import com.bypriyan.aaradhyaschoolbusservice.viewModel.ReservationViewModel
 import com.bypriyan.bustrackingsystem.utility.Constants
@@ -29,8 +34,6 @@ class PaymentOptionActivity : AppCompatActivity(), PaymentResultListener {
     lateinit var binding: ActivityPaymentOptionBinding
     private val viewModel: ReservationViewModel by viewModels()
     lateinit var userId: String
-    lateinit var token: String
-    lateinit var token_type: String
 
     lateinit var pickupLocation: String
     lateinit var dropLocation: String
@@ -45,13 +48,13 @@ class PaymentOptionActivity : AppCompatActivity(), PaymentResultListener {
     lateinit var preferenceManager: PreferenceManager
 
     val slabs = listOf(
-        Slab(0.0..1.0, 3800, 3800, 2850, 10450),
-        Slab(1.1..2.0, 4600, 4600, 3450, 12650),
-        Slab(2.1..3.0, 5000, 5000, 3750, 13750),
-        Slab(3.1..5.0, 6360, 6360, 4770, 17400),
-        Slab(5.1..8.0, 8000, 8000, 6000, 22000),
-        Slab(8.1..11.0, 10000, 10000, 7500, 27500),
-        Slab(11.1..15.0, 11600, 11600, 8700, 31900)
+        Slab(0.0..1.0, 3800, 3800, 2850, 10450),       // 0.0 to 1.0 km
+        Slab(1.0..2.0, 4600, 4600, 3450, 12650),       // 1.0 to 2.0 km
+        Slab(2.0..3.0, 5000, 5000, 3750, 13750),       // 2.0 to 3.0 km
+        Slab(3.0..5.0, 6360, 6360, 4770, 17400),       // 3.0 to 5.0 km
+        Slab(5.0..8.0, 8000, 8000, 6000, 22000),       // 5.0 to 8.0 km
+        Slab(8.0..11.0, 10000, 10000, 7500, 27500),    // 8.0 to 11.0 km
+        Slab(11.0..15.0, 11600, 11600, 8700, 31900)    // 11.0 to 15.0 km
     )
 
     private var firstInstallmentPrice = 0
@@ -71,31 +74,25 @@ class PaymentOptionActivity : AppCompatActivity(), PaymentResultListener {
 
 
         mode = intent.getStringExtra("MODE") ?: ""
-        isFullPaymentDone = preferenceManager.getBoolean(Constants.KEY_FULL_PAYMENT_DONE, false)
+        isFullPaymentDone = preferenceManager.getBoolean(Constants.KEY_FULL_PAYMENT_DONE)
         // Fetch saved installment status
         installmentStatus = preferenceManager.getString("installment_status")?.toInt() ?: 0
 
         val totalDistance = intent.getFloatExtra("TOTAL_DISTANCE", 0f)
         val prices = calculatePrices(totalDistance.toDouble(), mode)
 
-
-
+        Log.d("juhu", "onCreate: $prices")
 
         val distanceText = "Total Distance: %.2f km".format(totalDistance)
         userId = preferenceManager.getString(Constants.KEY_USER_ID) ?: ""
-        token = preferenceManager.getString(Constants.KEY_TOKEN) ?: ""
         preferenceManager.putString(Constants.KEY_TOTAL_FEES, totalPrice.toString())
 
-        if (userId.isEmpty() || token.isEmpty()) {
+        if (userId.isEmpty()) {
             Log.e("PaymentOptionActivity", "User ID or Token is missing!")
             Toast.makeText(this, "User authentication failed!", Toast.LENGTH_SHORT).show()
             finish()
             return
         }
-
-        Log.d("PaymentOptionActivity", "userId: $userId")
-        Log.d("PaymentOptionActivity", "preferenceManager: $preferenceManager")
-
 
         // Handle ONLY_DROP mode
         if (mode == "ONLY_DROP") {
@@ -117,12 +114,15 @@ class PaymentOptionActivity : AppCompatActivity(), PaymentResultListener {
         viewModel.responseMessage.observe(this, Observer { response ->
             Log.d("payss", "onCreate: $response")
             var intent = Intent(this, PaymentDoneActivity::class.java)
-            intent.putExtra("id", paymentId)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            intent.putExtra("id", paymentId.toString())
+            intent.putExtra("paid", paidAmount.toString())
             startActivity(intent)
             finish()
+            isPaymentLoading(false)
         })
 
-        prices?.let {
+        prices?.let{
             firstInstallmentPrice = it[0].split(": ")[1].toInt()
             secondInstallmentPrice = it[1].split(": ")[1].toInt()
             thirdInstallmentPrice = it[2].split(": ")[1].toInt()
@@ -137,7 +137,7 @@ class PaymentOptionActivity : AppCompatActivity(), PaymentResultListener {
             }
             // Check installment status and update UI
             if (installmentStatus ==0) {
-            binding.showtxt.text="Pay First Installment"
+                binding.showtxt.text="Pay First Installment"
             }
             if (installmentStatus >= 1) {
                 binding.firstInstallmentTv.text = "Paid ₹$firstInstallmentPrice"
@@ -145,7 +145,6 @@ class PaymentOptionActivity : AppCompatActivity(), PaymentResultListener {
 
             } else {
                 binding.firstInstallmentTv.text = "₹$firstInstallmentPrice"
-
 
             }
 
@@ -164,10 +163,7 @@ class PaymentOptionActivity : AppCompatActivity(), PaymentResultListener {
             } else {
                 binding.thirdInstallmentTv.text = "₹$thirdInstallmentPrice"
 
-
             }
-
-
             // Disable the full payment option if installments have been paid
             if (installmentStatus > 0) {
                 binding.totalCostTv.isEnabled = false
@@ -178,6 +174,7 @@ class PaymentOptionActivity : AppCompatActivity(), PaymentResultListener {
                 binding.continueBtn.alpha = 0.5f // To indicate the button is disabled
             }
         }
+
         if(installmentStatus==4){
             binding.totalCostTv.isEnabled = false
             binding.totalCostTv.alpha = 0.5f
@@ -213,41 +210,79 @@ class PaymentOptionActivity : AppCompatActivity(), PaymentResultListener {
 
         // EMI first installment button
         binding.continueBtn.setOnClickListener {
-            if (installmentStatus == 0) {
-                paidAmount = firstInstallmentPrice
-                startPayment(firstInstallmentPrice) // Pay only first installment
-            } else if (installmentStatus == 1) {
-                paidAmount = secondInstallmentPrice
-                startPayment(secondInstallmentPrice) // Pay second installment
-            } else if (installmentStatus == 2) {
-                paidAmount = thirdInstallmentPrice
-                startPayment(thirdInstallmentPrice) // Pay third installment
-            }  else
-            {
-                binding.continueBtn.text= "Installment Completed"
-                binding.continueBtn.isEnabled= false
-                binding.continueBtn.alpha = 0.5f // To indicate the button is disabled
-            }
+            paidAmount = firstInstallmentPrice
+            installmentStatus=1
+            startPayment(firstInstallmentPrice) // Pay only first installment
         }
+
+        binding.backBtn.setOnClickListener{
+            onBackPressedDispatcher.onBackPressed()
+        }
+        //back pressed
+        onBackPressedDispatcher.addCallback(this, object: OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                finish()
+            }
+        })
     }
 
-    private fun startPayment(amount: Int) {
-        val checkout = Checkout()
-        checkout.setKeyID("rzp_test_NECKQH8SMMRhJ6")
+//    private fun startPayment(amount: Int) {
+//        isPaymentLoading(true)
+//        val checkout = Checkout()
+//        checkout.setKeyID("rzp_live_aK2ZZ0IwvS5LCe")
+////rzp_test_NECKQH8SMMRhJ6      rzp_live_aK2ZZ0IwvS5LCe
+//        try {
+//            val options = JSONObject()
+//            options.put("name", "Aaradhya school bus service")
+//            options.put("description", "Bus FEE")
+//            options.put("currency", "INR")
+//            options.put("amount", amount * 100) // Convert to paise
+//            options.put("prefill.email", "user@example.com")
+//            options.put("prefill.contact", "9876543210")
+//            checkout.open(this, options)
+//        } catch (e: Exception) {
+//            Toast.makeText(this, "Error in Payment: ${e.message}", Toast.LENGTH_SHORT).show()
+//            e.printStackTrace()
+//        }
+//    }
 
-        try {
-            val options = JSONObject()
-            options.put("name", "Your App Name")
-            options.put("description", "Test Payment")
-            options.put("currency", "INR")
-            options.put("amount", amount * 100) // Convert to paise
-            options.put("prefill.email", "user@example.com")
-            options.put("prefill.contact", "9876543210")
-            checkout.open(this, options)
-        } catch (e: Exception) {
-            Toast.makeText(this, "Error in Payment: ${e.message}", Toast.LENGTH_SHORT).show()
-            e.printStackTrace()
+    private fun startPayment(amount: Int) {
+        isPaymentLoading(true)
+
+        val url = "https://bypriyan.com/busApi/create_order.php"
+        val jsonObject = JSONObject().apply {
+            put("amount", amount)
+            put("currency", "INR")
         }
+
+        val request = JsonObjectRequest(Request.Method.POST, url, jsonObject,
+            { response ->
+                try {
+                    val orderId = response.getString("id") // ✅ Extracting the Order ID from API response
+                    Log.d("payment", "startPayment: $response")
+                    val checkout = Checkout()
+                    checkout.setKeyID("rzp_live_aK2ZZ0IwvS5LCe")
+
+                    val options = JSONObject().apply {
+                        put("name", "Aaradhya school bus service")
+                        put("description", "Bus FEE")
+                        put("currency", "INR")
+                        put("amount", amount * 100) // Convert to paise
+                        put("order_id", orderId) // ✅ Passing the order ID to Razorpay
+                        put("prefill.email", preferenceManager.getString(Constants.KEY_EMAIL))
+                        put("prefill.contact", preferenceManager.getString(Constants.KEY_FATHER_NUMBER))
+                    }
+
+                    checkout.open(this, options)
+                } catch (e: Exception) {
+                    Toast.makeText(this, "Error in Payment: ${e.message}", Toast.LENGTH_SHORT).show()
+                }
+            },
+            { error ->
+                Toast.makeText(this, "Error creating order: ${error.message}", Toast.LENGTH_SHORT).show()
+            })
+
+        Volley.newRequestQueue(this).add(request)
     }
 
 
@@ -292,7 +327,7 @@ class PaymentOptionActivity : AppCompatActivity(), PaymentResultListener {
                 return
             }
 
-            if (userId.isEmpty() || token.isEmpty()) {
+            if (userId.isEmpty()) {
                 Log.e("PaymentOptionActivity", "User ID or Token is missing!")
                 return
             }
@@ -303,37 +338,20 @@ class PaymentOptionActivity : AppCompatActivity(), PaymentResultListener {
             val finalPickupLatitude = if (::pickupLatitude.isInitialized) pickupLatitude else "0.0"
             val finalPickupLongitude = if (::pickupLongitude.isInitialized) pickupLongitude else "0.0"
 
-            val reservation = mapOf(
-                "user_id" to userId,
-                "pickup_location" to finalPickupLocation,
-                "drop_location" to dropLocation,
-                "pickup_latitude" to finalPickupLatitude,
-                "pickup_longitude" to finalPickupLongitude,
-                "drop_latitude" to dropLatitude,
-                "drop_longitude" to dropLongitude,
-                "paid" to firstInstallmentPrice.toString(),
-                "total_amount" to totalPrice.toString(),
-                "installment_paid" to (installmentStatus + 1).toString(),
-                "plan" to mode,
-                "payment_id" to paymentId
-            )
-
-            Log.d("PaymentOptionActivity", "Storing reservation: $reservation")
 
             viewModel.createReservation(
                 userId, finalPickupLocation, dropLocation, finalPickupLatitude, finalPickupLongitude,
-                dropLatitude, dropLongitude, firstInstallmentPrice.toString(), totalPrice.toString(),
-                (installmentStatus + 1).toString(), mode
+                dropLatitude, dropLongitude, paidAmount.toString(), totalPrice.toString(),
+                (installmentStatus).toString(), mode, razorpayPaymentID
             )
 
             // Update the installment status and payment status in PreferenceManager
-            preferenceManager.putString("installment_status", (installmentStatus + 1).toString())
-            preferenceManager.putString(Constants.PAYMENT_STATUS, "true")
+            preferenceManager.putString("installment_status", (installmentStatus).toString())
+            preferenceManager.putBoolean(Constants.PAYMENT_STATUS, true)
 
             //recipt
             preferenceManager.putString(Constants.KEY_RECEIPT_NO, paymentId)
             preferenceManager.putString(Constants.KEY_DATE, getCurrentDate())
-
 
             // Update the UI for paid installment
             if (installmentStatus == 0) {
@@ -343,22 +361,25 @@ class PaymentOptionActivity : AppCompatActivity(), PaymentResultListener {
             } else if (installmentStatus == 2) {
                 binding.thirdInstallmentTv.text = "Paid ₹$thirdInstallmentPrice"
             }
-
-
-
-
-            // After payment is successful, navigate to the Dashboard
-            val dashboardIntent = Intent(this@PaymentOptionActivity, DashBoard1Activity::class.java)
-            startActivity(dashboardIntent)
-            finish()
         } catch (e: Exception) {
             Log.e("PaymentOptionActivity", "Error in onPaymentSuccess: ${e.message}")
+            isPaymentLoading(false)
+
+        }
+    }
+
+    private fun isPaymentLoading(loading: Boolean){
+        if(loading){
+            binding.paymentLoading.visibility = View.VISIBLE
+        }else{
+            binding.paymentLoading.visibility = View.GONE
         }
     }
 
 
     override fun onPaymentError(code: Int, response: String?) {
         Toast.makeText(this, "Payment Failed: $response", Toast.LENGTH_SHORT).show()
+        isPaymentLoading(false)
     }
 
     fun getCurrentDate(): String {
@@ -374,5 +395,3 @@ data class Slab(
     val thirdInstallment: Int,
     val yearly: Int
 )
-
-

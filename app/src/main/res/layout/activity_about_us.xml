@@ -1,0 +1,293 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginTop="@dimen/_30sdp"
+    android:fitsSystemWindows="true"
+    android:background="@color/white"
+    android:padding="@dimen/_16sdp">
+
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fitsSystemWindows="true"
+        android:background="@color/white"
+
+
+        android:orientation="vertical">
+
+        <!-- Header Section -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:paddingBottom="@dimen/_16sdp">
+
+            <ImageView
+                android:layout_width="@dimen/_100sdp"
+                android:layout_height="@dimen/_100sdp"
+                android:src="@drawable/logo_school"
+                 />
+
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_8sdp"
+                android:text="Aradhya School Bus Transport"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <!-- About Us Section -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/_8sdp"
+            android:text="About Us"
+            android:textColor="@color/black"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/_16sdp"
+            android:lineSpacingExtra="@dimen/_4sdp"
+            android:text="At Aradhya School Bus Transport, we are dedicated to providing safe, reliable, and efficient transportation services to students. Our goal is to ensure that every child has a comfortable and secure journey to and from school."
+            android:textColor="@color/black"
+          />
+
+        <!-- Our Mission Section -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/_8sdp"
+            android:text="Our Mission"
+            android:textColor="@color/black"
+
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/_8sdp"
+            android:text="Our mission is to become the most trusted and preferred school bus transport service in the region. We strive to achieve this by:"
+            android:textColor="@color/black"
+         />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/_16sdp"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                android:drawablePadding="@dimen/_8sdp"
+                android:paddingLeft="@dimen/_4sdp"
+                android:text="Providing well-maintained and safe vehicles"
+                android:textColor="@color/black"
+             />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                android:drawablePadding="@dimen/_8sdp"
+                android:paddingLeft="@dimen/_4sdp"
+                android:text="Employing experienced and trained drivers and staff"
+                android:textColor="@color/black"
+              />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawablePadding="@dimen/_8sdp"
+                android:paddingLeft="@dimen/_4sdp"
+                android:text="Ensuring timely pickups and drop-offs"
+                android:textColor="@color/black"
+           />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                android:drawablePadding="@dimen/_8sdp"
+                android:paddingLeft="@dimen/_4sdp"
+                android:text="Maintaining open communication with parents and schools"
+                android:textColor="@color/black"
+         />
+        </LinearLayout>
+
+        <!-- Our Values Section -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/_8sdp"
+            android:text="Our Values"
+            android:textColor="@color/black"
+
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/_8sdp"
+            android:text="At Aradhya School Bus Transport, we value:"
+            android:textColor="@color/black"
+         />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/_16sdp"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                android:drawablePadding="@dimen/_8sdp"
+                android:paddingLeft="@dimen/_4sdp"
+                android:text="Safety: The well-being of our students is our top priority"
+                android:textColor="@color/black"
+               />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                android:drawablePadding="@dimen/_8sdp"
+                android:paddingLeft="@dimen/_4sdp"
+                android:text="Reliability: We strive to be punctual and dependable"
+                android:textColor="@color/black"
+           />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                android:drawablePadding="@dimen/_8sdp"
+                android:paddingLeft="@dimen/_4sdp"
+                android:text="Quality: We aim to provide the best possible service"
+                android:textColor="@color/black"
+           />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                android:drawablePadding="@dimen/_8sdp"
+                android:paddingLeft="@dimen/_4sdp"
+                android:text="Customer Satisfaction: We listen to feedback and continuously improve"
+                android:textColor="@color/black"
+               />
+        </LinearLayout>
+
+        <!-- Our Team Section -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/_8sdp"
+            android:text="Our Team"
+            android:textColor="@color/black"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/_16sdp"
+            android:lineSpacingExtra="@dimen/_4sdp"
+            android:text="Our team consists of experienced and trained drivers, conductors, and administrative staff. We ensure that all our staff undergo regular training and background checks to guarantee the safety and security of our students."
+            android:textColor="@color/black"
+          />
+
+        <!-- Contact Us Section -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/_8sdp"
+            android:text="Contact Us"
+            android:textColor="@color/black"
+
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/_4sdp"
+            android:text="Aradhya School Bus Transport"
+            android:textColor="@color/black"
+
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/_4sdp"
+            android:text="Chakrapani Vasahat, Mahatma Phule Nagar, Bhosari"
+            android:textColor="@color/black"
+      />
+        
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/_4sdp"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="@dimen/_24sdp"
+                android:layout_height="@dimen/_24sdp"
+                android:src="@drawable/baseline_phone_24"
+                android:layout_marginEnd="@dimen/_8sdp"
+              />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="9766987118"
+                android:textColor="@color/black"
+                 />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/_16sdp"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="@dimen/_24sdp"
+                android:layout_height="@dimen/_24sdp"
+                android:src="@drawable/baseline_email_24"
+                android:layout_marginEnd="@dimen/_8sdp"
+     />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="transportrklgalaxy@gmail.com"
+                android:textColor="@color/black"
+            />
+        </LinearLayout>
+
+        <!-- Closing Message -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/_16sdp"
+            android:text="We look forward to serving your transportation needs!"
+            android:textStyle="italic" />
+    </LinearLayout>
+    </ScrollView>
+</RelativeLayout>

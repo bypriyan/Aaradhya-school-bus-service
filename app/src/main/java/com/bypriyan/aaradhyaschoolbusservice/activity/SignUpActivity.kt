@@ -1,144 +1,236 @@
 package com.bypriyan.aaradhyaschoolbusservice.activity
 
+import AlphabeticInputFilter
 import android.content.Intent
 import android.graphics.BitmapFactory
 import android.graphics.ImageDecoder
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.View
+import android.widget.ArrayAdapter
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Observer
 import com.bypriyan.aaradhyaschoolbusservice.databinding.ActivitySignUpBinding
-import com.bypriyan.aaradhyaschoolbusservice.viewModel.OTPViewModel
+import com.bypriyan.aaradhyaschoolbusservice.viewModel.EmailViewModel
 import com.bypriyan.bustrackingsystem.utility.Constants
 import dagger.hilt.android.AndroidEntryPoint
 
-
-
 @AndroidEntryPoint
 class SignUpActivity : AppCompatActivity() {
-    private lateinit var binding : ActivitySignUpBinding
-    //viewModel
-    private val otpViewModel: OTPViewModel by viewModels()
+
+    private var backPressedTime: Long = 0
+    private val backPressThreshold: Long = 2000 // 2 seconds
+
+    private lateinit var binding: ActivitySignUpBinding
+    private val emailViewModel: EmailViewModel by viewModels()
     private lateinit var pickImageLauncher: ActivityResultLauncher<String>
     private var selectedImageUri: Uri? = null // Store the selected image URI
 
+    private val classes = arrayOf("Jasmin", "Lilly", "Orchid", "Rose", "IriS", "Tulip", "Lotus")
+    private val standards = arrayOf("Nursery", "LKG", "UKG", "1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th")
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding= ActivitySignUpBinding.inflate(layoutInflater)
+
+        binding = ActivitySignUpBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
 
-        //selected image
-        pickImageLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
-            uri?.let {
-                selectedImageUri = it // Store the URI for later use
-                displayImage(it)
-            }
+        binding.privacyPolicy.setOnClickListener {
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://www.termsfeed.com/live/00a3440d-2f50-4d1c-967a-b05ecc56552a"))
+            startActivity(intent)
         }
 
 
-        binding.sendOTPBtn.setOnClickListener {
-            if(validateInputFields()){
-                isLoading(true)
-//                startOtpActivity("123")
-otpViewModel.sendOtp(binding.emailEt.text.toString())
+        binding.terms.setOnClickListener {
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://www.freeprivacypolicy.com/live/344e4044-4efc-4e52-b6d8-beaba19d509b"))
+            startActivity(intent)
+        }
+
+
+        binding.back.setOnClickListener { finish() }
+
+
+        isLoading(false)
+        setupUI()
+        setupObservers()
+        setupImagePicker()
+        setupBackPressHandler()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // Reset isLoading state when the activity is resumed
+        isLoading(false)
+        binding.sendOTPBtn.visibility=View.VISIBLE
+    }
+
+    private fun setupUI() {
+        // Set up AutoCompleteTextView for classes and standards
+        val classAdapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, classes)
+        val standardAdapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, standards)
+
+        binding.autoCompleteTextViewClass.setAdapter(classAdapter)
+        binding.autoCompleteTextViewstanderd.setAdapter(standardAdapter)
+
+        binding.autoCompleteTextViewClass.setOnClickListener {
+            if (binding.autoCompleteTextViewClass.isPopupShowing) {
+                binding.autoCompleteTextViewClass.dismissDropDown()
+            } else {
+                binding.autoCompleteTextViewClass.showDropDown()
+            }
+        }
+        binding.autoCompleteTextViewstanderd.setOnClickListener {
+            if (binding.autoCompleteTextViewstanderd.isPopupShowing) {
+                binding.autoCompleteTextViewstanderd.dismissDropDown()
+            } else {
+                binding.autoCompleteTextViewstanderd.showDropDown()
             }
         }
 
+        // Handle image selection
         binding.selectImageCard.setOnClickListener {
             pickImageLauncher.launch("image/*")
         }
 
+        // Handle Send OTP button click
+        binding.sendOTPBtn.setOnClickListener {
+            if (validateInputFields()) {
+                binding.sendOTPBtn.visibility = View.GONE
+                isLoading(true)
+                emailViewModel.sendOtp(binding.emailEt.text.toString())
+            }else{Toast.makeText(this,"Something went wrong please check your details", Toast.LENGTH_SHORT).show()}
+        }
 
-        otpViewModel.otpResponse.observe(this, Observer { result ->
-            result?.let {
-                it.onSuccess { response ->
-                    startOtpActivity(response.otp.toString())
-                    isLoading(false)
-                }.onFailure { error ->
-                    isLoading(false)
-                    Toast.makeText(this, error.message, Toast.LENGTH_SHORT).show()
-                }
-            }
-        })
+        // Add TextWatchers for real-time validation
+        binding.fullNameEt.addTextChangedListener(createTextWatcher(binding.fullName))
+        binding.emailEt.addTextChangedListener(createEmailTextWatcher())
+        binding.passwordEt.addTextChangedListener(createTextWatcher(binding.password))
+        binding.ageEt.addTextChangedListener(createTextWatcher(binding.age))
+        binding.yearEt.addTextChangedListener(createTextWatcher(binding.year))
 
-        setInputFieldData()
+        // Add TextWatchers for phone number fields
+        binding.fPhoneNumEt.addTextChangedListener(createPhoneNumberTextWatcher(binding.fPhoneNum))
+        binding.mPhoneEt.addTextChangedListener(createPhoneNumberTextWatcher(binding.mPhoneNumber))
+        binding.guardianPhoneEt.addTextChangedListener(createPhoneNumberTextWatcher(binding.guardianNumber))
 
+        // Apply InputFilter to name fields
+        binding.fullNameEt.filters = arrayOf(AlphabeticInputFilter())
+        binding.fatherNameEt.filters = arrayOf(AlphabeticInputFilter())
+        binding.mothersName.filters = arrayOf(AlphabeticInputFilter())
+        binding.guardianName.filters = arrayOf(AlphabeticInputFilter())
+
+        // Add TextWatchers for name fields
+        binding.fullNameEt.addTextChangedListener(createNameTextWatcher(binding.fullName))
+        binding.fatherNameEt.addTextChangedListener(createNameTextWatcher(binding.fatherName))
+        binding.mothersName.addTextChangedListener(createNameTextWatcher(binding.motherNAME))
+        binding.guardianName.addTextChangedListener(createNameTextWatcher(binding.guardianNAME))
     }
 
-    private fun setInputFieldData() {
-        // Set full name
-        binding.fullNameEt.setText("John Doe")
 
-        // Set standard
-        binding.standerdEt.setText("10th")
+    private fun createNameTextWatcher(textInputLayout: com.google.android.material.textfield.TextInputLayout): TextWatcher {
+        return object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
 
-        // Set class
-        binding.classEt.setText("A")
+            override fun afterTextChanged(s: Editable?) {
+                val name = s.toString()
+                val regex = Regex("[^A-Za-z ]") // Regex to check for invalid characters
+                if (regex.containsMatchIn(name)) {
+                    textInputLayout.error = "Numbers and special characters are not allowed"
+                } else {
+                    textInputLayout.error = null // Clear the error
+                }
+            }
+        }
+    }
 
-        // Set age
-        binding.ageEt.setText("16")
+    private fun createPhoneNumberTextWatcher(textInputLayout: com.google.android.material.textfield.TextInputLayout): TextWatcher {
+        return object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            override fun afterTextChanged(s: Editable?) {
+                val phoneNumber = s.toString()
+                if (phoneNumber.length > 10) {
+                    // Truncate the input to 10 digits
+                    val truncatedNumber = phoneNumber.substring(0, 10)
+                    textInputLayout.editText?.setText(truncatedNumber)
+                    textInputLayout.editText?.setSelection(truncatedNumber.length) // Move cursor to the end
+                    Toast.makeText(this@SignUpActivity, "Phone number cannot exceed 10 digits", Toast.LENGTH_SHORT).show()
+                }
+                textInputLayout.error = null // Clear any previous error
+            }
+        }
+    }
+    private fun setupObservers() {
+        emailViewModel.otpLiveData.observe(this) { result ->
+            result.onSuccess { otp ->
+                startOtpActivity(otp)
+            }.onFailure {
+                isLoading(false)
+                Toast.makeText(this, "Error: ${it.message}", Toast.LENGTH_LONG).show()
+            }
+        }
+    }
 
-        // Set year
-        binding.yearEt.setText("2023")
+    private fun setupImagePicker() {
+        pickImageLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
+            uri?.let {
+                selectedImageUri = it
+                displayImage(it)
+            }
+        }
+    }
 
-        // Set father's name
-        binding.fatherNameEt.setText("John Doe Sr.")
-
-        // Set father's phone number
-        binding.fPhoneNumEt.setText("1234567890")
-
-        // Set mother's name
-        binding.mothersName.setText("Jane Doe")
-
-        // Set mother's phone number
-        binding.mPhoneEt.setText("0987654321")
-
-        // Set email
-        binding.emailEt.setText("104abcdabcd104@gmail.com")
-
-        // Set password
-        binding.passwordEt.setText("123456")
+    private fun setupBackPressHandler() {
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                if (backPressedTime + backPressThreshold > System.currentTimeMillis()) {
+                    finish()
+                } else {
+                    Toast.makeText(this@SignUpActivity, "Press back again to go Login Screen", Toast.LENGTH_SHORT).show()
+                }
+                backPressedTime = System.currentTimeMillis()
+            }
+        })
     }
 
     private fun validateInputFields(): Boolean {
         return when {
+            // Check if an image is selected
+            selectedImageUri == null -> {
+                Toast.makeText(this, "Please select a profile image", Toast.LENGTH_SHORT).show()
+                false
+            }
             binding.fullNameEt.text.isNullOrBlank() -> {
                 binding.fullName.error = "Full Name is required"
                 false
             }
-            binding.standerdEt.text.isNullOrBlank() -> {
-                binding.standerdTi.error = "Standard is required"
+            binding.autoCompleteTextViewstanderd.text.isNullOrBlank() -> {
+                binding.autoCompleteTextViewstanderd.error = "Standard is required"
                 false
             }
-            binding.classEt.text.isNullOrBlank() -> {
-                binding.classs.error = "Class is required"
+            binding.autoCompleteTextViewClass.text.isNullOrBlank() -> {
+                binding.autoCompleteTextViewClass.error = "Class is required"
                 false
             }
-            binding.ageEt.text.isNullOrBlank() || binding.ageEt.text.toString().toInt() <= 0 -> {
+            binding.ageEt.text.isNullOrBlank() || binding.ageEt.text.toString().toInt() <= 0 ||binding.ageEt.text.toString().toInt()>=100-> {
                 binding.age.error = "Invalid age"
                 false
             }
-            binding.yearEt.text.isNullOrBlank() -> {
-                binding.year.error = "Year is required"
-                false
-            }
-            binding.fatherNameEt.text.isNullOrBlank() -> {
-                binding.fatherName.error = "Father's Name is required"
+            binding.yearEt.text.isNullOrBlank() || !isValidYear(binding.yearEt.text.toString()) -> {
+                binding.year.error = "Enter a valid year"
                 false
             }
             binding.fPhoneNumEt.text.isNullOrBlank() || binding.fPhoneNumEt.text.toString().length != 10 || !binding.fPhoneNumEt.text.toString().all { it.isDigit() } -> {
                 binding.fPhoneNum.error = "Invalid Father's Phone Number"
-                false
-            }
-            binding.mothersName.text.isNullOrBlank() -> {
-                binding.motherNAME.error = "Mother's Name is required"
                 false
             }
             binding.mPhoneEt.text.isNullOrBlank() || binding.mPhoneEt.text.toString().length != 10 || !binding.mPhoneEt.text.toString().all { it.isDigit() } -> {
@@ -155,107 +247,80 @@ otpViewModel.sendOtp(binding.emailEt.text.toString())
             }
             else -> true
         }
-
     }
 
     private fun startOtpActivity(otp: String) {
-
-        val fullName = binding.fullNameEt.text.toString()
-        val standard = binding.standerdEt.text.toString()
-        val className = binding.classEt.text.toString()
-        val age = binding.ageEt.text.toString()
-        val year = binding.yearEt.text.toString()
-        val fatherName = binding.fatherNameEt.text.toString()
-        val fatherPhone = binding.fPhoneNumEt.text.toString()
-        val motherName = binding.mothersName.text.toString()
-        val motherPhone = binding.mPhoneEt.text.toString()
-        val email = binding.emailEt.text.toString()
-        val password = binding.passwordEt.text.toString()
-
-        val intent = Intent(this, OtpActivity::class.java)
-        intent.putExtra(Constants.KEY_FULL_NAME, fullName)
-        intent.putExtra(Constants.KEY_STANDARD, standard)
-        intent.putExtra(Constants.KEY_CLASS, className)
-        intent.putExtra(Constants.KEY_AGE, age)
-        intent.putExtra(Constants.KEY_YEAR, year)
-        intent.putExtra(Constants.KEY_FATHER_NAME, fatherName)
-        intent.putExtra(Constants.KEY_FATHER_PHONE, fatherPhone)
-        intent.putExtra(Constants.KEY_MOTHER_NAME, motherName)
-        intent.putExtra(Constants.KEY_MOTHER_PHONE, motherPhone)
-        intent.putExtra(Constants.KEY_EMAIL, email)
-        intent.putExtra(Constants.KEY_PASSWORD, password)
-        intent.putExtra(Constants.KEY_OTP,otp)
-        // Pass the selected image URI
-        selectedImageUri?.let {
-            intent.putExtra(Constants.KEY_PROFILE_IMAGE_URI, it.toString())
+        val intent = Intent(this, OtpActivity::class.java).apply {
+            putExtra(Constants.KEY_FULL_NAME, binding.fullNameEt.text.toString())
+            putExtra(Constants.KEY_STANDARD, binding.autoCompleteTextViewstanderd.text.toString())
+            putExtra(Constants.KEY_CLASS, binding.autoCompleteTextViewClass.text.toString())
+            putExtra(Constants.KEY_AGE, binding.ageEt.text.toString())
+            putExtra(Constants.KEY_YEAR, binding.yearEt.text.toString())
+            putExtra(Constants.KEY_FATHER_NAME, binding.fatherNameEt.text.toString())
+            putExtra(Constants.KEY_FATHER_PHONE, binding.fPhoneNumEt.text.toString())
+            putExtra(Constants.KEY_MOTHER_NAME, binding.mothersName.text.toString())
+            putExtra(Constants.KEY_MOTHER_PHONE, binding.mPhoneEt.text.toString())
+            putExtra(Constants.KEY_EMAIL, binding.emailEt.text.toString())
+            putExtra(Constants.KEY_PASSWORD, binding.passwordEt.text.toString())
+            putExtra(Constants.KEY_OTP, otp)
+            selectedImageUri?.let { putExtra(Constants.KEY_PROFILE_IMAGE_URI, it.toString()) }
         }
-        // Start the next activity
         startActivity(intent)
     }
 
-
-    fun isLoading(isLoading: Boolean){
-        if (isLoading){
-            binding.progressbar.visibility = View.VISIBLE
-            binding.sendOTPBtn.visibility = View.GONE
-        }else{
-            binding.progressbar.visibility = View.GONE
-            binding.sendOTPBtn.visibility = View.VISIBLE
-        }
+    private fun isLoading(isLoading: Boolean) {
+        binding.progressbar.visibility = if (isLoading) View.VISIBLE else View.GONE
+        binding.sendOTPBtn.isEnabled = !isLoading
     }
 
     private fun displayImage(imageUri: Uri) {
         try {
             val bitmap = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                val source = ImageDecoder.createSource(contentResolver, imageUri)
-                ImageDecoder.decodeBitmap(source)
+                ImageDecoder.decodeBitmap(ImageDecoder.createSource(contentResolver, imageUri))
             } else {
-                contentResolver.openInputStream(imageUri)?.use { inputStream ->
-                    BitmapFactory.decodeStream(inputStream)
-                }
+                BitmapFactory.decodeStream(contentResolver.openInputStream(imageUri))
             }
             binding.profileImage.visibility = View.VISIBLE
             binding.galleryIcon.visibility = View.GONE
             binding.profileImage.setImageBitmap(bitmap)
         } catch (e: Exception) {
             e.printStackTrace()
+            Toast.makeText(this, "Failed to load image", Toast.LENGTH_SHORT).show()
         }
     }
-    private fun startStudentDetailsActivity() {
-        val fullName = binding.fullNameEt.text.toString()
-        val standard = binding.standerdEt.text.toString()
-        val className = binding.classEt.text.toString()
-        val age = binding.ageEt.text.toString()
-        val year = binding.yearEt.text.toString()
-        val fatherName = binding.fatherNameEt.text.toString()
-        val fatherPhone = binding.fPhoneNumEt.text.toString()
-        val motherName = binding.mothersName.text.toString()
-        val motherPhone = binding.mPhoneEt.text.toString()
-        val email = binding.emailEt.text.toString()
-        val profileImageUri = selectedImageUri?.toString()
 
-        // Debugging: Print values in Logcat
-        android.util.Log.d("SignUpActivity", "Full Name: $fullName")
-        android.util.Log.d("SignUpActivity", "Email: $email")
-        android.util.Log.d("SignUpActivity", "Profile Image URI: $profileImageUri")
-
-        val intent = Intent(this, StudentDetailActivity::class.java)
-        intent.putExtra(Constants.KEY_FULL_NAME, fullName)
-        intent.putExtra(Constants.KEY_STANDARD, standard)
-        intent.putExtra(Constants.KEY_CLASS, className)
-        intent.putExtra(Constants.KEY_AGE, age)
-        intent.putExtra(Constants.KEY_YEAR, year)
-        intent.putExtra(Constants.KEY_FATHER_NAME, fatherName)
-        intent.putExtra(Constants.KEY_FATHER_PHONE, fatherPhone)
-        intent.putExtra(Constants.KEY_MOTHER_NAME, motherName)
-        intent.putExtra(Constants.KEY_MOTHER_PHONE, motherPhone)
-        intent.putExtra(Constants.KEY_EMAIL, email)
-        profileImageUri?.let {
-            intent.putExtra(Constants.KEY_PROFILE_IMAGE_URI, it)
+    private fun isValidYear(year: String): Boolean {
+        return try {
+            val currentYear = java.util.Calendar.getInstance().get(java.util.Calendar.YEAR)
+            val enteredYear = year.toInt()
+            enteredYear in 1900..currentYear // Ensures year is within a valid range
+        } catch (e: NumberFormatException) {
+            false
         }
-
-        startActivity(intent)
     }
 
+    private fun createTextWatcher(textInputLayout: com.google.android.material.textfield.TextInputLayout): TextWatcher {
+        return object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            override fun afterTextChanged(s: Editable?) {
+                textInputLayout.error = null // Clear error when user starts typing
+            }
+        }
+    }
 
+    private fun createEmailTextWatcher(): TextWatcher {
+        return object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            override fun afterTextChanged(s: Editable?) {
+                val email = s.toString()
+                if (email.isNotEmpty() && !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                    binding.email.error = "Invalid email address"
+                } else {
+                    binding.email.error = null
+                }
+            }
+        }
+    }
 }

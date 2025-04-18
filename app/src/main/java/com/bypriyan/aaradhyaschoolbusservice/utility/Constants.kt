@@ -29,6 +29,8 @@ object Constants{
     const val KEY_PROFILE_IMAGE_URI = "profile_image_uri"
     const val PAYMENT_STATUS = "PAYMENT_STATUS"
     const val KEY_FULL_PAYMENT_DONE = "full_payment_done"
+    const val KEY_GUARDIAN_NAME = "guardian_name"
+    const val KEY_GUARDIAN_PHONE = "guardian_phone"
 
     // Receipt Keys
     const val KEY_RECEIPT_NO = "receipt_no"
@@ -52,5 +54,46 @@ object Constants{
     const val KEY_IS_APPROVED = "is_approved"
     const val KEY_USER_TYPE = "user_type"
     const val KEY_OTP_VERIFIED = "otp_verified"
+
+    //
+    const val KEY_RESERVATION_ID = "reservation_id"
+    const val KEY_AMOUNT_PAID = "amount_paid"
+    const val KEY_PLAN = "plan"
+    const val KEY_INSTALLMENT_PAID = "installment_paid"
+    const val KEY_TOTAL_AMOUNT = "total_amount"
+
+    const val KEY_PICKUP_LOCATION = "pickup_location"
+    const val KEY_PICKUP_LATITUDE = "pickup_latitude"
+    const val KEY_PICKUP_LONGITUDE = "pickup_longitude"
+
+    const val KEY_DROP_LOCATION = "drop_location"
+    const val KEY_DROP_LATITUDE = "drop_latitude"
+    const val KEY_DROP_LONGITUDE = "drop_longitude"
+
+    //reservations
+    const val KEY_ID = "id"
+    const val KEY_USER_NAME = "user_name"
+//    const val KEY_STANDARD = "standard"
+    const val KEY_CLASS_NAME = "className"
+    const val KEY_STATUS = "status"
+//    const val KEY_AMOUNT_PAID = "amount_paid"
+//    const val KEY_TOTAL_AMOUNT = "total_amount"
+//    const val KEY_PLAN = "plan"
+//    const val KEY_INSTALLMENT_PAID = "installment_paid"
+//    const val KEY_PICKUP_LOCATION = "pickup_location"
+//    const val KEY_PICKUP_LATITUDE = "pickup_latitude"
+//    const val KEY_PICKUP_LONGITUDE = "pickup_longitude"
+//    const val KEY_DROP_LOCATION = "drop_location"
+//    const val KEY_DROP_LATITUDE = "drop_latitude"
+//    const val KEY_DROP_LONGITUDE = "drop_longitude"
+    const val KEY_PICKUP_ROUTE = "pickup_route"
+    const val KEY_DROP_ROUTE = "drop_route"
+
+    const val KEY_MOBILE_NUM1 = "mobileNum1"
+    const val KEY_MOBILE_NUM2 = "mobileNum2"
+    const val KEY_PICKUP_ROUTE_ID = "pickup_route_id"
+    const val KEY_DROP_ROUTE_ID = "drop_route_id"
+//    const val KEY_CREATED_AT = "created_at"
+
 
 }

@@ -1,6 +1,7 @@
 package com.bypriyan.aaradhyaschoolbusservice.activity
 
 import android.os.Bundle
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.bypriyan.aaradhyaschoolbusservice.databinding.ActivityProfileBinding
@@ -23,6 +24,13 @@ class ProfileActivity : AppCompatActivity() {
     private lateinit var year: String
     private lateinit var image: String
 
+    private lateinit var fatherName: String
+    private lateinit var fatherNumber: String
+    private lateinit var motherName: String
+    private lateinit var motherNumber: String
+    private lateinit var gardianName: String
+    private lateinit var gardianNumber: String
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityProfileBinding.inflate(layoutInflater)
@@ -38,12 +46,14 @@ class ProfileActivity : AppCompatActivity() {
              year = getString(Constants.KEY_YEAR).toString()
              image = Constants.KEY_IMAGE_PATH+getString(Constants.KEY_IMAGE)
 
-        }
+            fatherName = getString(Constants.KEY_FATHER_NAME) ?: "N/A"
+            fatherNumber = getString(Constants.KEY_FATHER_NUMBER) ?: "N/A"
+            motherName = getString(Constants.KEY_MOTHER_NAME) ?: "N/A"
+            motherNumber = getString(Constants.KEY_MOTHER_NUMBER) ?: "N/A"
+            gardianName = getString(Constants.KEY_GUARDIAN_NAME) ?: "N/A"
+            gardianNumber = getString(Constants.KEY_GUARDIAN_PHONE) ?: "N/A"
 
-        val fatherName = intent.getStringExtra(Constants.KEY_FATHER_NAME) ?: "N/A"
-        val fatherNumber = intent.getStringExtra(Constants.KEY_FATHER_NUMBER) ?: "N/A"
-        val motherName = intent.getStringExtra(Constants.KEY_MOTHER_NAME) ?: "N/A"
-        val motherNumber = intent.getStringExtra(Constants.KEY_MOTHER_NUMBER) ?: "N/A"
+        }
 
         // Bind data to views
         binding.fullNameEt.setText(fullName)
@@ -52,12 +62,26 @@ class ProfileActivity : AppCompatActivity() {
         binding.ageEt.setText(age)
         binding.yearEt.setText(year)
         binding.fatherNameEt.setText(fatherName)
+        binding.fPhoneNumEt.setText(fatherName)
         binding.mothersName.setText(motherName)
         binding.mPhoneEt.setText(motherNumber)
         binding.emailEt.setText(email)
 
+        binding.guardianName.setText(gardianName)
+        binding.guardianPhoneEt.setText(gardianNumber)
+
         // Load image using Glide
         loadImageWithGlide(image)
+
+        binding.back.setOnClickListener{
+            onBackPressedDispatcher.onBackPressed()
+        }
+        //back pressed
+        onBackPressedDispatcher.addCallback(this, object: OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                finish()
+            }
+        })
     }
 
     private fun loadImageWithGlide(imageUrl: String) {

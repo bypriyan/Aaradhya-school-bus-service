@@ -4,38 +4,42 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
     android:background="@color/white"
+    android:importantForAutofill="no"
     tools:context=".activity.SignUpActivity">
+
 
     <RelativeLayout
         android:id="@+id/rel"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
+        android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:background="@color/white">
+
 
         <ImageView
             android:id="@+id/back"
             android:layout_width="@dimen/_27sdp"
             android:layout_height="@dimen/_27sdp"
-            android:src="@drawable/ic_back"
-            android:padding="@dimen/_2sdp"
-            android:layout_centerVertical="true"
-            app:tint="@color/black"
             android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
             android:layout_marginLeft="@dimen/_15sdp"
-            android:layout_marginRight="@dimen/_10sdp"/>
+            android:layout_marginRight="@dimen/_10sdp"
+            android:padding="@dimen/_2sdp"
+            android:src="@drawable/ic_back"
+            app:tint="@color/black" />
+
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="SignUp"
             android:layout_centerVertical="true"
-            android:textColor="@color/black"
             android:layout_toRightOf="@id/back"
-            android:textSize="@dimen/_13ssp"
-            android:fontFamily="@font/bold" />
-
+            android:fontFamily="@font/bold"
+            android:text="SignUp"
+            android:textColor="@color/black"
+            android:textSize="@dimen/_13ssp" />
 
 
     </RelativeLayout>
@@ -43,6 +47,8 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:fillViewport="true"
+        android:layout_marginBottom="@dimen/_10sdp"
         android:layout_below="@id/rel">
 
         <LinearLayout
@@ -87,13 +93,12 @@
             </com.google.android.material.card.MaterialCardView>
 
             <TextView
-                android:text="Full Name"
+                android:text="Student Full  Name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/_15sdp"
                 android:textSize="@dimen/_10ssp"
                 android:textStyle="bold"
-                android:inputType="text"
                 android:layout_below="@+id/username"
                 android:textColor="@color/bg"/>
 
@@ -114,7 +119,9 @@
                     android:layout_height="wrap_content"
                     android:background="@drawable/bg_gradient_edit_text"
                     android:textColor="@color/black"
-                    android:inputType="textPersonName" />
+                    android:inputType="text"
+
+                 />
             </com.google.android.material.textfield.TextInputLayout>
 
             <TextView
@@ -127,31 +134,23 @@
                 android:layout_below="@+id/username"
                 android:textColor="@color/bg"/>
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/standerdTi"
-               style="@style/Widget.Material3.TextInputLayout.FilledBox.ExposedDropdownMenu"
+            <AutoCompleteTextView
+                android:id="@+id/autoCompleteTextViewstanderd"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:textColorHint="@color/greay"
+                android:hint="Standard"
+                android:padding="@dimen/_12sdp"
+                android:focusable="false"
+                android:clickable="true"
+                android:layout_marginTop="@dimen/_5sdp"
                 app:hintTextColor="@color/black"
                 android:textColor="@color/black"
-                app:boxStrokeColor="@color/black">
-
-               <AutoCompleteTextView
-                    android:id="@+id/standerdEt"
-                    android:layout_width="match_parent"
-                   android:text="select standard"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/bg_gradient_edit_text"
-                    android:textColor="@color/black"
-                    android:inputType="text" />
-
-
-            </com.google.android.material.textfield.TextInputLayout>
+                app:boxStrokeColor="@color/black"
+                android:background="@drawable/bg_gradient_edit_text"
+                android:textSize="@dimen/_13ssp" />
 
             <TextView
-                android:text="Class"
+                android:text="Div"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/_15sdp"
@@ -160,25 +159,21 @@
                 android:layout_below="@+id/username"
                 android:textColor="@color/bg"/>
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/classs"
-                style="@style/Widget.Material3.TextInputLayout.FilledBox.ExposedDropdownMenu"
+            <AutoCompleteTextView
+                android:id="@+id/autoCompleteTextViewClass"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:textColorHint="@color/greay"
+                android:hint="Div"
+                android:padding="@dimen/_12sdp"
+                android:focusable="false"
+                android:clickable="true"
                 app:hintTextColor="@color/black"
                 android:textColor="@color/black"
-                app:boxStrokeColor="@color/black">
+                android:layout_marginTop="@dimen/_5sdp"
+                app:boxStrokeColor="@color/black"
+                android:background="@drawable/bg_gradient_edit_text"
+                android:textSize="@dimen/_13ssp" />
 
-         <AutoCompleteTextView
-                    android:id="@+id/classEt"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="select class"
-                    android:background="@drawable/bg_gradient_edit_text"
-                    android:textColor="@color/black" />
-            </com.google.android.material.textfield.TextInputLayout>
             <TextView
                 android:text="Age"
                 android:layout_width="wrap_content"
@@ -206,11 +201,12 @@
                     android:layout_height="wrap_content"
                     android:background="@drawable/bg_gradient_edit_text"
                     android:textColor="@color/black"
-                    android:inputType="number" />
+
+                    android:inputType="numberDecimal" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <TextView
-                android:text="Year"
+                android:text="Session year"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/_15sdp"
@@ -230,18 +226,17 @@
                 android:textColor="@color/black"
                 app:boxStrokeColor="@color/black">
 
-
-                <EditText
+                <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/yearEt"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/bg_gradient_edit_text"
                     android:textColor="@color/black"
-                    android:inputType="textEmailAddress" />
+                    android:inputType="numberSigned" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <TextView
-                android:text="Father's Name"
+                android:text="Father's Name(optional)"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/_15sdp"
@@ -264,9 +259,10 @@
                     android:id="@+id/fatherNameEt"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:autofillHints="username"
                     android:background="@drawable/bg_gradient_edit_text"
                     android:textColor="@color/black"
-                    android:inputType="textPersonName" />
+                    android:inputType="textEnableTextConversionSuggestions" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <TextView
@@ -284,6 +280,8 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+
+                android:importantForAutofill="no"
                 android:layout_centerHorizontal="true"
                 android:textColorHint="@color/greay"
                 app:hintTextColor="@color/black"
@@ -296,11 +294,11 @@
                     android:layout_height="wrap_content"
                     android:background="@drawable/bg_gradient_edit_text"
                     android:textColor="@color/black"
-                    android:inputType="phone" />
+                    android:inputType="numberDecimal" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <TextView
-                android:text="Mother's Name"
+                android:text="Mother's Name(optional)"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/_15sdp"
@@ -324,9 +322,11 @@
                     android:id="@+id/mothersName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:autofillHints="postalAddress"
+                    android:inputType="textAutoComplete"
                     android:background="@drawable/bg_gradient_edit_text"
                     android:textColor="@color/black"
-                    android:inputType="textEmailAddress" />
+                    />
             </com.google.android.material.textfield.TextInputLayout>
 
             <TextView
@@ -354,6 +354,7 @@
                     android:id="@+id/mPhoneEt"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:autofillHints="postalCode"
                     android:background="@drawable/bg_gradient_edit_text"
                     android:textColor="@color/black"
                     android:inputType="phone" />
@@ -362,7 +363,7 @@
 
 
             <TextView
-                android:text="Guardian's Name"
+                android:text="Guardian's Name(optional)"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/_15sdp"
@@ -388,11 +389,11 @@
                     android:layout_height="wrap_content"
                     android:background="@drawable/bg_gradient_edit_text"
                     android:textColor="@color/black"
-                    android:inputType="textEmailAddress" />
+                    android:inputType="text" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <TextView
-                android:text="Guardian's Phone Number"
+                android:text="Guardian's Phone Number(optional)"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/_15sdp"
@@ -418,7 +419,8 @@
                     android:layout_height="wrap_content"
                     android:background="@drawable/bg_gradient_edit_text"
                     android:textColor="@color/black"
-                    android:inputType="phone" />
+                    android:autofillHints="postalCode"
+                    android:inputType="number" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <TextView
@@ -446,13 +448,14 @@
                     android:id="@+id/emailEt"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:autofillHints="emailAddress"
                     android:background="@drawable/bg_gradient_edit_text"
                     android:textColor="@color/black"
                     android:inputType="textEmailAddress" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <TextView
-                android:text="Password"
+                android:text="Password(create new)"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/_15sdp"
@@ -484,7 +487,68 @@
                     android:textColor="@color/black"
                     android:inputType="textPassword" />
             </com.google.android.material.textfield.TextInputLayout>
+            <RelativeLayout
+                android:layout_below="@id/name"
+                android:layout_width="match_parent"
+                android:layout_marginTop="@dimen/_15sdp"
+                android:layout_marginBottom="@dimen/_10sdp"
+                android:layout_alignParentBottom="true"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:id="@+id/rl"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/_10ssp"
+                    android:textColor="@color/dark_greay"
+                    android:text="By continuing, you agree to Aaradhya school bus service\"
+                    android:layout_centerHorizontal="true"/>
 
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_below="@id/rl"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/terms"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/skyBlue"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginLeft="@dimen/_5sdp"
+                        android:textSize="@dimen/_10ssp"
+                        android:text="T&amp;C "
+
+                        />
+
+                    <TextView
+                        android:id="@+id/and"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/dark_greay"
+                        android:layout_gravity="center_vertical"
+                        android:text=" and "
+                        android:layout_toRightOf="@id/terms"
+                        android:layout_centerHorizontal="true"
+                        android:layout_below="@id/rl"
+                        />
+                    <TextView
+                        android:id="@+id/privacyPolicy"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/skyBlue"
+                        android:layout_gravity="center_vertical"
+                        android:textSize="@dimen/_10ssp"
+                        android:text=" Privacy Policy."
+                        android:layout_toRightOf="@id/and"
+                        android:layout_centerHorizontal="true"
+                        android:layout_below="@id/rl"
+                        />
+
+                </LinearLayout>
+
+            </RelativeLayout>
             <FrameLayout
                 android:id="@+id/btnFrame"
                 android:layout_width="match_parent"

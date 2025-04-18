@@ -24,6 +24,8 @@ interface ApiServiceRegisterUser {
         @Part("father_number") fatherNumber: RequestBody,
         @Part("mother_name") motherName: RequestBody,
         @Part("mother_number") motherNumber: RequestBody,
+        @Part("guardian_name") guardianName: RequestBody,
+        @Part("guardian_number") guardianNumber: RequestBody,
         @Part("password") password: RequestBody,
         @Part image: MultipartBody.Part
     ): ApiResponceRegisterUser

@@ -14,9 +14,9 @@ android {
         applicationId = "com.bypriyan.aaradhyaschoolbusservice"
         minSdk = 24
         targetSdk = 35
-        versionCode = 1
+        versionCode = 3
         multiDexEnabled = true
-        versionName = "1.0"
+        versionName = "2.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -111,6 +111,9 @@ dependencies {
     //razerpay
     implementation ("com.razorpay:checkout:1.6.40")
     implementation ("com.squareup.okhttp3:okhttp:4.9.3")
+
+    implementation ("com.sun.mail:android-mail:1.6.2")
+    implementation ("com.sun.mail:android-activation:1.6.2")
 
 }
 

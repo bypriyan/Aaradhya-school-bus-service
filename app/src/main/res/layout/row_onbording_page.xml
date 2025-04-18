@@ -29,6 +29,7 @@
         android:textColor="@color/black"
         android:textSize="16.00sp"/>
 
+
     <TextView
         android:id="@+id/description"
         android:layout_width="match_parent"
@@ -43,5 +44,6 @@
         android:layout_centerHorizontal="true"
         android:textColor="@color/dark_greay"
         android:textSize="@dimen/_12ssp"/>
+
 
 </RelativeLayout>

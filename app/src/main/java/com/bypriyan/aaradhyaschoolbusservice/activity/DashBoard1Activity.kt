@@ -6,37 +6,66 @@ import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
-import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
+import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.view.GravityCompat
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.bumptech.glide.Glide
 import com.bypriyan.aaradhyaschoolbusservice.activity.PaymentDoneActivity
+import com.bypriyan.aaradhyaschoolbusservice.api.ReservationResponse
 import com.bypriyan.aaradhyaschoolbusservice.databinding.ActivityCheckOutBinding
+import com.bypriyan.aaradhyaschoolbusservice.viewModel.GetUserReservationViewModel
 import com.bypriyan.aaradhyaschoolbusservice.viewModel.PdfViewModel
+import com.bypriyan.aaradhyaschoolbusservice.viewModel.TokenViewModel
 import com.bypriyan.aaradhyaschoolbusservice.viewModel.UserViewModel
 import com.bypriyan.bustrackingsystem.utility.Constants
 import com.bypriyan.bustrackingsystem.utility.PreferenceManager
+import com.google.firebase.messaging.FirebaseMessaging
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.getValue
 
+
 @AndroidEntryPoint
 class DashBoard1Activity : AppCompatActivity() {
+
+    private var backPressedTime: Long = 0
+    private val backPressThreshold: Long = 2000 // 2 seconds
     private lateinit var binding: ActivityCheckOutBinding
+
     @Inject
     lateinit var preferenceManager: PreferenceManager
     private val pdfViewModel: PdfViewModel by viewModels()
     private val userViewModel: UserViewModel by viewModels()
+    private val getUserReservationViewModel: GetUserReservationViewModel by viewModels()
     lateinit var userId: String
-    lateinit var token: String
-    lateinit var token_type: String
+    private val tokenViewModel: TokenViewModel by viewModels()
+
+    // Global variables
+    lateinit var totalAmount: String
+    lateinit var amountPaid: String
+    lateinit var plan: String
+    lateinit var installmentPaid: String
+    lateinit var pickupLocation: String
+    lateinit var dropLocation: String
+    lateinit var pickupRoute: String
+    lateinit var dropRoute: String
+    lateinit var mobileNum1: String
+    lateinit var mobileNum2: String
+    lateinit var paymentDate: String
+    lateinit var paymentId: String
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,14 +73,100 @@ class DashBoard1Activity : AppCompatActivity() {
         setContentView(binding.root)
 
 
-        val paidAmount = preferenceManager.getString("paid_amount") ?: "0"
-        val installmentStatus = preferenceManager.getString("installment_status") ?: "0"
-        binding.paidNextAmount.text = " Payment Status:"
 
-       userId =  preferenceManager.getString(Constants.KEY_USER_ID)!!
-       token= preferenceManager.getString(Constants.KEY_TOKEN)!!
-        token_type = preferenceManager.getString(Constants.KEY_TOKEN_TYPE)!!
-        Log.d("aaaa", "onCreate: $userId $token $token_type")
+        userId = preferenceManager.getString(Constants.KEY_USER_ID)!!
+        userViewModel.fetchUser(userId)
+        getUserReservationViewModel.fetchReservations(userId)
+
+        userViewModel.user.observe(this) { userDetails ->
+            userDetails?.data?.let { data ->
+                Log.d("TAGss", "onCreate: $data")
+                loadImageWithGlide(Constants.KEY_IMAGE_PATH + data.image_url)
+                binding.name.text = data.full_name
+                uploadToken(data.id.toString())
+                preferenceManager.apply {
+                    putString(Constants.KEY_FULL_NAME, data.full_name ?: "")
+                    putString(Constants.KEY_EMAIL, data.email ?: "")
+                    putString(Constants.KEY_USER_CLASS, data.`class` ?: "")
+                    putString(Constants.KEY_IMAGE, data.image_url ?: "")
+                    putString(Constants.KEY_YEAR, data.year ?: "")
+                    putString(Constants.KEY_STANDARD, data.standard ?: "")
+                    putString(Constants.KEY_AGE, data.age.toString() ?: "")
+
+                    putString(Constants.KEY_FATHER_NAME, data.guardians[0].name)
+                    putString(Constants.KEY_FATHER_NUMBER, data.guardians[0].phone_number)
+
+                    putString(Constants.KEY_MOTHER_NAME, data.guardians[1].name)
+                    putString(Constants.KEY_MOTHER_NUMBER, data.guardians[1].phone_number)
+
+                    putString(Constants.KEY_GUARDIAN_NAME, data.guardians[2].name)
+                    putString(Constants.KEY_GUARDIAN_PHONE, data.guardians[2].phone_number)
+                }
+            } ?: run {
+                Log.e("UserDetails", "userDetails or data is null")
+            }
+        }
+
+
+        // Setup Drawer Toggle
+        val toggle = ActionBarDrawerToggle(
+            this,
+            binding.drawerLayout,
+            0,0
+        )
+        binding.drawerLayout.addDrawerListener(toggle)
+        toggle.syncState()
+
+        // Handle Navigation Item Clicks
+        binding.navView.setNavigationItemSelectedListener { menuItem ->
+            when (menuItem.itemId) {
+                com.bypriyan.aaradhyaschoolbusservice.R.id.profile -> {
+                    showToast("Student Profile Selected")
+                    startActivity(Intent(this, ProfileActivity::class.java))
+
+                }
+
+                    com.bypriyan.aaradhyaschoolbusservice.R.id.about ->{
+                        showToast("Student Profile Selected")
+                        startActivity(Intent(this, aboutUsActivity::class.java))
+                    }
+
+                    com.bypriyan.aaradhyaschoolbusservice.R.id.contactUs ->{
+                        showToast("Student Profile Selected")
+                    startActivity(Intent(this, ContactUsActivity::class.java))
+
+                }
+                        com.bypriyan.aaradhyaschoolbusservice.R.id.logOut ->
+                showLogoutDialog()
+            }
+            binding.drawerLayout.closeDrawers()
+            true
+        }
+// Update the header image when drawer opens
+        binding.navView.getHeaderView(0).findViewById<ImageView>(
+            com.bypriyan.aaradhyaschoolbusservice.R.id.profileImageCard
+        )?.let {
+            loadImageWithGlideHeader(Constants.KEY_IMAGE_PATH + preferenceManager.getString(Constants.KEY_IMAGE))
+
+        }
+
+
+
+
+
+
+        // Observe LiveData
+        getUserReservationViewModel.reservations.observe(this, Observer { result ->
+            result.onSuccess { response ->
+                saveReservationDetails(response)
+            }.onFailure { error ->
+                Toast.makeText(this, "Error: ${error.message}", Toast.LENGTH_LONG).show()
+            }
+        })
+
+        binding.signOut.setOnClickListener {
+            showLogoutDialog()
+        }
 
 //        userViewModel.getUserDetails(userId, token)
 
@@ -61,42 +176,11 @@ class DashBoard1Activity : AppCompatActivity() {
             startActivity(intent)
         }
 
+        binding.name.text = preferenceManager.getString(Constants.KEY_FULL_NAME)
+        loadImageWithGlide(Constants.KEY_IMAGE_PATH+preferenceManager.getString(Constants.KEY_IMAGE))
+
         binding.profileImage.setOnClickListener {
-//            userViewModel.userDetails.value?.let { userDetails ->
-//                val intent = Intent(this, ProfileActivity::class.java)
-//                startActivity(intent)
-//            }
-        }
-
-//        userViewModel.userDetails.observe(this) { userDetails ->
-//            // Update UI with user details
-//            Log.d("checks", "onCreate: $resources")
-//            binding.name.text = "Hi, ${userDetails.fullName}"
-//            loadImageWithGlide(Constants.KEY_IMAGE_PATH+userDetails.image)
-//            preferenceManager.putString(Constants.KEY_STANDARD, userDetails.standard)
-//            preferenceManager.putString(Constants.KEY_FULL_NAME, userDetails.fullName)
-//            // Save user details in SharedPreferences
-//            preferenceManager.putString(Constants.KEY_USER_ID, userDetails.id.toString())
-//            preferenceManager.putString(Constants.KEY_EMAIL, userDetails.email)
-//            preferenceManager.putString(Constants.KEY_USER_CLASS, userDetails.userClass)
-//            preferenceManager.putString(Constants.KEY_IMAGE, userDetails.image)
-//            preferenceManager.putString(Constants.KEY_YEAR, userDetails.year)
-//            preferenceManager.putString(Constants.KEY_FATHER_NAME, userDetails.fatherName)
-//            preferenceManager.putString(Constants.KEY_FATHER_NUMBER, userDetails.fatherNumber)
-//            preferenceManager.putString(Constants.KEY_MOTHER_NAME, userDetails.motherName)
-//            preferenceManager.putString(Constants.KEY_MOTHER_NUMBER, userDetails.motherNumber)
-//            preferenceManager.putString(Constants.KEY_EMAIL_VERIFIED_AT, userDetails.emailVerifiedAt)
-//            preferenceManager.putString(Constants.KEY_CREATED_AT, userDetails.createdAt)
-//            preferenceManager.putString(Constants.KEY_UPDATED_AT, userDetails.updatedAt)
-//            preferenceManager.putString(Constants.KEY_AGE, userDetails.age.toString())
-//            preferenceManager.putString(Constants.KEY_IS_APPROVED, userDetails.isApproved.toString())
-//            preferenceManager.putString(Constants.KEY_USER_TYPE, userDetails.userType)
-//            preferenceManager.putString(Constants.KEY_OTP, userDetails.otp)
-//            preferenceManager.putString(Constants.KEY_OTP_VERIFIED, userDetails.otpVerified.toString())
-//        }
-
-        binding.CheckOutAct.setOnClickListener {
-            startActivity(Intent(this, CheckOut1::class.java))
+            binding.drawerLayout.openDrawer(GravityCompat.START)
         }
 
         binding.DownloadRecieptBtn.setOnClickListener {
@@ -104,23 +188,50 @@ class DashBoard1Activity : AppCompatActivity() {
             logReceiptDetails(preferenceManager)
         }
 
+        pdfViewModel.pdfState.observe(this, Observer { result ->
+            result?.onSuccess { filePath ->
+                Toast.makeText(this@DashBoard1Activity, "PDF Saved at: $filePath", Toast.LENGTH_LONG).show()
+            }?.onFailure {
+                Toast.makeText(this@DashBoard1Activity, "Error", Toast.LENGTH_LONG).show()
+            }
+        })
+
+
         binding.paidNextAmount.setOnClickListener {
-            startActivity(Intent(this, PaymentOptionActivity::class.java))
+            var intent = Intent(this, PaymentNextTimeActivity::class.java)
+            intent.putExtra(Constants.KEY_TOTAL_AMOUNT, totalAmount)
+            intent.putExtra(Constants.KEY_AMOUNT_PAID, amountPaid)
+            intent.putExtra(Constants.KEY_PLAN, plan)
+            startActivity(intent)
         }
-        observePdfGeneration()
+
+        binding.signOut.setOnClickListener {
+            preferenceManager.clear()
+            preferenceManager.putBoolean(Constants.KEY_IS_ONBORDING_SCREEN_SEEN, true)
+            val intent = Intent(this, LoginActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            startActivity(intent)
+            finish() // Finish current activity
+
+        }
+    }
+
+    fun showToast(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
 
     fun logReceiptDetails(preferenceManager: PreferenceManager) {
-        val receiptNo = preferenceManager.getString(Constants.KEY_RECEIPT_NO)
         val date = preferenceManager.getString(Constants.KEY_DATE)
         val studentName = preferenceManager.getString(Constants.KEY_FULL_NAME)
         val address = "Pimpri Chinchwad, Oppo. to Alankapuram Society, Alandi Rd, Wadmukhwadi, Pune"
         val mobileNo = "+91 9766987118"
-        val amount = preferenceManager.getString(Constants.KEY_AMOUNT)
+        val amount = preferenceManager.getString(Constants.KEY_AMOUNT_PAID)
         val std = preferenceManager.getString(Constants.KEY_STANDARD)
-        val totalFees = preferenceManager.getString(Constants.KEY_TOTAL_FEES)
+        val totalFees = preferenceManager.getString(Constants.KEY_TOTAL_AMOUNT)
+
         val monthFrom = preferenceManager.getString(Constants.KEY_MONTH_FROM)
         val monthTo = preferenceManager.getString(Constants.KEY_MONTH_TO)
+        val receiptNo = preferenceManager.getString(Constants.KEY_RECEIPT_NO)
 
         Log.d("ReceiptDetails", """
         receiptNo: $receiptNo
@@ -147,6 +258,34 @@ class DashBoard1Activity : AppCompatActivity() {
             monthFrom = monthFrom ?: "N/A",
             monthTo = monthTo ?: "N/A"
         )
+    }
+
+    private fun showLogoutDialog() {
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("Logout Confirmation")
+        builder.setMessage("Are you sure you want to log out?")
+
+
+        builder.setPositiveButton("Yes") { dialog, _ ->
+            dialog.dismiss()
+            signOutUser()
+        }
+
+        builder.setNegativeButton("Cancel") { dialog, _ ->
+            dialog.dismiss()
+        }
+
+        val dialog = builder.create()
+        dialog.show()
+    }
+
+    private fun signOutUser() {
+        preferenceManager.clear()
+        preferenceManager.putBoolean(Constants.KEY_IS_ONBORDING_SCREEN_SEEN, true)
+        val intent = Intent(this, LoginActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        startActivity(intent)
+        finish()
     }
 
 
@@ -219,19 +358,7 @@ class DashBoard1Activity : AppCompatActivity() {
         )
     }
 
-    private fun observePdfGeneration() {
-        lifecycleScope.launch {
-            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                pdfViewModel.pdfState.collect { result ->
-                    result?.onSuccess { filePath ->
-                        Toast.makeText(this@DashBoard1Activity, "PDF Saved at: $filePath", Toast.LENGTH_LONG).show()
-                    }?.onFailure { error ->
-                        Toast.makeText(this@DashBoard1Activity, "Error: ${error.localizedMessage}", Toast.LENGTH_LONG).show()
-                    }
-                }
-            }
-        }
-    }
+
 
     companion object {
         private const val REQUEST_CODE_STORAGE_PERMISSION = 1001
@@ -242,4 +369,98 @@ class DashBoard1Activity : AppCompatActivity() {
             .load(imageUrl) // Load the image URL
             .into(binding.profileImage) // Set the image to the ImageView
     }
+
+
+    private fun loadImageWithGlideHeader(imageUrl: String) {
+        val headerView = binding.navView.getHeaderView(0)
+        val headerImage = headerView.findViewById<ImageView>(com.bypriyan.aaradhyaschoolbusservice.R.id.profileImageCard)
+
+        if (imageUrl.isNotEmpty()) {
+            Glide.with(this)
+                .load(imageUrl)
+                .into(headerImage)
+        }
+        // Update student name
+        headerView.findViewById<TextView>(com.bypriyan.aaradhyaschoolbusservice.R.id.studentName)?.text =
+            preferenceManager.getString(Constants.KEY_FULL_NAME) ?: ""
+        headerView.findViewById<TextView>(com.bypriyan.aaradhyaschoolbusservice.R.id.StudentEmailTv)?.text =
+            preferenceManager.getString(Constants.KEY_EMAIL) ?: ""
+
+
+
+
+    }
+
+
+    private fun uploadToken(userId: String){
+        FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                val token = task.result
+                Log.d("FCM_TOKEN", "FCM Token: $token")
+                tokenViewModel.insertOrUpdateToken(userId, token)
+            } else {
+                Log.e("FCM_TOKEN", "Failed to get FCM token", task.exception)
+            }
+        }
+    }
+
+    private fun saveReservationDetails(response: ReservationResponse) {
+        totalAmount = response.reservations?.get(0)?.total_amount.toString()
+        amountPaid = response.reservations?.get(0)?.amount_paid.toString()
+        plan = response.reservations?.get(0)?.plan.toString()
+        installmentPaid = response.reservations?.get(0)?.installment_paid.toString()
+        pickupLocation = response.reservations?.get(0)?.pickup_location.toString()
+        dropLocation = response.reservations?.get(0)?.drop_location.toString()
+        pickupRoute = response.reservations?.get(0)?.pickup_route.toString()
+        dropRoute = response.reservations?.get(0)?.drop_route.toString()
+        mobileNum1 = response.reservations?.get(0)?.mobileNum1.toString()
+        mobileNum2 = response.reservations?.get(0)?.mobileNum2.toString()
+
+        paymentDate = response.reservations?.get(0)?.payment_date.toString()
+        paymentId = response.reservations?.get(0)?.payment_id.toString()
+
+
+
+        binding.PickupRouteTv.text = pickupRoute?:"waiting..."
+        binding.DropRouteTv.text = dropRoute?:"waiting..."
+        binding.mob1Tv.text = mobileNum1
+        binding.mob2Tv.text = mobileNum2
+
+        if(totalAmount==amountPaid){
+            preferenceManager.putString(Constants.KEY_MONTH_FROM, "April")
+            preferenceManager.putString(Constants.KEY_MONTH_TO, "March")
+        }else{
+            preferenceManager.putString(Constants.KEY_MONTH_FROM, "April")
+            preferenceManager.putString(Constants.KEY_MONTH_TO, "August")
+        }
+
+        preferenceManager.apply {
+            putString(Constants.KEY_TOTAL_AMOUNT, totalAmount)
+            putString(Constants.KEY_AMOUNT_PAID, amountPaid)
+            putString(Constants.KEY_PLAN, plan)
+            putString(Constants.KEY_INSTALLMENT_PAID, installmentPaid)
+            putString(Constants.KEY_PICKUP_LOCATION, pickupLocation)
+            putString(Constants.KEY_DROP_LOCATION, dropLocation)
+            putString(Constants.KEY_PICKUP_ROUTE, pickupRoute)
+            putString(Constants.KEY_DROP_ROUTE, dropRoute)
+            putString(Constants.KEY_MOBILE_NUM1, mobileNum1)
+            putString(Constants.KEY_MOBILE_NUM2, mobileNum2)
+            putString(Constants.KEY_DATE, paymentDate)
+            putString(Constants.KEY_RECEIPT_NO, paymentId)
+        }
+    }
+
+
+
+    override fun onBackPressed() {
+        if (backPressedTime + backPressThreshold > System.currentTimeMillis()) {
+            super.onBackPressed()
+            finish()
+        } else {
+            Toast.makeText(this, "Press back again to exit", Toast.LENGTH_SHORT).show()
+        }
+        backPressedTime = System.currentTimeMillis()
+    }
 }
+
+

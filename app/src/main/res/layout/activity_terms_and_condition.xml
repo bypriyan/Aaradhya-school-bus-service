@@ -7,10 +7,13 @@
     android:layout_height="match_parent"
     android:padding="16dp"
     android:background="@color/white"
+    android:fitsSystemWindows="true"
     tools:context=".activity.TermsAndConditionActivity">
 
     <ScrollView
         android:layout_width="match_parent"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:layout_above="@+id/btn_confirm"
         android:layout_height="match_parent">
 
         <LinearLayout
@@ -18,7 +21,6 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:padding="12dp"
-            android:background="@drawable/dd"
             android:elevation="4dp">
 
             <TextView
@@ -192,9 +194,9 @@ android:text="4.  Payment for 11 months (term is 3 term in year) will be taken.
         android:layout_width="match_parent"
         android:layout_height="@dimen/_50sdp"
         android:layout_alignParentBottom="true"
-        android:layout_margin="@dimen/_5sdp"
         android:backgroundTint="@color/appColor"
         android:text="Confirm"
+        android:layout_marginBottom="@dimen/_30sdp"
         android:textColor="@color/white"
         app:cornerRadius="@dimen/_10sdp" />
 
