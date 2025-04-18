@@ -248,20 +248,46 @@ class SignUpActivity : AppCompatActivity() {
             else -> true
         }
     }
-
     private fun startOtpActivity(otp: String) {
+        // Required fields (must not be empty)
+        val fullName = binding.fullNameEt.text.toString().trim()
+        val standard = binding.autoCompleteTextViewstanderd.text?.toString()?.trim()
+        val className = binding.autoCompleteTextViewClass.text?.toString()?.trim()
+        val age = binding.ageEt.text.toString().trim()
+        val year = binding.yearEt.text.toString().trim()
+        val email = binding.emailEt.text.toString().trim()
+        val password = binding.passwordEt.text.toString().trim()
+
+        // Optional fields with defaults
+        val fatherName = binding.fatherNameEt.text.toString().trim().ifEmpty { "..." }
+        val fatherPhone = binding.fPhoneNumEt.text.toString().trim().ifEmpty { "00" }
+        val motherName = binding.mothersName.text.toString().trim().ifEmpty { "..." }
+        val motherPhone = binding.mPhoneEt.text.toString().trim().ifEmpty { "00" }
+        val guardianName = binding.guardianName.text.toString().trim().ifEmpty { "..." }
+        val guardianPhone = binding.guardianPhoneEt.text.toString().trim().ifEmpty { "00" }
+
+        // Validate required fields
+        if (fullName.isEmpty() || standard.isNullOrEmpty() || className.isNullOrEmpty() ||
+            age.isEmpty() || year.isEmpty() || email.isEmpty() || password.isEmpty()) {
+            showToast("Please fill all required fields")
+            return
+        }
+
+        // Proceed to OtpActivity
         val intent = Intent(this, OtpActivity::class.java).apply {
-            putExtra(Constants.KEY_FULL_NAME, binding.fullNameEt.text.toString())
-            putExtra(Constants.KEY_STANDARD, binding.autoCompleteTextViewstanderd.text.toString())
-            putExtra(Constants.KEY_CLASS, binding.autoCompleteTextViewClass.text.toString())
-            putExtra(Constants.KEY_AGE, binding.ageEt.text.toString())
-            putExtra(Constants.KEY_YEAR, binding.yearEt.text.toString())
-            putExtra(Constants.KEY_FATHER_NAME, binding.fatherNameEt.text.toString())
-            putExtra(Constants.KEY_FATHER_PHONE, binding.fPhoneNumEt.text.toString())
-            putExtra(Constants.KEY_MOTHER_NAME, binding.mothersName.text.toString())
-            putExtra(Constants.KEY_MOTHER_PHONE, binding.mPhoneEt.text.toString())
-            putExtra(Constants.KEY_EMAIL, binding.emailEt.text.toString())
-            putExtra(Constants.KEY_PASSWORD, binding.passwordEt.text.toString())
+            putExtra(Constants.KEY_FULL_NAME, fullName)
+            putExtra(Constants.KEY_STANDARD, standard)
+            putExtra(Constants.KEY_CLASS, className)
+            putExtra(Constants.KEY_AGE, age)
+            putExtra(Constants.KEY_YEAR, year)
+            putExtra(Constants.KEY_FATHER_NAME, fatherName)
+            putExtra(Constants.KEY_FATHER_PHONE, fatherPhone)
+            putExtra(Constants.KEY_MOTHER_NAME, motherName)
+            putExtra(Constants.KEY_MOTHER_PHONE, motherPhone)
+            putExtra(Constants.KEY_GUARDIAN_NAME, guardianName)
+            putExtra(Constants.KEY_GUARDIAN_PHONE, guardianPhone)
+            putExtra(Constants.KEY_EMAIL, email)
+            putExtra(Constants.KEY_PASSWORD, password)
             putExtra(Constants.KEY_OTP, otp)
             selectedImageUri?.let { putExtra(Constants.KEY_PROFILE_IMAGE_URI, it.toString()) }
         }
@@ -322,5 +348,8 @@ class SignUpActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+    private fun showToast(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
 }
